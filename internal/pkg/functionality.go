@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/spf13/pflag"
+	"github.com/spf13/cobra"
 
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
@@ -22,6 +22,46 @@ func check(err error) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+var GitCommand = "diff"
+
+var rootCmd = &cobra.Command{
+	Use:   "hugo-diff[tool] [flags] <commit> [<commit>]",
+	Short: "Diffs the output of a given Hugo git repo at different commits.",
+	Long: `Diffs the output of a given Hugo git repo at different commits.
+
+Imagine that on every commit of your Hugo site, you'd generated the site and
+stored that in version control. Then, you could see exactly what's changed in
+your generated site between different commits.
+
+hugo-diff approximates that process.
+
+Commit references can be anything that 'git checkout' recognises -- commit
+hashes, branch names, HEAD^^^^; everything is valid.
+
+If one commit reference is specified, a diff is computed against HEAD.
+Otherwise, a diff is computed between the two supplied commits.`,
+	DisableFlagsInUseLine: true,
+	Args: func(cmd *cobra.Command, args []string) error {
+		if len(args) == 0 || len(args) > 2 {
+			return fmt.Errorf("Requires one or two git references to diff, got %v", len(args))
+		}
+
+		// TODO: resolve git SHA1s here?
+
+		return nil
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) == 1 {
+			args = append(args, "HEAD")
+		}
+
+		if GitCommand != "diff" && GitCommand != "difftool" {
+			panic("Unexpected git command")
+		}
+		runMain(GitCommand, args)
+	},
 }
 
 type resolvedUserRef struct {
@@ -61,37 +101,21 @@ func commitAll(worktree *git.Worktree, msg string) (plumbing.Hash, error) {
 	})
 }
 
-type commandOptions struct {
-	passthruFlags []string
-	commits       []string
-}
-
-func parseCommandLine() commandOptions {
-	pflag.Parse()
-
-	commits := pflag.Args()
-	if len(commits) > 2 || len(commits) == 0 {
-		log.Fatalf("Got %d git revisions, expected either one or two.\n", len(commits))
-	}
-	if len(commits) == 1 {
-		commits = append(commits, "HEAD")
-	}
-
-	return commandOptions{
-		commits: commits,
+func Main() {
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
 }
 
-func Main(diffCommand string) {
-	opts := parseCommandLine()
-
+func runMain(diffCommand string, commits []string) {
 	repoDir, err := os.Getwd()
 	check(err)
 	repo, err := git.PlainOpen(repoDir)
 	check(err)
 
-	suppliedRef1 := opts.commits[0]
-	suppliedRef2 := opts.commits[1]
+	suppliedRef1 := commits[0]
+	suppliedRef2 := commits[1]
 
 	ref1, err := resolveRef(repo, suppliedRef1)
 	if err != nil {
@@ -146,9 +170,9 @@ func process(srcRepo *git.Repository, dstRepo *git.Repository, ref *resolvedUser
 	files, err := commit.Files()
 	check(err)
 
-	log.Printf("Checking out %s to %s...\n", ref, hugoWorkingDir)
+	log.Printf("Checking out %s to %s…\n", ref, hugoWorkingDir)
 	copyFilesToDir(files, hugoWorkingDir)
-	log.Println("...done.")
+	log.Println("…done.")
 
 	runHugo(hugoWorkingDir, outputDir)
 
