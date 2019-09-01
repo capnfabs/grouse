@@ -23,6 +23,43 @@ func ok(err error) {
 	}
 }
 
+type resolvedUserRef struct {
+	userRef     string
+	repo        *git.Repository
+	resolvedRef *plumbing.Hash
+}
+
+func resolveRef(repo *git.Repository, userRef string) (*resolvedUserRef, error) {
+	ref, err := repo.ResolveRevision(plumbing.Revision(userRef))
+	if err != nil {
+		return nil, err
+	}
+
+	return &resolvedUserRef{
+		userRef:     userRef,
+		repo:        repo,
+		resolvedRef: ref,
+	}, nil
+}
+
+func (r *resolvedUserRef) String() string {
+	return fmt.Sprintf("%s (%s)", r.userRef, r.resolvedRef.String()[:7])
+}
+
+func commitAll(worktree *git.Worktree, msg string) (plumbing.Hash, error) {
+	_, err := worktree.Add(".")
+	if err != nil {
+		return plumbing.ZeroHash, err
+	}
+	return worktree.Commit(msg, &git.CommitOptions{
+		Author: &object.Signature{
+			Name:  "Hugo Diff (hugo-diff)",
+			Email: "hugo-diff@capnfabs.net",
+			When:  time.Now(),
+		},
+	})
+}
+
 func Main(diffCommand string) {
 	flag.Parse()
 	args := flag.Args()
@@ -41,10 +78,14 @@ func Main(diffCommand string) {
 		suppliedRef2 = args[1]
 	}
 
-	ref1, _ := repo.ResolveRevision(plumbing.Revision(suppliedRef1))
-	ref2, _ := repo.ResolveRevision(plumbing.Revision(suppliedRef2))
+	ref1, err := resolveRef(repo, suppliedRef1)
+	// TODO: we're actually expecting this to happen semi-regularly so we
+	// should handle it elegantly.
+	ok(err)
+	ref2, err := resolveRef(repo, suppliedRef2)
+	ok(err)
 
-	log.Printf("Computing diff between revisions %s (%s) and %s (%s)\n", suppliedRef1, ref1, suppliedRef2, ref2)
+	log.Printf("Computing diff between revisions %s and %s\n", ref1, ref2)
 
 	scratchDir, err := ioutil.TempDir("", "hugo_diff")
 	ok(err)
@@ -52,7 +93,7 @@ func Main(diffCommand string) {
 	commit1Dir := path.Join(scratchDir, "source_ref1")
 	outputDir := path.Join(scratchDir, "output")
 
-	// Init Repo
+	// Init the Output Repo
 	outputRepo, err := git.PlainInit(outputDir, false)
 	ok(err)
 	worktree, err := outputRepo.Worktree()
@@ -60,15 +101,8 @@ func Main(diffCommand string) {
 
 	process(repo, ref1, commit1Dir, outputDir)
 
-	_, err = worktree.Add(".")
-	ok(err)
-	hash1, err := worktree.Commit(fmt.Sprintf("Website content, built from %s (%s)", suppliedRef1, ref1), &git.CommitOptions{
-		Author: &object.Signature{
-			Name:  "Hugo Diff (hugo-diff)",
-			Email: "hugo-diff@capnfabs.net",
-			When:  time.Now(),
-		},
-	})
+	commitMessage := fmt.Sprintf("Website content, built from %s", ref1)
+	hash1, err := commitAll(worktree, commitMessage)
 	ok(err)
 
 	// Now erase the directory
@@ -83,25 +117,19 @@ func Main(diffCommand string) {
 		ok(err)
 	}
 
+	// Alright let's do the second checkout.
 	commit2Dir := path.Join(scratchDir, "source_ref2")
 	process(repo, ref2, commit2Dir, outputDir)
 
-	_, err = worktree.Add(".")
-	ok(err)
-	hash2, err := worktree.Commit(fmt.Sprintf("Website content, built from %s (%s)", suppliedRef2, ref2), &git.CommitOptions{
-		Author: &object.Signature{
-			Name:  "Hugo Diff (hugo-diff)",
-			Email: "hugo-diff@capnfabs.net",
-			When:  time.Now(),
-		},
-	})
+	commitMessage = fmt.Sprintf("Website content, built from %s", ref2)
+	hash2, err := commitAll(worktree, commitMessage)
 	ok(err)
 
 	runDiff(outputDir, diffCommand, hash1, hash2)
 }
 
-func process(repo *git.Repository, ref *plumbing.Hash, srcDir string, outputDir string) {
-	commit, err := repo.CommitObject(*ref)
+func process(repo *git.Repository, ref *resolvedUserRef, srcDir string, outputDir string) {
+	commit, err := repo.CommitObject(*ref.resolvedRef)
 	ok(err)
 	files, err := commit.Files()
 	ok(err)
