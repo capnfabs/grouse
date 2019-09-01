@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"flag"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -9,6 +10,7 @@ import (
 	"os/exec"
 	"path"
 	"strings"
+	"time"
 
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
@@ -48,15 +50,54 @@ func Main(diffCommand string) {
 	ok(err)
 
 	commit1Dir := path.Join(scratchDir, "source_ref1")
-	command1OutputDir := path.Join(scratchDir, "output_ref1")
+	outputDir := path.Join(scratchDir, "output")
 
-	process(repo, ref1, commit1Dir, command1OutputDir)
+	// Init Repo
+	outputRepo, err := git.PlainInit(outputDir, false)
+	ok(err)
+	worktree, err := outputRepo.Worktree()
+	ok(err)
+
+	process(repo, ref1, commit1Dir, outputDir)
+
+	_, err = worktree.Add(".")
+	ok(err)
+	hash1, err := worktree.Commit(fmt.Sprintf("Website content, built from %s (%s)", suppliedRef1, ref1), &git.CommitOptions{
+		Author: &object.Signature{
+			Name:  "Hugo Diff (hugo-diff)",
+			Email: "hugo-diff@capnfabs.net",
+			When:  time.Now(),
+		},
+	})
+	ok(err)
+
+	// Now erase the directory
+	infos, err := ioutil.ReadDir(outputDir)
+	ok(err)
+	for _, info := range infos {
+		if info.Name() == ".git" {
+			continue
+		}
+
+		err := os.RemoveAll(path.Join(outputDir, info.Name()))
+		ok(err)
+	}
 
 	commit2Dir := path.Join(scratchDir, "source_ref2")
-	command2OutputDir := path.Join(scratchDir, "output_ref2")
-	process(repo, ref2, commit2Dir, command2OutputDir)
+	process(repo, ref2, commit2Dir, outputDir)
 
-	runDiff(diffCommand, command1OutputDir, command2OutputDir)
+	_, err = worktree.Add(".")
+	ok(err)
+	hash2, err := worktree.Commit(fmt.Sprintf("Website content, built from %s (%s)", suppliedRef2, ref2), &git.CommitOptions{
+		Author: &object.Signature{
+			Name:  "Hugo Diff (hugo-diff)",
+			Email: "hugo-diff@capnfabs.net",
+			When:  time.Now(),
+		},
+	})
+	ok(err)
+
+	runDiff(outputDir, diffCommand, hash1, hash2)
 }
 
 func process(repo *git.Repository, ref *plumbing.Hash, srcDir string, outputDir string) {
@@ -101,11 +142,12 @@ func runHugo(repoDir string, outputDir string) {
 	ok(err)
 }
 
-func runDiff(diffCommand, dir1, dir2 string) {
-	cmd := exec.Command("git", diffCommand, "--no-index", dir1, dir2)
+func runDiff(repoDir, diffCommand string, hash1, hash2 plumbing.Hash) {
+	cmd := exec.Command("git", diffCommand, hash1.String(), hash2.String())
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
+	cmd.Dir = repoDir
 	log.Printf("Running command %s\n", strings.Join(cmd.Args, " "))
 	cmd.Run()
 }
