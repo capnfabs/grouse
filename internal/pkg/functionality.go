@@ -17,7 +17,7 @@ import (
 	"gopkg.in/src-d/go-git.v4/plumbing/object"
 )
 
-func ok(err error) {
+func check(err error) {
 	if err != nil {
 		panic(err)
 	}
@@ -81,64 +81,71 @@ func Main(diffCommand string) {
 	ref1, err := resolveRef(repo, suppliedRef1)
 	// TODO: we're actually expecting this to happen semi-regularly so we
 	// should handle it elegantly.
-	ok(err)
+	if err != nil {
+		log.Fatalf("Couldn't resolve '%s': unknown revision\n", suppliedRef1)
+	}
 	ref2, err := resolveRef(repo, suppliedRef2)
-	ok(err)
+	if err != nil {
+		log.Fatalf("Couldn't resolve '%s': unknown revision\n", suppliedRef2)
+	}
 
 	log.Printf("Computing diff between revisions %s and %s\n", ref1, ref2)
 
 	scratchDir, err := ioutil.TempDir("", "hugo_diff")
-	ok(err)
-
-	commit1Dir := path.Join(scratchDir, "source_ref1")
-	outputDir := path.Join(scratchDir, "output")
+	check(err)
 
 	// Init the Output Repo
+	outputDir := path.Join(scratchDir, "output")
 	outputRepo, err := git.PlainInit(outputDir, false)
-	ok(err)
-	worktree, err := outputRepo.Worktree()
-	ok(err)
+	check(err)
 
-	process(repo, ref1, commit1Dir, outputDir)
-
-	commitMessage := fmt.Sprintf("Website content, built from %s", ref1)
-	hash1, err := commitAll(worktree, commitMessage)
-	ok(err)
+	// Run Hugo for the first commit
+	commit1Dir := path.Join(scratchDir, "source_ref1")
+	hash1 := process(repo, outputRepo, ref1, commit1Dir, outputDir)
 
 	// Now erase the directory
-	infos, err := ioutil.ReadDir(outputDir)
-	ok(err)
+	eraseDirectoryExceptDotGit(outputDir)
+
+	// Run Hugo for the second commit
+	commit2Dir := path.Join(scratchDir, "source_ref2")
+	hash2 := process(repo, outputRepo, ref2, commit2Dir, outputDir)
+
+	// Do the actual diff
+	runDiff(outputDir, diffCommand, hash1, hash2)
+}
+
+func eraseDirectoryExceptDotGit(directory string) {
+	infos, err := ioutil.ReadDir(directory)
+	check(err)
 	for _, info := range infos {
 		if info.Name() == ".git" {
 			continue
 		}
 
-		err := os.RemoveAll(path.Join(outputDir, info.Name()))
-		ok(err)
+		err := os.RemoveAll(path.Join(directory, info.Name()))
+		check(err)
 	}
-
-	// Alright let's do the second checkout.
-	commit2Dir := path.Join(scratchDir, "source_ref2")
-	process(repo, ref2, commit2Dir, outputDir)
-
-	commitMessage = fmt.Sprintf("Website content, built from %s", ref2)
-	hash2, err := commitAll(worktree, commitMessage)
-	ok(err)
-
-	runDiff(outputDir, diffCommand, hash1, hash2)
 }
 
-func process(repo *git.Repository, ref *resolvedUserRef, srcDir string, outputDir string) {
-	commit, err := repo.CommitObject(*ref.resolvedRef)
-	ok(err)
+func process(srcRepo *git.Repository, dstRepo *git.Repository, ref *resolvedUserRef, hugoWorkingDir string, outputDir string) plumbing.Hash {
+	commit, err := srcRepo.CommitObject(*ref.resolvedRef)
+	check(err)
 	files, err := commit.Files()
-	ok(err)
+	check(err)
 
-	log.Printf("Checking out %s to %s\n", ref, srcDir)
-	copyFilesToDir(files, srcDir)
-	log.Println("Done.")
+	log.Printf("Checking out %s to %s...\n", ref, hugoWorkingDir)
+	copyFilesToDir(files, hugoWorkingDir)
+	log.Println("...done.")
 
-	runHugo(srcDir, outputDir)
+	runHugo(hugoWorkingDir, outputDir)
+
+	// commit and return hash
+	worktree, err := dstRepo.Worktree()
+	check(err)
+	commitMessage := fmt.Sprintf("Website content, built from %s", ref)
+	hash, err := commitAll(worktree, commitMessage)
+	check(err)
+	return hash
 }
 
 func copyFilesToDir(files *object.FileIter, targetDir string) error {
@@ -147,13 +154,13 @@ func copyFilesToDir(files *object.FileIter, targetDir string) error {
 		os.MkdirAll(path.Dir(outputPath), os.ModeDir|0700)
 
 		outputFile, err := os.Create(outputPath)
-		ok(err)
+		check(err)
 
 		reader, err := file.Reader()
-		ok(err)
+		check(err)
 
 		_, err = io.Copy(outputFile, reader)
-		ok(err)
+		check(err)
 
 		return nil
 	})
@@ -161,17 +168,21 @@ func copyFilesToDir(files *object.FileIter, targetDir string) error {
 
 func runHugo(repoDir string, outputDir string) {
 	cmd := exec.Command("hugo", "--destination", outputDir)
+	// TODO: this will print the wrong thing if any args have spaces in them.
+	// Use a library for this instead
 	log.Printf("Running command %s\n", strings.Join(cmd.Args, " "))
 	cmd.Dir = repoDir
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
 	err := cmd.Run()
-	ok(err)
+	check(err)
 }
 
 func runDiff(repoDir, diffCommand string, hash1, hash2 plumbing.Hash) {
 	cmd := exec.Command("git", diffCommand, hash1.String(), hash2.String())
+	// TODO: this will print the wrong thing if any args have spaces in them.
+	// Use a library for this instead
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
