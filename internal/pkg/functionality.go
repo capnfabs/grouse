@@ -1,7 +1,6 @@
 package pkg
 
 import (
-	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -11,6 +10,8 @@ import (
 	"path"
 	"strings"
 	"time"
+
+	"github.com/spf13/pflag"
 
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
@@ -60,27 +61,39 @@ func commitAll(worktree *git.Worktree, msg string) (plumbing.Hash, error) {
 	})
 }
 
+type commandOptions struct {
+	passthruFlags []string
+	commits       []string
+}
+
+func parseCommandLine() commandOptions {
+	pflag.Parse()
+
+	commits := pflag.Args()
+	if len(commits) > 2 || len(commits) == 0 {
+		log.Fatalf("Got %d git revisions, expected either one or two.\n", len(commits))
+	}
+	if len(commits) == 1 {
+		commits = append(commits, "HEAD")
+	}
+
+	return commandOptions{
+		commits: commits,
+	}
+}
+
 func Main(diffCommand string) {
-	flag.Parse()
-	args := flag.Args()
-	if len(args) > 2 || len(args) == 0 {
-		log.Fatalf("Got %d git revisions, expected either one or two.\n", len(args))
-	}
-	repoDir, _ := os.Getwd()
-	repo, _ := git.PlainOpen(repoDir)
+	opts := parseCommandLine()
 
-	suppliedRef1 := args[0]
-	var suppliedRef2 string
+	repoDir, err := os.Getwd()
+	check(err)
+	repo, err := git.PlainOpen(repoDir)
+	check(err)
 
-	if len(args) == 1 {
-		suppliedRef2 = "HEAD"
-	} else {
-		suppliedRef2 = args[1]
-	}
+	suppliedRef1 := opts.commits[0]
+	suppliedRef2 := opts.commits[1]
 
 	ref1, err := resolveRef(repo, suppliedRef1)
-	// TODO: we're actually expecting this to happen semi-regularly so we
-	// should handle it elegantly.
 	if err != nil {
 		log.Fatalf("Couldn't resolve '%s': unknown revision\n", suppliedRef1)
 	}
