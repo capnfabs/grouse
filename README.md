@@ -7,7 +7,8 @@ Like `git diff`, but for built hugo sites.
 This project uses gomodules, so to build, do:
 
 ```sh
-go build ./...
+go build ./cmd/diff
+go build ./cmd/difftool
 ```
 
 To run,

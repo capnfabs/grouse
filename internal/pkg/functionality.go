@@ -1,4 +1,4 @@
-package main
+package pkg
 
 import (
 	"flag"
@@ -21,7 +21,7 @@ func ok(err error) {
 	}
 }
 
-func main() {
+func Main(diffCommand string) {
 	flag.Parse()
 	args := flag.Args()
 	if len(args) > 2 || len(args) == 0 {
@@ -56,7 +56,7 @@ func main() {
 	command2OutputDir := path.Join(scratchDir, "output_ref2")
 	process(repo, ref2, commit2Dir, command2OutputDir)
 
-	runDiff(command1OutputDir, command2OutputDir)
+	runDiff(diffCommand, command1OutputDir, command2OutputDir)
 }
 
 func process(repo *git.Repository, ref *plumbing.Hash, srcDir string, outputDir string) {
@@ -101,8 +101,8 @@ func runHugo(repoDir string, outputDir string) {
 	ok(err)
 }
 
-func runDiff(dir1, dir2 string) {
-	cmd := exec.Command("git", "diff", "--no-index", dir1, dir2)
+func runDiff(diffCommand, dir1, dir2 string) {
+	cmd := exec.Command("git", diffCommand, "--no-index", dir1, dir2)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
