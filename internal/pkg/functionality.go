@@ -174,7 +174,7 @@ func process(srcRepo *git.Repository, dstRepo *git.Repository, ref *resolvedUser
 	log.Printf("Checking out %s to %s…\n", ref, hugoWorkingDir)
 	wt, err := srcRepo.Worktree()
 	check(err)
-	extractFilesAtCommitToDir(wt, commit, hugoWorkingDir)
+	extractFilesAtCommitToDir(wt, srcRepo, commit, hugoWorkingDir)
 	log.Println("…done.")
 
 	runHugo(hugoWorkingDir, outputDir)
@@ -190,11 +190,13 @@ func process(srcRepo *git.Repository, dstRepo *git.Repository, ref *resolvedUser
 
 func extractFilesAtCommitToDir(
 	worktree *git.Worktree,
+	repo *git.Repository,
 	commit *object.Commit, targetDir string) error {
 	files, err := commit.Files()
 	check(err)
 	err = files.ForEach(func(file *object.File) error {
 		outputPath := path.Join(targetDir, file.Name)
+		fmt.Println("file", file.Name)
 		AppFs.MkdirAll(path.Dir(outputPath), os.ModeDir|0700)
 
 		outputFile, err := AppFs.Create(outputPath)
@@ -225,14 +227,27 @@ func extractFilesAtCommitToDir(
 		m := config.NewModules()
 		err = m.Unmarshal(input)
 		check(err)
-		for k, v := range m.Submodules {
-			fmt.Println(k, "=>", v)
+		for _, v := range m.Submodules {
+			// Get the commit hash
+			tree, _ := commit.Tree()
+			// Need to check this error
+			entry, _ := tree.FindEntry(v.Path)
+			commitRef := entry.Hash
+			fmt.Println("commit-loaded entry", entry)
+
+			fmt.Println(v, "=>", commitRef)
 			// YIKES this is going to be intense.
 			// (1) try and load the repo from the _current_ worktree and see if the commit SHA from this one is floating around there. If it is, use that. There's a pretty good chance of that IMO.
 			// (2) try and clone the repo into memory or a cache or something. Probs a cache, because people might run this multiple times.
+			// The return type, for both approaches, will be an objects.Commit.
+			resolveSubmodule(v, worktree)
 		}
 	}
 	return nil
+}
+
+func resolveSubmodule(submodule *config.Submodule, worktree *git.Worktree) {
+
 }
 
 func runHugo(repoDir string, outputDir string) {
