@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/kballard/go-shellquote"
+	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 
 	"gopkg.in/src-d/go-git.v4"
@@ -28,6 +29,8 @@ var GitCommand = "diff"
 
 var DiffArgs string
 var BuildArgs string
+
+var AppFs = afero.NewOsFs()
 
 var rootCmd = &cobra.Command{
 	Use:   "hugo-diff[tool] [flags] <commit> [<other-commit>]",
@@ -140,7 +143,7 @@ func runMain(diffCommand string, commits []string) {
 	hash1 := process(repo, outputRepo, ref1, commit1Dir, outputDir)
 
 	// Now erase the directory
-	eraseDirectoryExceptDotGit(outputDir)
+	eraseDirectoryExceptRootDotGit(outputDir)
 
 	// Run Hugo for the second commit
 	commit2Dir := path.Join(scratchDir, "source_ref2")
@@ -150,15 +153,16 @@ func runMain(diffCommand string, commits []string) {
 	runDiff(outputDir, diffCommand, hash1, hash2)
 }
 
-func eraseDirectoryExceptDotGit(directory string) {
-	infos, err := ioutil.ReadDir(directory)
+func eraseDirectoryExceptRootDotGit(directory string) {
+	fmt.Println("appfs", AppFs)
+	infos, err := afero.ReadDir(AppFs, directory)
 	check(err)
 	for _, info := range infos {
 		if info.Name() == ".git" {
 			continue
 		}
 
-		err := os.RemoveAll(path.Join(directory, info.Name()))
+		err := AppFs.RemoveAll(path.Join(directory, info.Name()))
 		check(err)
 	}
 }
@@ -187,9 +191,9 @@ func process(srcRepo *git.Repository, dstRepo *git.Repository, ref *resolvedUser
 func copyFilesToDir(files *object.FileIter, targetDir string) error {
 	return files.ForEach(func(file *object.File) error {
 		outputPath := path.Join(targetDir, file.Name)
-		os.MkdirAll(path.Dir(outputPath), os.ModeDir|0700)
+		AppFs.MkdirAll(path.Dir(outputPath), os.ModeDir|0700)
 
-		outputFile, err := os.Create(outputPath)
+		outputFile, err := AppFs.Create(outputPath)
 		check(err)
 
 		reader, err := file.Reader()
