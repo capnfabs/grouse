@@ -4,11 +4,12 @@ Like `git diff`, but for built hugo sites.
 
 ## Build instructions
 
-This project uses gomodules, so to build, do:
+FYI: This project uses gomodules.
+
+To build, do:
 
 ```sh
-go build ./cmd/diff
-go build ./cmd/difftool
+./scripts/build.sh
 ```
 
 To run,
@@ -16,6 +17,14 @@ To run,
 ```
 cd your-hugo-directory
 hugo-diff <ref> [<ref>]
+```
+
+## Tests
+
+Tests!? Yay! Tests!
+
+```
+go test ./...
 ```
 
 ## Next steps before shipping / productionizing

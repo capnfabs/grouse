@@ -170,11 +170,8 @@ func eraseDirectoryExceptRootDotGit(directory string) {
 func process(srcRepo *git.Repository, dstRepo *git.Repository, ref *resolvedUserRef, hugoWorkingDir string, outputDir string) plumbing.Hash {
 	commit, err := srcRepo.CommitObject(*ref.resolvedRef)
 	check(err)
-	files, err := commit.Files()
-	check(err)
-
 	log.Printf("Checking out %s to %s…\n", ref, hugoWorkingDir)
-	copyFilesToDir(files, hugoWorkingDir)
+	extractFilesAtCommitToDir(commit, hugoWorkingDir)
 	log.Println("…done.")
 
 	runHugo(hugoWorkingDir, outputDir)
@@ -188,8 +185,12 @@ func process(srcRepo *git.Repository, dstRepo *git.Repository, ref *resolvedUser
 	return hash
 }
 
-func copyFilesToDir(files *object.FileIter, targetDir string) error {
+func extractFilesAtCommitToDir(commit *object.Commit, targetDir string) error {
+	files, err := commit.Files()
+	check(err)
+	fmt.Println("files", files)
 	return files.ForEach(func(file *object.File) error {
+		fmt.Println(file)
 		outputPath := path.Join(targetDir, file.Name)
 		AppFs.MkdirAll(path.Dir(outputPath), os.ModeDir|0700)
 
