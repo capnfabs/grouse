@@ -13,8 +13,6 @@ import (
 
 Test copyFilesToDir with a fake memory FS and a bunch of edge cases (dotfiles, directories etc)
 
-Test the eraseDirectoryExceptDotGit method.
-
 Test command line parsing.
 Later - test passthrough arguments as well.
 
