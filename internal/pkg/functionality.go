@@ -15,6 +15,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"gopkg.in/src-d/go-git.v4"
+	"gopkg.in/src-d/go-git.v4/config"
 	"gopkg.in/src-d/go-git.v4/plumbing"
 	"gopkg.in/src-d/go-git.v4/plumbing/object"
 )
@@ -171,7 +172,9 @@ func process(srcRepo *git.Repository, dstRepo *git.Repository, ref *resolvedUser
 	commit, err := srcRepo.CommitObject(*ref.resolvedRef)
 	check(err)
 	log.Printf("Checking out %s to %s…\n", ref, hugoWorkingDir)
-	extractFilesAtCommitToDir(commit, hugoWorkingDir)
+	wt, err := srcRepo.Worktree()
+	check(err)
+	extractFilesAtCommitToDir(wt, commit, hugoWorkingDir)
 	log.Println("…done.")
 
 	runHugo(hugoWorkingDir, outputDir)
@@ -185,12 +188,12 @@ func process(srcRepo *git.Repository, dstRepo *git.Repository, ref *resolvedUser
 	return hash
 }
 
-func extractFilesAtCommitToDir(commit *object.Commit, targetDir string) error {
+func extractFilesAtCommitToDir(
+	worktree *git.Worktree,
+	commit *object.Commit, targetDir string) error {
 	files, err := commit.Files()
 	check(err)
-	fmt.Println("files", files)
-	return files.ForEach(func(file *object.File) error {
-		fmt.Println(file)
+	err = files.ForEach(func(file *object.File) error {
 		outputPath := path.Join(targetDir, file.Name)
 		AppFs.MkdirAll(path.Dir(outputPath), os.ModeDir|0700)
 
@@ -205,6 +208,31 @@ func extractFilesAtCommitToDir(commit *object.Commit, targetDir string) error {
 
 		return nil
 	})
+	if err != nil {
+		return err
+	}
+	file, err := commit.File(".gitmodules")
+	fmt.Println("Error for gitmodules", err)
+	if err == nil {
+		// Submodules in use at this commit.
+		fmt.Println("Found submodules file!")
+		f, err := file.Reader()
+		check(err)
+
+		defer f.Close()
+		input, err := ioutil.ReadAll(f)
+		check(err)
+		m := config.NewModules()
+		err = m.Unmarshal(input)
+		check(err)
+		for k, v := range m.Submodules {
+			fmt.Println(k, "=>", v)
+			// YIKES this is going to be intense.
+			// (1) try and load the repo from the _current_ worktree and see if the commit SHA from this one is floating around there. If it is, use that. There's a pretty good chance of that IMO.
+			// (2) try and clone the repo into memory or a cache or something. Probs a cache, because people might run this multiple times.
+		}
+	}
+	return nil
 }
 
 func runHugo(repoDir string, outputDir string) {
