@@ -18,10 +18,11 @@ cd your-hugo-directory
 hugo-diff <ref> [<ref>]
 ```
 
-## Next steps:
+## Next steps before shipping / productionizing
 - Tests?
 - Figure out if this works with submodules. The standard hugo install instructions are 'use submodules' so it would be good to get this right.
-- Pass arguments through to diff
-- Maybe set things up so that running without a second arg just takes the current working directory as-is, so you don't need to commit before diffing.
+
+## Other things that would be nice for the future (roughly ordered)
 - Support optional `--command` argument (so you can use it with different static site generators)
--  Remove source copies, unless debug option specified or something
+- Cleanup temp files, unless debug option specified or something
+- Maybe set things up so that running without a second arg just takes the current working directory as-is, so you don't need to commit before diffing.

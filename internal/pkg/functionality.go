@@ -8,9 +8,9 @@ import (
 	"os"
 	"os/exec"
 	"path"
-	"strings"
 	"time"
 
+	"github.com/kballard/go-shellquote"
 	"github.com/spf13/cobra"
 
 	"gopkg.in/src-d/go-git.v4"
@@ -26,8 +26,11 @@ func check(err error) {
 
 var GitCommand = "diff"
 
+var DiffArgs string
+var BuildArgs string
+
 var rootCmd = &cobra.Command{
-	Use:   "hugo-diff[tool] [flags] <commit> [<commit>]",
+	Use:   "hugo-diff[tool] [flags] <commit> [<other-commit>]",
 	Short: "Diffs the output of a given Hugo git repo at different commits.",
 	Long: `Diffs the output of a given Hugo git repo at different commits.
 
@@ -35,13 +38,7 @@ Imagine that on every commit of your Hugo site, you'd generated the site and
 stored that in version control. Then, you could see exactly what's changed in
 your generated site between different commits.
 
-hugo-diff approximates that process.
-
-Commit references can be anything that 'git checkout' recognises -- commit
-hashes, branch names, HEAD^^^^; everything is valid.
-
-If one commit reference is specified, a diff is computed against HEAD.
-Otherwise, a diff is computed between the two supplied commits.`,
+hugo-diff approximates that process.`,
 	DisableFlagsInUseLine: true,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) == 0 || len(args) > 2 {
@@ -62,6 +59,15 @@ Otherwise, a diff is computed between the two supplied commits.`,
 		}
 		runMain(GitCommand, args)
 	},
+}
+
+func Main() {
+	rootCmd.Flags().StringVar(&DiffArgs, "diff-args", "", "Arguments to pass on to 'git diff'")
+	rootCmd.Flags().StringVar(&BuildArgs, "build-args", "", "Arguments to pass on to the hugo build command")
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
 
 type resolvedUserRef struct {
@@ -99,13 +105,6 @@ func commitAll(worktree *git.Worktree, msg string) (plumbing.Hash, error) {
 			When:  time.Now(),
 		},
 	})
-}
-
-func Main() {
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
 }
 
 func runMain(diffCommand string, commits []string) {
@@ -204,26 +203,34 @@ func copyFilesToDir(files *object.FileIter, targetDir string) error {
 }
 
 func runHugo(repoDir string, outputDir string) {
-	cmd := exec.Command("hugo", "--destination", outputDir)
-	// TODO: this will print the wrong thing if any args have spaces in them.
-	// Use a library for this instead
-	log.Printf("Running command %s\n", strings.Join(cmd.Args, " "))
+	args, err := shellquote.Split(BuildArgs)
+	check(err)
+	// Put the 'destination' last. Repeated 'destination' flags only uses the
+	// last one.
+	allArgs := append(args, "--destination", outputDir)
+	cmd := exec.Command("hugo", allArgs...)
+	log.Printf("Running command %s\n", shellquote.Join(cmd.Args...))
 	cmd.Dir = repoDir
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
-	err := cmd.Run()
+	err = cmd.Run()
 	check(err)
 }
 
 func runDiff(repoDir, diffCommand string, hash1, hash2 plumbing.Hash) {
-	cmd := exec.Command("git", diffCommand, hash1.String(), hash2.String())
-	// TODO: this will print the wrong thing if any args have spaces in them.
-	// Use a library for this instead
+	args, err := shellquote.Split(DiffArgs)
+	check(err)
+	allArgs := []string{diffCommand}
+	allArgs = append(allArgs, args...)
+	allArgs = append(allArgs, hash1.String(), hash2.String())
+
+	cmd := exec.Command("git", allArgs...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
 	cmd.Dir = repoDir
-	log.Printf("Running command %s\n", strings.Join(cmd.Args, " "))
+	log.Printf("Running command %s\n", shellquote.Join(cmd.Args...))
+	// TODO: add rescue in case of failure.
 	cmd.Run()
 }
