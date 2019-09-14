@@ -34,5 +34,6 @@ go test ./...
 ## Other things that would be nice for the future (roughly ordered)
 - Support optional `--command` argument (so you can use it with different static site generators, not just hugo)
 - Cleanup temp files, unless debug option specified or something
-- Maybe set things up so that running without a second arg just takes the current working directory as-is, so you don't need to commit before diffing.
 - Force the same timestamp so that themes which use timestamps won't generate false-positives everywhere.
+- Try to autodetect a few common static site generators (hugo, jekyll, gatsby)
+- Maybe set things up so that running without a second arg just takes the current working directory as-is, so you don't need to commit before diffing.
