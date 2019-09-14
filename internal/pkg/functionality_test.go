@@ -121,7 +121,7 @@ func TestExtractFilesAtCommitToDir(t *testing.T) {
 	}
 
 	af.Mkdir("/dst", 0755)
-	extractFilesAtCommitToDir(commit, "/dst")
+	extractFilesAtCommitToDir(wt, repo, commit, "/dst")
 
 	paths := enumeratePaths(af, "/dst")
 	c.Assert(paths, qt.ContentEquals, []string{
