@@ -14,10 +14,12 @@ import (
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 
+	"gopkg.in/src-d/go-billy.v4/memfs"
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/config"
 	"gopkg.in/src-d/go-git.v4/plumbing"
 	"gopkg.in/src-d/go-git.v4/plumbing/object"
+	"gopkg.in/src-d/go-git.v4/storage/memory"
 )
 
 func check(err error) {
@@ -236,18 +238,77 @@ func extractFilesAtCommitToDir(
 			fmt.Println("commit-loaded entry", entry)
 
 			fmt.Println(v, "=>", commitRef)
-			// YIKES this is going to be intense.
-			// (1) try and load the repo from the _current_ worktree and see if the commit SHA from this one is floating around there. If it is, use that. There's a pretty good chance of that IMO.
-			// (2) try and clone the repo into memory or a cache or something. Probs a cache, because people might run this multiple times.
-			// The return type, for both approaches, will be an objects.Commit.
-			resolveSubmodule(v, worktree)
+			commit, repo, err := resolveSubmodule(v, entry.Hash, worktree)
+			if err != nil {
+				fmt.Println("Couldn't load submodule: ", err)
+				return err
+			}
+			wt, err := repo.Worktree()
+			p := path.Join(targetDir, v.Path)
+			err = extractFilesAtCommitToDir(wt, repo, commit, p)
+			if err != nil {
+				fmt.Println("Couldn't load submodule to filesystem:", err)
+				return err
+			}
 		}
 	}
 	return nil
 }
 
-func resolveSubmodule(submodule *config.Submodule, worktree *git.Worktree) {
+func loadSubmoduleFromCurrentWorktree(
+	submodule *config.Submodule,
+	commitRef plumbing.Hash,
+	worktree *git.Worktree) (*object.Commit, *git.Repository, error) {
 
+	sub, err := worktree.Submodule(submodule.Name)
+	if err != nil {
+		return nil, nil, err
+	}
+	repo, err := sub.Repository()
+	if err != nil {
+		return nil, nil, err
+	}
+	commit, err := repo.CommitObject(commitRef)
+	return commit, repo, err
+}
+
+func loadSubmoduleFromRemote(
+	submodule *config.Submodule,
+	commitRef plumbing.Hash,
+	worktree *git.Worktree) (*object.Commit, *git.Repository, error) {
+
+	fs := memfs.New()
+	storer := memory.NewStorage()
+
+	// NOTE: it would be _super_ nice to do the following here:
+	// - Attempt to fetch just the given commit (some servers support this, some don't; see https://stackoverflow.com/a/3489576/996592)
+	// - Attempt to fetch just the given _branch_ being tracked, look for the commit in the history there
+	// - Fetch the whole repo, checkout the commit.
+	// - Cache the whole thing so it's faster next time.
+	// Designing the cache to work with this feels like it's going to be complicated; so I'm skipping it for v1.
+	// ESPECIALLY because we're expecting the "load from worktree" strategy to work pretty regularly.
+	repo, err := git.Clone(storer, fs, &git.CloneOptions{
+		URL: submodule.URL,
+	})
+	if err != nil {
+		return nil, nil, err
+	}
+	commit, err := repo.CommitObject(commitRef)
+	return commit, repo, nil
+}
+
+// Here's the strategy
+// (1) try and load the repo from the _current_ worktree and see if the commit SHA from this one is floating around there. If it is, use that. This will hopefully be 90% of cases.
+// (2) try and clone the repo into memory or a cache. It'd be really good to optimise this (see the docs in loadSubmoduleForRemote, but again, this will be less frequent so it can wait for 1.1)
+func resolveSubmodule(submodule *config.Submodule, commitRef plumbing.Hash, worktree *git.Worktree) (*object.Commit, *git.Repository, error) {
+	if commit, repo, err := loadSubmoduleFromCurrentWorktree(submodule, commitRef, worktree); err == nil {
+		fmt.Println("Found commit for submodule in worktree.")
+		return commit, repo, nil
+	}
+
+	fmt.Println("Couldn't find submodule commit in worktree, falling back to clone strategy")
+	commit, repo, err := loadSubmoduleFromRemote(submodule, commitRef, worktree)
+	return commit, repo, err
 }
 
 func runHugo(repoDir string, outputDir string) {
