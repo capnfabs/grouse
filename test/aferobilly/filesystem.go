@@ -69,12 +69,10 @@ func (b *billyAeroFs) Root() string {
 
 // TempFile implements billy.TempFile.TempFile.
 func (b *billyAeroFs) TempFile(dir, prefix string) (billy.File, error) {
-	fmt.Println("tempfile")
 	return nil, billy.ErrNotSupported
 }
 
 func (b *billyAeroFs) Lstat(filename string) (os.FileInfo, error) {
-	fmt.Println("lstat")
 	return b.Fs.Stat(filename)
 }
 

@@ -223,7 +223,7 @@ func eraseDirectoryExceptRootDotGit(directory string) {
 }
 
 func process(dstRepo *git.Repository, ref resolved, hugoWorkingDir string, outputDir string) plumbing.Hash {
-	err := extractCommitToDirectory(ref, hugoWorkingDir)
+	err := extractBaseCommitToDirectory(ref, hugoWorkingDir)
 	check(err)
 
 	runHugo(hugoWorkingDir, outputDir)
@@ -294,11 +294,17 @@ func tryCopyingSubmodules(ref resolved, targetDir string) error {
 	return nil
 }
 
-func extractCommitToDirectory(ref resolved, outputDirectory string) error {
-	// TODO: don't do this for submodules.
+func extractBaseCommitToDirectory(ref resolved, outputDirectory string) error {
 	log.Printf("Checking out %s to %s…\n", ref, outputDirectory)
-	defer log.Println("…done.")
+	err := extractCommitToDirectory(ref, outputDirectory)
+	if err != nil {
+		return err
+	}
+	log.Println("…done.")
+	return nil
+}
 
+func extractCommitToDirectory(ref resolved, outputDirectory string) error {
 	files, err := ref.Commit().Files()
 	if err != nil {
 		return err
