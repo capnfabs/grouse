@@ -14,11 +14,13 @@ import (
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 
+	"gopkg.in/src-d/go-billy.v4"
 	"gopkg.in/src-d/go-billy.v4/memfs"
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/config"
 	"gopkg.in/src-d/go-git.v4/plumbing"
 	"gopkg.in/src-d/go-git.v4/plumbing/object"
+	"gopkg.in/src-d/go-git.v4/storage"
 	"gopkg.in/src-d/go-git.v4/storage/memory"
 )
 
@@ -335,6 +337,10 @@ func loadSubmoduleFromCurrentWorktree(
 	return resolveHash(repo, commitRef)
 }
 
+var submoduleCloner = func(s storage.Storer, worktree billy.Filesystem, o *git.CloneOptions) (*git.Repository, error) {
+	return git.Clone(s, worktree, o)
+}
+
 func loadSubmoduleFromRemote(
 	submodule *config.Submodule,
 	commitRef plumbing.Hash) (resolved, error) {
@@ -349,7 +355,7 @@ func loadSubmoduleFromRemote(
 	// - Cache the whole thing so it's faster next time.
 	// Designing the cache to work with this feels like it's going to be complicated; so I'm skipping it for v1.
 	// ESPECIALLY because we're expecting the "load from worktree" strategy to work pretty regularly.
-	repo, err := git.Clone(storer, fs, &git.CloneOptions{
+	repo, err := submoduleCloner(storer, fs, &git.CloneOptions{
 		URL: submodule.URL,
 	})
 	if err != nil {

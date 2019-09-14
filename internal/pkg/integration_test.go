@@ -12,8 +12,10 @@ import (
 
 	qt "github.com/frankban/quicktest"
 	"github.com/spf13/afero"
+	"gopkg.in/src-d/go-billy.v4"
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
+	"gopkg.in/src-d/go-git.v4/storage"
 )
 
 var cases = []struct {
@@ -37,7 +39,34 @@ var cases = []struct {
 	{"themechange-src.zip", "4367feb0439721ec67cf4175e59454326643d951", "themechange-4367feb0.zip"},
 }
 
+func patchSubmoduleCloner(repo *git.Repository) func() {
+	oldSubmoduleCloner := submoduleCloner
+	submoduleCloner = func(_ storage.Storer, _ billy.Filesystem, o *git.CloneOptions) (*git.Repository, error) {
+		return repo, nil
+	}
+	return func() {
+		submoduleCloner = oldSubmoduleCloner
+	}
+}
+
+func loadAnankeTheme(t *testing.T) *git.Repository {
+	c := qt.New(t)
+	tempDir, err := ioutil.TempDir("", "theme-ananke")
+	c.Assert(err, qt.IsNil)
+	wd, _ := os.Getwd()
+	cmd := exec.Command("unzip", path.Join(wd, "../../test-fixtures", "gohugo-theme-ananke.zip"), "-d", tempDir)
+	err = cmd.Run()
+	c.Assert(err, qt.IsNil)
+	themeLoc := path.Join(tempDir, "gohugo-theme-ananke")
+	fmt.Println("Theme location:", themeLoc)
+	repo, err := git.PlainOpen(themeLoc)
+	c.Assert(err, qt.IsNil)
+	return repo
+}
+
 func TestPreBuildSetup(t *testing.T) {
+	submoduleRepo := loadAnankeTheme(t)
+	defer patchSubmoduleCloner(submoduleRepo)()
 	for _, tc := range cases {
 		t.Run(fmt.Sprintf("%s@%s", tc.fileTreeZip, tc.hash), func(t *testing.T) {
 			c := qt.New(t)
