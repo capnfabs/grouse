@@ -28,10 +28,9 @@ func check(err error) {
 	}
 }
 
-var GitCommand = "diff"
-
 var DiffArgs string
 var BuildArgs string
+var UseGitDiffTool bool
 
 var AppFs = afero.NewOsFs()
 
@@ -60,16 +59,20 @@ Grouse approximates that process.`,
 			args = append(args, "HEAD")
 		}
 
-		if GitCommand != "diff" && GitCommand != "difftool" {
-			panic("Unexpected git command")
+		var gitCommand string
+		if UseGitDiffTool {
+			gitCommand = "difftool"
+		} else {
+			gitCommand = "diff"
 		}
-		runMain(GitCommand, args)
+		runMain(gitCommand, args)
 	},
 }
 
 func Main() {
 	rootCmd.Flags().StringVar(&DiffArgs, "diff-args", "", "Arguments to pass on to 'git diff'")
 	rootCmd.Flags().StringVar(&BuildArgs, "build-args", "", "Arguments to pass on to the hugo build command")
+	rootCmd.Flags().BoolVarP(&UseGitDiffTool, "tool", "t", false, "Invoke 'git difftool' instead of 'git diff'.")
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
