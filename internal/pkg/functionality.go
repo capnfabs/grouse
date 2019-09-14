@@ -36,7 +36,7 @@ var BuildArgs string
 var AppFs = afero.NewOsFs()
 
 var rootCmd = &cobra.Command{
-	Use:   "hugo-diff[tool] [flags] <commit> [<other-commit>]",
+	Use:   "grouse [flags] <commit> [<other-commit>]",
 	Short: "Diffs the output of a given Hugo git repo at different commits.",
 	Long: `Diffs the output of a given Hugo git repo at different commits.
 
@@ -44,7 +44,7 @@ Imagine that on every commit of your Hugo site, you'd generated the site and
 stored that in version control. Then, you could see exactly what's changed in
 your generated site between different commits.
 
-hugo-diff approximates that process.`,
+Grouse approximates that process.`,
 	DisableFlagsInUseLine: true,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) == 0 || len(args) > 2 {
@@ -106,8 +106,8 @@ func commitAll(worktree *git.Worktree, msg string) (plumbing.Hash, error) {
 	}
 	return worktree.Commit(msg, &git.CommitOptions{
 		Author: &object.Signature{
-			Name:  "Hugo Diff (hugo-diff)",
-			Email: "hugo-diff@capnfabs.net",
+			Name:  "Grouse Diff",
+			Email: "grouse-diff@example.com",
 			When:  time.Now(),
 		},
 	})

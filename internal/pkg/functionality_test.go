@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/capnfabs/hugo-diff/test/aferobilly"
+	"github.com/capnfabs/grouse/test/aferobilly"
 	"github.com/spf13/afero"
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing/object"

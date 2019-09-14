@@ -1,6 +1,6 @@
-# hugo-diff
+# Grouse
 
-Like `git diff`, but for built hugo sites.
+Like `git diff`, but for the output of Hugo sites.
 
 ## Build instructions
 
@@ -16,7 +16,7 @@ To run,
 
 ```
 cd your-hugo-directory
-hugo-diff <ref> [<ref>]
+grouse <ref> [<ref>]
 ```
 
 ## Tests

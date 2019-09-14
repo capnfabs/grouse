@@ -1,4 +1,4 @@
-module github.com/capnfabs/hugo-diff
+module github.com/capnfabs/grouse
 
 go 1.12
 
