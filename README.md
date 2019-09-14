@@ -29,7 +29,6 @@ go test ./...
 
 ## Next steps before shipping / productionizing
 - Tests? For a start, let's just do integration tests by unzipping zip files and then ensuring that the output makes sense.
-- Rename to "grouse"
 - Check through all command output, switch printlns to logs
 
 ## Other things that would be nice for the future (roughly ordered)
