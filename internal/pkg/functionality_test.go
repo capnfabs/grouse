@@ -115,13 +115,14 @@ func TestExtractFilesAtCommitToDir(t *testing.T) {
 		},
 	})
 
-	commit, err := repo.CommitObject(sha)
+	hash, err := resolveHash(repo, sha)
 	if err != nil {
 		panic(err)
 	}
 
 	af.Mkdir("/dst", 0755)
-	extractFilesAtCommitToDir(wt, repo, commit, "/dst")
+
+	extractCommitToDirectory(hash, "/dst")
 
 	paths := enumeratePaths(af, "/dst")
 	c.Assert(paths, qt.ContentEquals, []string{
