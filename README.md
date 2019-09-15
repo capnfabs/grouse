@@ -4,7 +4,7 @@ Like `git diff`, but for the output of Hugo sites.
 
 ## Build instructions
 
-FYI: This project uses gomodules.
+FYI: This project uses gomodules, so clone it to a project that's not in your `$GOPATH`.
 
 To build, do:
 

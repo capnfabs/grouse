@@ -2,7 +2,6 @@ package pkg
 
 import (
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -10,18 +9,14 @@ import (
 	"path"
 	"time"
 
+	"github.com/capnfabs/grouse/internal/checkout"
 	"github.com/kballard/go-shellquote"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 
-	"gopkg.in/src-d/go-billy.v4"
-	"gopkg.in/src-d/go-billy.v4/memfs"
 	"gopkg.in/src-d/go-git.v4"
-	"gopkg.in/src-d/go-git.v4/config"
 	"gopkg.in/src-d/go-git.v4/plumbing"
 	"gopkg.in/src-d/go-git.v4/plumbing/object"
-	"gopkg.in/src-d/go-git.v4/storage"
-	"gopkg.in/src-d/go-git.v4/storage/memory"
 )
 
 func check(err error) {
@@ -81,79 +76,6 @@ func Main() {
 	}
 }
 
-type resolvedUserRef struct {
-	userRef string
-	resolvedHash
-}
-
-type resolvedHash struct {
-	repo     *git.Repository
-	hash     plumbing.Hash
-	commit   *object.Commit
-	worktree *git.Worktree
-}
-
-type resolved interface {
-	Repo() *git.Repository
-	Hash() plumbing.Hash
-	Commit() *object.Commit
-	Worktree() *git.Worktree
-}
-
-func (r *resolvedHash) Repo() *git.Repository {
-	return r.repo
-}
-func (r *resolvedHash) Hash() plumbing.Hash {
-	return r.hash
-}
-func (r *resolvedHash) Commit() *object.Commit {
-	return r.commit
-}
-
-func (r *resolvedHash) Worktree() *git.Worktree {
-	return r.worktree
-}
-
-func resolveUserRef(repo *git.Repository, userRef string) (*resolvedUserRef, error) {
-	hash, err := repo.ResolveRevision(plumbing.Revision(userRef))
-	if err != nil {
-		return nil, err
-	}
-
-	resHash, err := resolveHash(repo, *hash)
-	if err != nil {
-		return nil, err
-	}
-	return &resolvedUserRef{
-		userRef:      userRef,
-		resolvedHash: *resHash,
-	}, nil
-
-}
-
-func resolveHash(repo *git.Repository, hash plumbing.Hash) (*resolvedHash, error) {
-	worktree, err := repo.Worktree()
-	if err != nil {
-		return nil, err
-	}
-
-	commit, err := repo.CommitObject(hash)
-	if err != nil {
-		return nil, err
-	}
-
-	return &resolvedHash{
-		repo:     repo,
-		hash:     hash,
-		commit:   commit,
-		worktree: worktree,
-	}, nil
-}
-
-func (r *resolvedUserRef) String() string {
-	return fmt.Sprintf("%s (%s)", r.userRef, r.hash.String()[:7])
-}
-
 func commitAll(worktree *git.Worktree, msg string) (plumbing.Hash, error) {
 	_, err := worktree.Add(".")
 	if err != nil {
@@ -177,11 +99,11 @@ func runMain(diffCommand string, commits []string) {
 	suppliedRef1 := commits[0]
 	suppliedRef2 := commits[1]
 
-	ref1, err := resolveUserRef(repo, suppliedRef1)
+	ref1, err := checkout.ResolveUserRef(repo, suppliedRef1)
 	if err != nil {
 		log.Fatalf("Couldn't resolve '%s': unknown revision\n", suppliedRef1)
 	}
-	ref2, err := resolveUserRef(repo, suppliedRef2)
+	ref2, err := checkout.ResolveUserRef(repo, suppliedRef2)
 	if err != nil {
 		log.Fatalf("Couldn't resolve '%s': unknown revision\n", suppliedRef2)
 	}
@@ -224,9 +146,11 @@ func eraseDirectoryExceptRootDotGit(directory string) {
 	}
 }
 
-func process(dstRepo *git.Repository, ref resolved, hugoWorkingDir string, outputDir string) plumbing.Hash {
-	err := extractBaseCommitToDirectory(ref, hugoWorkingDir)
+func process(dstRepo *git.Repository, ref checkout.ResolvedCommit, hugoWorkingDir string, outputDir string) plumbing.Hash {
+	log.Printf("Checking out %s to %s…\n", ref, hugoWorkingDir)
+	err := checkout.ExtractCommitToDirectory(ref, hugoWorkingDir)
 	check(err)
+	log.Println("…done.")
 
 	runHugo(hugoWorkingDir, outputDir)
 
@@ -237,145 +161,6 @@ func process(dstRepo *git.Repository, ref resolved, hugoWorkingDir string, outpu
 	hash, err := commitAll(worktree, commitMessage)
 	check(err)
 	return hash
-}
-
-func copyFileTo(file *object.File, outputPath string) error {
-	AppFs.MkdirAll(path.Dir(outputPath), os.ModeDir|0700)
-
-	outputFile, err := AppFs.Create(outputPath)
-	if err != nil {
-		return err
-	}
-
-	reader, err := file.Reader()
-	if err != nil {
-		return err
-	}
-
-	_, err = io.Copy(outputFile, reader)
-	return err
-}
-
-func tryCopyingSubmodules(ref resolved, targetDir string) error {
-	file, err := ref.Commit().File(".gitmodules")
-	if err == nil {
-		// Submodules in use at this commit.
-		// TODO: handle nested submodules. I've got a hunch that our own submodule
-		// handling will play badly with go-git's.
-		fmt.Println("Found submodules file!")
-		f, err := file.Reader()
-		check(err)
-
-		defer f.Close()
-		input, err := ioutil.ReadAll(f)
-		check(err)
-		m := config.NewModules()
-		err = m.Unmarshal(input)
-		check(err)
-		for _, v := range m.Submodules {
-
-			// Get the commit hash for this submodule
-			tree, _ := ref.Commit().Tree()
-			entry, err := tree.FindEntry(v.Path)
-			if err != nil {
-				return err
-			}
-			submoduleRef, err := resolveSubmodule(v, entry.Hash, ref.Worktree())
-			if err != nil {
-				fmt.Println("Couldn't load submodule: ", err)
-				return err
-			}
-			subModuleOutputPath := path.Join(targetDir, v.Path)
-			err = extractCommitToDirectory(submoduleRef, subModuleOutputPath)
-			if err != nil {
-				fmt.Println("Couldn't load submodule to filesystem:", err)
-				return err
-			}
-		}
-	}
-	return nil
-}
-
-func extractBaseCommitToDirectory(ref resolved, outputDirectory string) error {
-	log.Printf("Checking out %s to %s…\n", ref, outputDirectory)
-	err := extractCommitToDirectory(ref, outputDirectory)
-	if err != nil {
-		return err
-	}
-	log.Println("…done.")
-	return nil
-}
-
-func extractCommitToDirectory(ref resolved, outputDirectory string) error {
-	files, err := ref.Commit().Files()
-	if err != nil {
-		return err
-	}
-	err = files.ForEach(func(file *object.File) error {
-		outputPath := path.Join(outputDirectory, file.Name)
-		return copyFileTo(file, outputPath)
-	})
-	if err != nil {
-		return err
-	}
-	return tryCopyingSubmodules(ref, outputDirectory)
-}
-
-func loadSubmoduleFromCurrentWorktree(
-	submodule *config.Submodule,
-	commitRef plumbing.Hash,
-	worktree *git.Worktree) (resolved, error) {
-
-	sub, err := worktree.Submodule(submodule.Name)
-	if err != nil {
-		return nil, err
-	}
-	repo, err := sub.Repository()
-	if err != nil {
-		return nil, err
-	}
-	return resolveHash(repo, commitRef)
-}
-
-var submoduleCloner = func(s storage.Storer, worktree billy.Filesystem, o *git.CloneOptions) (*git.Repository, error) {
-	return git.Clone(s, worktree, o)
-}
-
-func loadSubmoduleFromRemote(
-	submodule *config.Submodule,
-	commitRef plumbing.Hash) (resolved, error) {
-
-	fs := memfs.New()
-	storer := memory.NewStorage()
-
-	// NOTE: it would be _super_ nice to do the following here:
-	// - Attempt to fetch just the given commit (some servers support this, some don't; see https://stackoverflow.com/a/3489576/996592)
-	// - Attempt to fetch just the given _branch_ being tracked, look for the commit in the history there
-	// - Fetch the whole repo, checkout the commit.
-	// - Cache the whole thing so it's faster next time.
-	// Designing the cache to work with this feels like it's going to be complicated; so I'm skipping it for v1.
-	// ESPECIALLY because we're expecting the "load from worktree" strategy to work pretty regularly.
-	repo, err := submoduleCloner(storer, fs, &git.CloneOptions{
-		URL: submodule.URL,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return resolveHash(repo, commitRef)
-}
-
-// Here's the strategy
-// (1) try and load the repo from the _current_ worktree and see if the commit SHA from this one is floating around there. If it is, use that. This will hopefully be 90% of cases.
-// (2) try and clone the repo into memory or a cache. It'd be really good to optimise this (see the docs in loadSubmoduleForRemote, but again, this will be less frequent so it can wait for 1.1)
-func resolveSubmodule(submodule *config.Submodule, commitRef plumbing.Hash, worktree *git.Worktree) (resolved, error) {
-	if r, err := loadSubmoduleFromCurrentWorktree(submodule, commitRef, worktree); err == nil {
-		fmt.Println("Found commit for submodule in worktree.")
-		return r, nil
-	}
-
-	fmt.Println("Couldn't find submodule commit in worktree, falling back to clone strategy")
-	r, err := loadSubmoduleFromRemote(submodule, commitRef)
-	return r, err
 }
 
 func runHugo(repoDir string, outputDir string) {
