@@ -1,3 +1,7 @@
 # build artefacts
 /grouse
 /dist
+# Skip subfolders under test-fixtures; they're just for hacking around.
+# I wouldn't have bothered including this but goreleaser is complaining about
+# the working tree being dirty.
+/test-fixtures/*/
