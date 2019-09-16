@@ -6,6 +6,7 @@ require (
 	github.com/frankban/quicktest v1.4.2
 	github.com/google/uuid v1.1.1
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51
+	github.com/pkg/errors v0.8.1
 	github.com/spf13/afero v1.1.2
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/pflag v1.0.3

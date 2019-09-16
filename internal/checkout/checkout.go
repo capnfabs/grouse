@@ -110,16 +110,13 @@ var defaultContext = extractCommitContext{
 func extractCommitToDirectoryWithContext(context *extractCommitContext, ref ResolvedCommit, outputDirectory string) error {
 	files, err := ref.Commit().Files()
 	if err != nil {
-		fmt.Println("yikes:", err)
 		return err
 	}
 	err = files.ForEach(func(file *object.File) error {
-		fmt.Println(file.Name)
 		outputPath := path.Join(outputDirectory, file.Name)
 		return copyFileTo(context.fs, file, outputPath)
 	})
 	if err != nil {
-		fmt.Println("yikes2:", err)
 		return err
 	}
 	return tryCopyingSubmodules(context, ref, outputDirectory)
@@ -136,12 +133,10 @@ func loadSubmoduleFromCurrentWorktree(
 
 	sub, err := worktree.Submodule(submodule.Name)
 	if err != nil {
-		fmt.Println("yikes3:", err)
 		return nil, err
 	}
 	repo, err := sub.Repository()
 	if err != nil {
-		fmt.Println("yikes4:", err)
 		return nil, err
 	}
 	return resolveHash(repo, commitRef)
