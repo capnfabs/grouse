@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"strings"
 	"time"
 
 	"github.com/capnfabs/grouse/internal/checkout"
@@ -41,15 +42,13 @@ your generated site between different commits.
 
 Grouse approximates that process.`,
 	DisableFlagsInUseLine: true,
-	Args: func(cmd *cobra.Command, args []string) error {
-		if len(args) == 0 || len(args) > 2 {
-			return fmt.Errorf("Requires one or two git references to diff, got %v", len(args))
-		}
-		return nil
-	},
 	Run: func(cmd *cobra.Command, args []string) {
 		context, err := createContext(cmd.Flags())
-		check(err)
+		if err != nil {
+			fmt.Println("Error:", err)
+			cmd.Usage()
+			os.Exit(1)
+		}
 		runMain(context)
 	},
 }
@@ -83,14 +82,19 @@ func createContext(flags *pflag.FlagSet) (*mainCmdContext, error) {
 	}
 
 	repoDir, err := os.Getwd()
-	// os.Getwd() is pretty resilient; I imagine this is only something that
-	// happens if e.g. you're working in a deleted directory?
+	// os.Getwd() is pretty resilient but also pretty complicated; I imagine
+	// this is only something that happens if e.g. you're working in a deleted
+	// directory?
 	check(err)
 
-	// This was previously validated elsewhere
 	commits := flags.Args()
-	if len(commits) == 1 {
+	switch len(commits) {
+	case 1:
 		commits = append(commits, "HEAD")
+	case 2:
+		// no-op
+	default:
+		return nil, fmt.Errorf("Requires one or two git references to diff, got %v", len(commits))
 	}
 
 	return &mainCmdContext{
@@ -155,6 +159,7 @@ func runMain(context *mainCmdContext) {
 	}
 
 	log.Printf("Computing diff between revisions %s and %s\n", ref1, ref2)
+	refs := []checkout.ResolvedCommit{ref1, ref2}
 
 	scratchDir, err := ioutil.TempDir("", "hugo_diff")
 	// If this fails, we're unable to do anything with temp storage, so just
@@ -164,33 +169,48 @@ func runMain(context *mainCmdContext) {
 	// Init the Output Repo
 	outputDir := path.Join(scratchDir, "output")
 	outputRepo, err := git.PlainInit(outputDir, false)
-	// Probably a storage-related error, panicking is probably ok.
+	// Not the user's fault and nothing we can do; panicking is ok.
 	check(err)
 
 	outputWorktree, err := outputRepo.Worktree()
 	// Shouldn't be possible; because this isn't a bare repo
 	check(err)
 
-	// Run Hugo for the first commit
-	commit1Dir := path.Join(scratchDir, "source_ref1")
-	hash1, err := process(outputWorktree, ref1, commit1Dir, outputDir, context.buildArgs)
-	if err != nil {
-		log.Fatalf("%s\n", err)
-	}
+	outputHashes := []plumbing.Hash{}
 
-	// Now erase the directory
-	err = eraseDirectoryExceptRootDotGit(outputDir)
-	check(err)
+	for _, ref := range refs {
+		// Make sure the output directory is empty
+		err = eraseDirectoryExceptRootDotGit(outputDir)
+		check(err)
 
-	// Run Hugo for the second commit
-	commit2Dir := path.Join(scratchDir, "source_ref2")
-	hash2, err := process(outputWorktree, ref2, commit2Dir, outputDir, context.buildArgs)
-	if err != nil {
-		log.Fatalf("%s\n", err)
+		srcDir := path.Join(scratchDir, "source", ref.Hash().String())
+		hash, err := process(
+			outputWorktree, ref, srcDir, outputDir, context.buildArgs)
+
+		switch err.(type) {
+		case *exec.ExitError:
+			err := errors.Wrapf(err, "Building at commit %s failed", ref)
+			log.Fatalf("%s\n", err)
+		case error:
+			panic(err)
+		}
+		outputHashes = append(outputHashes, hash)
 	}
 
 	// Do the actual diff
-	runDiff(outputDir, context.diffCommand, context.diffArgs, hash1, hash2)
+	err = runDiff(outputDir, context.diffCommand, context.diffArgs, outputHashes[0], outputHashes[1])
+	switch e := err.(type) {
+	case *exec.ExitError:
+		if strings.Contains(e.Error(), "signal: broken pipe") {
+			// It's not an error; but the user exited 'less' or whatever
+		} else {
+			err := errors.Wrapf(
+				err, "Running git %s failed", context.diffCommand)
+			log.Fatalf("%s\n", err)
+		}
+	case error:
+		panic(err)
+	}
 }
 
 func eraseDirectoryExceptRootDotGit(directory string) error {
@@ -234,15 +254,15 @@ func process(dstWorktree *git.Worktree, ref checkout.ResolvedCommit, hugoWorking
 func runHugo(repoDir string, outputDir string, userArgs []string) error {
 	// Put the 'destination' last. Repeated 'destination' flags only uses the
 	// last one.
-	allArgs := append(userArgs, "--destination", outputDir)
+	// Note that we do it with the "--destination=/foo/" instead of "--destination foo"
+	// because the former results in
+	allArgs := append(userArgs, "--destination="+shellquote.Join(outputDir))
 	cmd := exec.Command("hugo", allArgs...)
 	log.Printf("Running command %s\n", shellquote.Join(cmd.Args...))
 	cmd.Dir = repoDir
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
-	// TODO: add commit info to this message. Probably belongs in the calling
-	// method though.
-	return errors.WithMessage(cmd.Run(), "Hugo build failed")
+	return cmd.Run()
 }
 
 func runDiff(repoDir, diffCommand string, userArgs []string, hash1, hash2 plumbing.Hash) error {
@@ -258,5 +278,5 @@ func runDiff(repoDir, diffCommand string, userArgs []string, hash1, hash2 plumbi
 	log.Printf("Running command %s\n", shellquote.Join(cmd.Args...))
 	// This gets surfaced to the user because they're allowed to pass in diff
 	// args, so it's probably (?) something they can fix?
-	return errors.WithMessagef(cmd.Run(), "git %s failed", diffCommand)
+	return cmd.Run()
 }

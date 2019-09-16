@@ -28,9 +28,10 @@ go test ./...
 ```
 
 ## Next steps before shipping / productionizing
-- Tests? For a start, let's just do integration tests by unzipping zip files and then ensuring that the output makes sense.
-  - Can't do this because it depends upon running Hugo, and I don't want to run Hugo. I _can_ check that everything in the leadup makes sense, and that everything _afterwards_ makes sense, though.
-- Check through all command output, switch printlns to logs
+- Tests
+  - Test that hugo command is run correctly (probably a unit test for 'process'?)
+  - Test that diff command is run correctly
+- Figure out command output / user error handling.
 
 ## Other things that would be nice for the future (roughly ordered)
 - Support optional `--command` argument (so you can use it with different static site generators, not just hugo)
