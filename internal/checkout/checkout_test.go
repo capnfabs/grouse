@@ -142,7 +142,7 @@ func TestWithZipFiles(t *testing.T) {
 		t.Run(fmt.Sprintf("%s@%s", tc.fileTreeZip, tc.hash), func(t *testing.T) {
 			c := qt.New(t)
 			// Setup: extract temporary directory
-			tempDir, err := ioutil.TempDir("", "hugo_diff_test")
+			tempDir, err := ioutil.TempDir("", "grouse_test")
 			c.Assert(err, qt.IsNil)
 			wd, _ := os.Getwd()
 			// This is _way_ easier to write than doing it manually within Go,
@@ -198,7 +198,7 @@ func TestCommitDereferencing(t *testing.T) {
 	}
 
 	// Setup: extract temporary directory
-	tempDir, err := ioutil.TempDir("", "hugo_diff_test")
+	tempDir, err := ioutil.TempDir("", "grouse_test")
 	c.Assert(err, qt.IsNil)
 	wd, _ := os.Getwd()
 	// This is _way_ easier to write than doing it manually within Go,
