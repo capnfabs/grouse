@@ -30,52 +30,21 @@ func check(err error) {
 // TODO: get rid of this, put it into a dependency context or something.
 var AppFs = afero.NewOsFs()
 
-func version() string {
-	if version, ok := os.LookupEnv("GROUSE_VERSION"); ok {
-		return version
-	}
-	return "dev+" + time.Now().Format("2006-02-01T15:04:05")
-}
+func RunRootCommand(cmd *cobra.Command) {
+	debug, err := cmd.Flags().GetBool("debug")
+	check(err)
+	out.Debug = debug
 
-var rootCmd = &cobra.Command{
-	Use:     "grouse [flags] <commit> [<other-commit>]",
-	Version: version(),
-	Short:   "Diffs the output of a given Hugo git repo at different commits.",
-	Long: `Diffs the output of a given Hugo git repo at different commits.
-
-Imagine that on every commit of your Hugo site, you'd generated the site and
-stored that in version control. Then, you could see exactly what's changed in
-your generated site between different commits.
-
-Grouse approximates that process.`,
-	DisableFlagsInUseLine: true,
-	Run: func(cmd *cobra.Command, args []string) {
-		debug, err := cmd.Flags().GetBool("debug")
-		check(err)
-		out.Debug = debug
-
-		context, err := parseArgs(cmd.Flags())
-		if err != nil {
-			out.Outln("Error:", err)
-			cmd.Usage()
-			os.Exit(1)
-		}
-		err = runMain(context)
-		if err != nil {
-			out.Outln("Error:", err)
-			os.Exit(2)
-		}
-	},
-}
-
-func Main() {
-	rootCmd.Flags().String("diffargs", "", "Arguments to pass on to 'git diff'")
-	rootCmd.Flags().String("buildargs", "", "Arguments to pass on to the hugo build command")
-	rootCmd.Flags().BoolP("tool", "t", false, "Invoke 'git difftool' instead of 'git diff'")
-	rootCmd.Flags().Bool("debug", false, "Enables additional logging")
-	if err := rootCmd.Execute(); err != nil {
-		out.Outln(err)
+	context, err := parseArgs(cmd.Flags())
+	if err != nil {
+		out.Outln("Error:", err)
+		cmd.Usage()
 		os.Exit(1)
+	}
+	err = runMain(context)
+	if err != nil {
+		out.Outln("Error:", err)
+		os.Exit(2)
 	}
 }
 
