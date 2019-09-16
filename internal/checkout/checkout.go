@@ -1,12 +1,13 @@
 package checkout
 
 import (
-	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
 	"path"
 
+	"github.com/capnfabs/grouse/internal/out"
+	"github.com/pkg/errors"
 	"github.com/spf13/afero"
 	"gopkg.in/src-d/go-billy.v4"
 	"gopkg.in/src-d/go-billy.v4/memfs"
@@ -66,7 +67,7 @@ func tryCopyingSubmodules(context *extractCommitContext, ref ResolvedCommit, tar
 	// Submodules in use at this commit.
 	// TODO: handle nested submodules. I've got a hunch that our own submodule
 	// handling will play badly with go-git's.
-	fmt.Println("Found submodules file!")
+	out.Debugln("Found submodules file, figuring out where to source the submodule contents from")
 
 	m, err := parseModulesFile(file)
 	if err != nil {
@@ -83,15 +84,12 @@ func tryCopyingSubmodules(context *extractCommitContext, ref ResolvedCommit, tar
 		}
 		submoduleRef, err := resolveSubmodule(context, v, entry.Hash, ref.Worktree())
 		if err != nil {
-			fmt.Println("Couldn't load submodule: ", err)
-			return err
+			return errors.Wrap(err, "Couldn't load submodule")
 		}
-		fmt.Println("submoduleRef", submoduleRef)
 		subModuleOutputPath := path.Join(targetDir, v.Path)
 		err = extractCommitToDirectoryWithContext(context, submoduleRef, subModuleOutputPath)
 		if err != nil {
-			fmt.Println("Couldn't load submodule to filesystem:", err)
-			return err
+			return errors.Wrap(err, "Couldn't write submodule contents to filesystem")
 		}
 	}
 	return nil
@@ -146,6 +144,9 @@ func loadSubmoduleFromRemote(
 	context *extractCommitContext,
 	submodule *config.Submodule,
 	commitRef plumbing.Hash) (ResolvedCommit, error) {
+	// It's kinda weird that this writes to the terminal but it's worth the user knowing that we're
+	// attempting to hit a remote repo
+	out.Outln("Couldn't find submodule commit in worktree, cloning from remote…")
 
 	fs := memfs.New()
 	storer := memory.NewStorage()
@@ -161,9 +162,9 @@ func loadSubmoduleFromRemote(
 		URL: submodule.URL,
 	})
 	if err != nil {
-		fmt.Println("yikes5:", err)
 		return nil, err
 	}
+	out.Outln("…done cloning from remote.")
 	return resolveHash(repo, commitRef)
 }
 
@@ -172,11 +173,10 @@ func loadSubmoduleFromRemote(
 // (2) try and clone the repo into memory or a cache. It'd be really good to optimise this (see the docs in loadSubmoduleForRemote, but again, this will be less frequent so it can wait for 1.1)
 func resolveSubmodule(context *extractCommitContext, submodule *config.Submodule, commitRef plumbing.Hash, worktree *git.Worktree) (ResolvedCommit, error) {
 	if r, err := loadSubmoduleFromCurrentWorktree(submodule, commitRef, worktree); err == nil {
-		fmt.Println("Found commit for submodule in worktree.")
+		out.Debugln("Found commit for submodule in worktree.")
 		return r, nil
 	}
 
-	fmt.Println("Couldn't find submodule commit in worktree, falling back to clone strategy")
 	r, err := loadSubmoduleFromRemote(context, submodule, commitRef)
 	return r, err
 }

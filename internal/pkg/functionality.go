@@ -3,7 +3,6 @@ package pkg
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"os/exec"
 	"path"
@@ -11,6 +10,7 @@ import (
 	"time"
 
 	"github.com/capnfabs/grouse/internal/checkout"
+	"github.com/capnfabs/grouse/internal/out"
 	"github.com/kballard/go-shellquote"
 	"github.com/pkg/errors"
 	"github.com/spf13/afero"
@@ -42,22 +42,31 @@ your generated site between different commits.
 Grouse approximates that process.`,
 	DisableFlagsInUseLine: true,
 	Run: func(cmd *cobra.Command, args []string) {
+		debug, err := cmd.Flags().GetBool("debug")
+		check(err)
+		out.Debug = debug
+
 		context, err := parseArgs(cmd.Flags())
 		if err != nil {
-			fmt.Println("Error:", err)
+			out.Outln("Error:", err)
 			cmd.Usage()
 			os.Exit(1)
 		}
-		runMain(context)
+		err = runMain(context)
+		if err != nil {
+			out.Outln("Error:", err)
+			os.Exit(2)
+		}
 	},
 }
 
 func Main() {
 	rootCmd.Flags().String("diffargs", "", "Arguments to pass on to 'git diff'")
 	rootCmd.Flags().String("buildargs", "", "Arguments to pass on to the hugo build command")
-	rootCmd.Flags().BoolP("tool", "t", false, "Invoke 'git difftool' instead of 'git diff'.")
+	rootCmd.Flags().BoolP("tool", "t", false, "Invoke 'git difftool' instead of 'git diff'")
+	rootCmd.Flags().Bool("debug", false, "Enables additional logging")
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		out.Outln(err)
 		os.Exit(1)
 	}
 }
@@ -76,28 +85,24 @@ func commitAll(worktree *git.Worktree, msg string) (plumbing.Hash, error) {
 	})
 }
 
-func runMain(context *cmdArgs) {
+func runMain(context *cmdArgs) error {
 	repo, err := git.PlainOpen(context.repoDir)
 	if err != nil {
 		// Should we return these errors instead of doing this?
-		log.Fatalf("Couldn't load the git repo in %s; is this directory a git repo?\nUnderlying error: %s", context.repoDir, err)
+		return errors.WithMessagef(err, "Couldn't load the git repo in %s", context.repoDir)
 	}
 
-	suppliedRef1 := context.commits[0]
-	suppliedRef2 := context.commits[1]
+	refs := []checkout.ResolvedCommit{}
 
-	ref1, err := checkout.ResolveUserRef(repo, suppliedRef1)
-	if err != nil {
-		log.Fatalf("Couldn't resolve '%s': unknown revision\n", suppliedRef1)
+	for _, commit := range context.commits {
+		ref, err := checkout.ResolveUserRef(repo, commit)
+		if err != nil {
+			return errors.WithMessagef(err, "Couldn't resolve '%s'", ref)
+		}
+		refs = append(refs, ref)
 	}
 
-	ref2, err := checkout.ResolveUserRef(repo, suppliedRef2)
-	if err != nil {
-		log.Fatalf("Couldn't resolve '%s': unknown revision\n", suppliedRef2)
-	}
-
-	log.Printf("Computing diff between revisions %s and %s\n", ref1, ref2)
-	refs := []checkout.ResolvedCommit{ref1, ref2}
+	out.Outf("Computing diff between revisions %s and %s\n", refs[0], refs[1])
 
 	scratchDir, err := ioutil.TempDir("", "hugo_diff")
 	// If this fails, we're unable to do anything with temp storage, so just
@@ -122,13 +127,14 @@ func runMain(context *cmdArgs) {
 		check(err)
 
 		srcDir := path.Join(scratchDir, "source", ref.Hash().String())
+		out.Outf("Building revision %s…\n", ref)
 		hash, err := process(
 			outputWorktree, ref, srcDir, outputDir, context.buildArgs)
 
 		switch err.(type) {
 		case *exec.ExitError:
 			err := errors.Wrapf(err, "Building at commit %s failed", ref)
-			log.Fatalf("%s\n", err)
+			return err
 		case error:
 			panic(err)
 		}
@@ -136,6 +142,7 @@ func runMain(context *cmdArgs) {
 	}
 
 	// Do the actual diff
+	out.Outln("Diffing…")
 	err = runDiff(outputDir, context.diffCommand, context.diffArgs, outputHashes[0], outputHashes[1])
 	switch e := err.(type) {
 	case *exec.ExitError:
@@ -144,11 +151,12 @@ func runMain(context *cmdArgs) {
 		} else {
 			err := errors.Wrapf(
 				err, "Running git %s failed", context.diffCommand)
-			log.Fatalf("%s\n", err)
+			return err
 		}
 	case error:
 		panic(err)
 	}
+	return nil
 }
 
 func eraseDirectoryExceptRootDotGit(directory string) error {
@@ -170,12 +178,12 @@ func eraseDirectoryExceptRootDotGit(directory string) error {
 }
 
 func process(dstWorktree *git.Worktree, ref checkout.ResolvedCommit, hugoWorkingDir string, outputDir string, buildArgs []string) (plumbing.Hash, error) {
-	log.Printf("Checking out %s to %s…\n", ref, hugoWorkingDir)
+	out.Debugf("Checking out %s to %s…\n", ref, hugoWorkingDir)
 	err := checkout.ExtractCommitToDirectory(ref, hugoWorkingDir)
 	if err != nil {
 		return plumbing.ZeroHash, err
 	}
-	log.Println("…done.")
+	out.Debugln("…done checking out.")
 
 	if err = runHugo(hugoWorkingDir, outputDir, buildArgs); err != nil {
 		return plumbing.ZeroHash, err
@@ -196,8 +204,11 @@ func runHugo(repoDir string, outputDir string, userArgs []string) error {
 	// because the former results in
 	allArgs := append(userArgs, "--destination="+shellquote.Join(outputDir))
 	cmd := exec.Command("hugo", allArgs...)
-	log.Printf("Running command %s\n", shellquote.Join(cmd.Args...))
+	out.Debugf("Running command %s\n", shellquote.Join(cmd.Args...))
 	cmd.Dir = repoDir
+
+	// TODO: if --debug is NOT specified, should hang on to these and then only
+	// print them if an error occurs.
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
 	return cmd.Run()
@@ -213,7 +224,7 @@ func runDiff(repoDir, diffCommand string, userArgs []string, hash1, hash2 plumbi
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
 	cmd.Dir = repoDir
-	log.Printf("Running command %s\n", shellquote.Join(cmd.Args...))
+	out.Debugf("Running command %s\n", shellquote.Join(cmd.Args...))
 	// This gets surfaced to the user because they're allowed to pass in diff
 	// args, so it's probably (?) something they can fix?
 	return cmd.Run()
