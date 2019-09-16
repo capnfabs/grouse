@@ -54,7 +54,7 @@ Grouse approximates that process.`,
 	},
 }
 
-func createContext(flags *pflag.FlagSet) (mainCmdContext, error) {
+func createContext(flags *pflag.FlagSet) (*mainCmdContext, error) {
 	var diffCommand string
 
 	// Error handling in this section: parsing handles validation for all the
@@ -68,10 +68,19 @@ func createContext(flags *pflag.FlagSet) (mainCmdContext, error) {
 		diffCommand = "diff"
 	}
 
-	diffArgs, err := flags.GetString("diff-args")
+	diffArgsStr, err := flags.GetString("diffargs")
 	check(err)
-	buildArgs, err := flags.GetString("build-args")
+
+	diffArgs, err := shellquote.Split(diffArgsStr)
+	if err != nil {
+		return nil, errors.WithMessage(err, "Couldn't parse the value provided to --diffargs")
+	}
+	buildArgsStr, err := flags.GetString("buildargs")
 	check(err)
+	buildArgs, err := shellquote.Split(buildArgsStr)
+	if err != nil {
+		return nil, errors.WithMessage(err, "Couldn't parse the value provided to --buildargs")
+	}
 
 	repoDir, err := os.Getwd()
 	// os.Getwd() is pretty resilient; I imagine this is only something that
@@ -84,7 +93,7 @@ func createContext(flags *pflag.FlagSet) (mainCmdContext, error) {
 		commits = append(commits, "HEAD")
 	}
 
-	return mainCmdContext{
+	return &mainCmdContext{
 		repoDir:     repoDir,
 		diffCommand: diffCommand,
 		commits:     commits,
@@ -97,13 +106,13 @@ type mainCmdContext struct {
 	repoDir     string
 	diffCommand string
 	commits     []string
-	diffArgs    string
-	buildArgs   string
+	diffArgs    []string
+	buildArgs   []string
 }
 
 func Main() {
-	rootCmd.Flags().String("diff-args", "", "Arguments to pass on to 'git diff'")
-	rootCmd.Flags().String("build-args", "", "Arguments to pass on to the hugo build command")
+	rootCmd.Flags().String("diffargs", "", "Arguments to pass on to 'git diff'")
+	rootCmd.Flags().String("buildargs", "", "Arguments to pass on to the hugo build command")
 	rootCmd.Flags().BoolP("tool", "t", false, "Invoke 'git difftool' instead of 'git diff'.")
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
@@ -125,7 +134,7 @@ func commitAll(worktree *git.Worktree, msg string) (plumbing.Hash, error) {
 	})
 }
 
-func runMain(context mainCmdContext) {
+func runMain(context *mainCmdContext) {
 	repo, err := git.PlainOpen(context.repoDir)
 	if err != nil {
 		// Should we return these errors instead of doing this?
@@ -202,7 +211,7 @@ func eraseDirectoryExceptRootDotGit(directory string) error {
 	return nil
 }
 
-func process(dstWorktree *git.Worktree, ref checkout.ResolvedCommit, hugoWorkingDir string, outputDir string, buildArgs string) (plumbing.Hash, error) {
+func process(dstWorktree *git.Worktree, ref checkout.ResolvedCommit, hugoWorkingDir string, outputDir string, buildArgs []string) (plumbing.Hash, error) {
 	log.Printf("Checking out %s to %s…\n", ref, hugoWorkingDir)
 	err := checkout.ExtractCommitToDirectory(ref, hugoWorkingDir)
 	if err != nil {
@@ -222,16 +231,10 @@ func process(dstWorktree *git.Worktree, ref checkout.ResolvedCommit, hugoWorking
 	return hash, nil
 }
 
-func runHugo(repoDir string, outputDir string, userArgs string) error {
-	// TODO: we should probably evaluate this ahead of time (like, before the flag is assigned).
-	// Do this after moving everything into a 'Context'.
-	args, err := shellquote.Split(userArgs)
-	if err != nil {
-		return errors.WithMessage(err, "Couldn't parse the value provided to --buildargs")
-	}
+func runHugo(repoDir string, outputDir string, userArgs []string) error {
 	// Put the 'destination' last. Repeated 'destination' flags only uses the
 	// last one.
-	allArgs := append(args, "--destination", outputDir)
+	allArgs := append(userArgs, "--destination", outputDir)
 	cmd := exec.Command("hugo", allArgs...)
 	log.Printf("Running command %s\n", shellquote.Join(cmd.Args...))
 	cmd.Dir = repoDir
@@ -242,15 +245,9 @@ func runHugo(repoDir string, outputDir string, userArgs string) error {
 	return errors.WithMessage(cmd.Run(), "Hugo build failed")
 }
 
-func runDiff(repoDir, diffCommand string, userArgs string, hash1, hash2 plumbing.Hash) error {
-	// TODO: we should probably evaluate this ahead of time (like, before the flag is assigned).
-	// Do this after moving everything into a 'Context'.
-	args, err := shellquote.Split(userArgs)
-	if err != nil {
-		return errors.WithMessage(err, "Couldn't parse the value provided to --diffargs")
-	}
+func runDiff(repoDir, diffCommand string, userArgs []string, hash1, hash2 plumbing.Hash) error {
 	allArgs := []string{diffCommand}
-	allArgs = append(allArgs, args...)
+	allArgs = append(allArgs, userArgs...)
 	allArgs = append(allArgs, hash1.String(), hash2.String())
 
 	cmd := exec.Command("git", allArgs...)
