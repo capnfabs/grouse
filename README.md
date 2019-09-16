@@ -17,19 +17,20 @@ Grouse approximates that process by checking out previous commits, running Hugo,
 ```sh
 cd your-hugo-site
 git log  # Should be a git repo.
-grouse commitRefA commitRefB # Show the difference between the generated output on these two commit references.
+# Show the difference between the generated output on these two commit references.
+grouse commitRefA commitRefB
 ```
 
-### Commit References
+### Specifying commits
 
-Anything you can `git checkout` works as a commit reference for Grouse:
+Anything you can `git diff` against works as a commit reference for Grouse:
 - hashes (e.g. `8c90155d4`)
 - branch names (e.g. `feature/photo-albums`)
 - parent commits (e.g. `HEAD^` - the previous commit)
 - tags (`v0.1`)
 - probably other things too!
 
-### Flags
+### Command-line flags
 
 - `grouse --tool` runs `git difftool` instead of `git diff`
 - Pass additional args to the Hugo builds with `--buildargs`
