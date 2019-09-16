@@ -33,6 +33,5 @@ brews:
     url_template: "https://github.com/capnfabs/grouse/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
     homepage: "https://github.com/capnfabs/grouse"
     description: "A diff tool for Hugo websites."
-    skip_upload: true
     install: |
       bin.install "grouse"
