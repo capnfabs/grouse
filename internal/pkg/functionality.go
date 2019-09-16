@@ -15,7 +15,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
-	"github.com/spf13/pflag"
 
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
@@ -53,7 +52,13 @@ Grouse approximates that process.`,
 	},
 }
 
-func createContext(flags *pflag.FlagSet) (*mainCmdContext, error) {
+type flagSet interface {
+	GetBool(string) (bool, error)
+	GetString(string) (string, error)
+	Args() []string
+}
+
+func createContext(flags flagSet) (*mainCmdContext, error) {
 	var diffCommand string
 
 	// Error handling in this section: parsing handles validation for all the
