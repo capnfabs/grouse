@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -e
 
-go build -o grouse ./cmd/grouse
+go build -o grouse

@@ -30,9 +30,17 @@ func check(err error) {
 // TODO: get rid of this, put it into a dependency context or something.
 var AppFs = afero.NewOsFs()
 
+func version() string {
+	if version, ok := os.LookupEnv("GROUSE_VERSION"); ok {
+		return version
+	}
+	return "dev+" + time.Now().Format("2006-02-01T15:04:05")
+}
+
 var rootCmd = &cobra.Command{
-	Use:   "grouse [flags] <commit> [<other-commit>]",
-	Short: "Diffs the output of a given Hugo git repo at different commits.",
+	Use:     "grouse [flags] <commit> [<other-commit>]",
+	Version: version(),
+	Short:   "Diffs the output of a given Hugo git repo at different commits.",
 	Long: `Diffs the output of a given Hugo git repo at different commits.
 
 Imagine that on every commit of your Hugo site, you'd generated the site and
