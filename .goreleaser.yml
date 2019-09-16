@@ -28,7 +28,7 @@ brews:
   -
     github:
       owner: capnfabs
-      name: tap
+      name: homebrew-tap
     # Template for the url which is determined by the given Token (github or gitlab)
     url_template: "https://github.com/capnfabs/grouse/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
     homepage: "https://github.com/capnfabs/grouse"
