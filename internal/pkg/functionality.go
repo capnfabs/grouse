@@ -14,6 +14,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
@@ -26,10 +27,7 @@ func check(err error) {
 	}
 }
 
-var DiffArgs string
-var BuildArgs string
-var UseGitDiffTool bool
-
+// TODO: get rid of this, put it into the context or something.
 var AppFs = afero.NewOsFs()
 
 var rootCmd = &cobra.Command{
@@ -47,30 +45,66 @@ Grouse approximates that process.`,
 		if len(args) == 0 || len(args) > 2 {
 			return fmt.Errorf("Requires one or two git references to diff, got %v", len(args))
 		}
-
-		// TODO: resolve git SHA1s here?
-
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) == 1 {
-			args = append(args, "HEAD")
-		}
-
-		var gitCommand string
-		if UseGitDiffTool {
-			gitCommand = "difftool"
-		} else {
-			gitCommand = "diff"
-		}
-		runMain(gitCommand, args)
+		context, err := createContext(cmd.Flags())
+		check(err)
+		runMain(context)
 	},
 }
 
+func createContext(flags *pflag.FlagSet) (mainCmdContext, error) {
+	var diffCommand string
+
+	// Error handling in this section: parsing handles validation for all the
+	// user-supplied stuff; any error here is a programming error.
+	useDiffTool, err := flags.GetBool("tool")
+	check(err)
+
+	if useDiffTool {
+		diffCommand = "difftool"
+	} else {
+		diffCommand = "diff"
+	}
+
+	diffArgs, err := flags.GetString("diff-args")
+	check(err)
+	buildArgs, err := flags.GetString("build-args")
+	check(err)
+
+	repoDir, err := os.Getwd()
+	// os.Getwd() is pretty resilient; I imagine this is only something that
+	// happens if e.g. you're working in a deleted directory?
+	check(err)
+
+	// This was previously validated elsewhere
+	commits := flags.Args()
+	if len(commits) == 1 {
+		commits = append(commits, "HEAD")
+	}
+
+	return mainCmdContext{
+		repoDir:     repoDir,
+		diffCommand: diffCommand,
+		commits:     commits,
+		diffArgs:    diffArgs,
+		buildArgs:   buildArgs,
+	}, nil
+}
+
+type mainCmdContext struct {
+	repoDir     string
+	diffCommand string
+	commits     []string
+	diffArgs    string
+	buildArgs   string
+}
+
 func Main() {
-	rootCmd.Flags().StringVar(&DiffArgs, "diff-args", "", "Arguments to pass on to 'git diff'")
-	rootCmd.Flags().StringVar(&BuildArgs, "build-args", "", "Arguments to pass on to the hugo build command")
-	rootCmd.Flags().BoolVarP(&UseGitDiffTool, "tool", "t", false, "Invoke 'git difftool' instead of 'git diff'.")
+	rootCmd.Flags().String("diff-args", "", "Arguments to pass on to 'git diff'")
+	rootCmd.Flags().String("build-args", "", "Arguments to pass on to the hugo build command")
+	rootCmd.Flags().BoolP("tool", "t", false, "Invoke 'git difftool' instead of 'git diff'.")
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -91,24 +125,21 @@ func commitAll(worktree *git.Worktree, msg string) (plumbing.Hash, error) {
 	})
 }
 
-func runMain(diffCommand string, commits []string) {
-	repoDir, err := os.Getwd()
-	// If this fails, we're in trouble; hard to provide informative info to the
-	// user here.
-	check(err)
-	repo, err := git.PlainOpen(repoDir)
+func runMain(context mainCmdContext) {
+	repo, err := git.PlainOpen(context.repoDir)
 	if err != nil {
 		// Should we return these errors instead of doing this?
-		log.Fatalf("Couldn't load the git repo in %s; is this directory a git repo?\nUnderlying error: %s", repoDir, err)
+		log.Fatalf("Couldn't load the git repo in %s; is this directory a git repo?\nUnderlying error: %s", context.repoDir, err)
 	}
 
-	suppliedRef1 := commits[0]
-	suppliedRef2 := commits[1]
+	suppliedRef1 := context.commits[0]
+	suppliedRef2 := context.commits[1]
 
 	ref1, err := checkout.ResolveUserRef(repo, suppliedRef1)
 	if err != nil {
 		log.Fatalf("Couldn't resolve '%s': unknown revision\n", suppliedRef1)
 	}
+
 	ref2, err := checkout.ResolveUserRef(repo, suppliedRef2)
 	if err != nil {
 		log.Fatalf("Couldn't resolve '%s': unknown revision\n", suppliedRef2)
@@ -133,7 +164,7 @@ func runMain(diffCommand string, commits []string) {
 
 	// Run Hugo for the first commit
 	commit1Dir := path.Join(scratchDir, "source_ref1")
-	hash1, err := process(outputWorktree, ref1, commit1Dir, outputDir)
+	hash1, err := process(outputWorktree, ref1, commit1Dir, outputDir, context.buildArgs)
 	if err != nil {
 		log.Fatalf("%s\n", err)
 	}
@@ -144,13 +175,13 @@ func runMain(diffCommand string, commits []string) {
 
 	// Run Hugo for the second commit
 	commit2Dir := path.Join(scratchDir, "source_ref2")
-	hash2, err := process(outputWorktree, ref2, commit2Dir, outputDir)
+	hash2, err := process(outputWorktree, ref2, commit2Dir, outputDir, context.buildArgs)
 	if err != nil {
 		log.Fatalf("%s\n", err)
 	}
 
 	// Do the actual diff
-	runDiff(outputDir, diffCommand, hash1, hash2)
+	runDiff(outputDir, context.diffCommand, context.diffArgs, hash1, hash2)
 }
 
 func eraseDirectoryExceptRootDotGit(directory string) error {
@@ -171,7 +202,7 @@ func eraseDirectoryExceptRootDotGit(directory string) error {
 	return nil
 }
 
-func process(dstWorktree *git.Worktree, ref checkout.ResolvedCommit, hugoWorkingDir string, outputDir string) (plumbing.Hash, error) {
+func process(dstWorktree *git.Worktree, ref checkout.ResolvedCommit, hugoWorkingDir string, outputDir string, buildArgs string) (plumbing.Hash, error) {
 	log.Printf("Checking out %s to %s…\n", ref, hugoWorkingDir)
 	err := checkout.ExtractCommitToDirectory(ref, hugoWorkingDir)
 	if err != nil {
@@ -179,7 +210,7 @@ func process(dstWorktree *git.Worktree, ref checkout.ResolvedCommit, hugoWorking
 	}
 	log.Println("…done.")
 
-	if err = runHugo(hugoWorkingDir, outputDir); err != nil {
+	if err = runHugo(hugoWorkingDir, outputDir, buildArgs); err != nil {
 		return plumbing.ZeroHash, err
 	}
 
@@ -191,10 +222,10 @@ func process(dstWorktree *git.Worktree, ref checkout.ResolvedCommit, hugoWorking
 	return hash, nil
 }
 
-func runHugo(repoDir string, outputDir string) error {
+func runHugo(repoDir string, outputDir string, userArgs string) error {
 	// TODO: we should probably evaluate this ahead of time (like, before the flag is assigned).
 	// Do this after moving everything into a 'Context'.
-	args, err := shellquote.Split(BuildArgs)
+	args, err := shellquote.Split(userArgs)
 	if err != nil {
 		return errors.WithMessage(err, "Couldn't parse the value provided to --buildargs")
 	}
@@ -211,10 +242,10 @@ func runHugo(repoDir string, outputDir string) error {
 	return errors.WithMessage(cmd.Run(), "Hugo build failed")
 }
 
-func runDiff(repoDir, diffCommand string, hash1, hash2 plumbing.Hash) error {
+func runDiff(repoDir, diffCommand string, userArgs string, hash1, hash2 plumbing.Hash) error {
 	// TODO: we should probably evaluate this ahead of time (like, before the flag is assigned).
 	// Do this after moving everything into a 'Context'.
-	args, err := shellquote.Split(DiffArgs)
+	args, err := shellquote.Split(userArgs)
 	if err != nil {
 		return errors.WithMessage(err, "Couldn't parse the value provided to --diffargs")
 	}
