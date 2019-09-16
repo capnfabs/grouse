@@ -27,7 +27,7 @@ func check(err error) {
 	}
 }
 
-// TODO: get rid of this, put it into the context or something.
+// TODO: get rid of this, put it into a dependency context or something.
 var AppFs = afero.NewOsFs()
 
 var rootCmd = &cobra.Command{
@@ -42,7 +42,7 @@ your generated site between different commits.
 Grouse approximates that process.`,
 	DisableFlagsInUseLine: true,
 	Run: func(cmd *cobra.Command, args []string) {
-		context, err := createContext(cmd.Flags())
+		context, err := parseArgs(cmd.Flags())
 		if err != nil {
 			fmt.Println("Error:", err)
 			cmd.Usage()
@@ -50,73 +50,6 @@ Grouse approximates that process.`,
 		}
 		runMain(context)
 	},
-}
-
-type flagSet interface {
-	GetBool(string) (bool, error)
-	GetString(string) (string, error)
-	Args() []string
-}
-
-func createContext(flags flagSet) (*mainCmdContext, error) {
-	var diffCommand string
-
-	// Error handling in this section: parsing handles validation for all the
-	// user-supplied stuff; any error here is a programming error.
-	useDiffTool, err := flags.GetBool("tool")
-	check(err)
-
-	if useDiffTool {
-		diffCommand = "difftool"
-	} else {
-		diffCommand = "diff"
-	}
-
-	diffArgsStr, err := flags.GetString("diffargs")
-	check(err)
-
-	diffArgs, err := shellquote.Split(diffArgsStr)
-	if err != nil {
-		return nil, errors.WithMessage(err, "Couldn't parse the value provided to --diffargs")
-	}
-	buildArgsStr, err := flags.GetString("buildargs")
-	check(err)
-	buildArgs, err := shellquote.Split(buildArgsStr)
-	if err != nil {
-		return nil, errors.WithMessage(err, "Couldn't parse the value provided to --buildargs")
-	}
-
-	repoDir, err := os.Getwd()
-	// os.Getwd() is pretty resilient but also pretty complicated; I imagine
-	// this is only something that happens if e.g. you're working in a deleted
-	// directory?
-	check(err)
-
-	commits := flags.Args()
-	switch len(commits) {
-	case 1:
-		commits = append(commits, "HEAD")
-	case 2:
-		// no-op
-	default:
-		return nil, fmt.Errorf("Requires one or two git references to diff, got %v", len(commits))
-	}
-
-	return &mainCmdContext{
-		repoDir:     repoDir,
-		diffCommand: diffCommand,
-		commits:     commits,
-		diffArgs:    diffArgs,
-		buildArgs:   buildArgs,
-	}, nil
-}
-
-type mainCmdContext struct {
-	repoDir     string
-	diffCommand string
-	commits     []string
-	diffArgs    []string
-	buildArgs   []string
 }
 
 func Main() {
@@ -143,7 +76,7 @@ func commitAll(worktree *git.Worktree, msg string) (plumbing.Hash, error) {
 	})
 }
 
-func runMain(context *mainCmdContext) {
+func runMain(context *cmdArgs) {
 	repo, err := git.PlainOpen(context.repoDir)
 	if err != nil {
 		// Should we return these errors instead of doing this?

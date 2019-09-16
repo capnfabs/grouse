@@ -28,12 +28,10 @@ go test ./...
 ```
 
 ## Next steps before shipping / productionizing
-- Tests
-  - Test that hugo command is run correctly (probably a unit test for 'process'?)
-  - Test that diff command is run correctly
 - Figure out command output / user error handling.
 
 ## Other things that would be nice for the future (roughly ordered)
+- Tests that commands get run correctly.
 - Support optional `--command` argument (so you can use it with different static site generators, not just hugo)
 - Cleanup checkout-ed project files, unless debug option specified or something
 - Try to autodetect a few common static site generators (hugo, jekyll, gatsby)
