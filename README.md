@@ -27,6 +27,8 @@ Tests!? Yay! Tests!
 go test ./...
 ```
 
+To compress a repo for the tests, rename the directory to `input` and then run e.g. `zip -r tiny.zip input/**`
+
 ## Next steps before shipping / productionizing
 - Figure out command output / user error handling.
 

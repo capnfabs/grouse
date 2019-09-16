@@ -11,11 +11,6 @@ import (
 
 /* test ideas:
 
-Test command line parsing.
-Later - test passthrough arguments as well.
-
-Test that it works with 1 SHA and 2 SHAs
-
 Test that the commits it runs the diff for are from the right repo
 
 Add a couple of test repos and ensure that they work end-to-end
