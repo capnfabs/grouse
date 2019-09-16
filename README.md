@@ -1,42 +1,40 @@
 # Grouse
 
-Like `git diff`, but for the output of Hugo sites.
+Like `git diff`, but for generated [Hugo](https://gohugo.io) sites.
 
-## Build instructions
+Imagine that, every time you pushed changes to your Hugo site, you also version-controlled the generated HTML/CSS/JS files. Then, when you were changing anything important on your site, you could also run `git diff` to see whether your changes had unintended side effects.
 
-FYI: This project uses gomodules, so clone it to a project that's not in your `$GOPATH`.
+Grouse approximates that process by checking out previous commits, running Hugo, and then running `git diff` against the result.
 
-To build, do:
+## Install
+
+[TODO]
+
+## Usage
+
+### Quick reference
 
 ```sh
-./scripts/build.sh
+cd your-hugo-site
+git log  # Should be a git repo.
+grouse commitRefA commitRefB # Show the difference between the generated output on these two commit references.
 ```
 
-To run,
+### Commit References
 
-```
-cd your-hugo-directory
-grouse <ref> [<ref>]
-```
+Anything you can `git checkout` works as a commit reference for Grouse:
+- hashes (e.g. `8c90155d4`)
+- branch names (e.g. `feature/photo-albums`)
+- parent commits (e.g. `HEAD^` - the previous commit)
+- tags (`v0.1`)
+- probably other things too!
 
-## Tests
+### Flags
 
-Tests!? Yay! Tests!
+- `grouse --tool` runs `git difftool` instead of `git diff`
+- Pass additional args to the Hugo builds with `--buildargs`
+- Pass additional args to the `git diff` command with `--diffargs`
 
-```
-go test ./...
-```
+## Development instructions
 
-To compress a repo for the tests, rename the directory to `input` and then run e.g. `zip -r tiny.zip input/**`
-
-## Next steps before shipping / productionizing
-- Figure out command output / user error handling.
-
-## Other things that would be nice for the future (roughly ordered)
-- Tests that commands get run correctly.
-- Support optional `--command` argument (so you can use it with different static site generators, not just hugo)
-- Cleanup checkout-ed project files, unless debug option specified or something
-- Try to autodetect a few common static site generators (hugo, jekyll, gatsby)
-- Cache historical builds in the temp dir.
-- Maybe set things up so that running without a second arg just takes the current working directory as-is, so you don't need to commit before diffing.
-- Maybe? Force the same timestamp so that themes which use timestamps won't generate false-positives everywhere.
+Instructions for developers are in [develop.md](develop.md).
