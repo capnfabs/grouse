@@ -81,7 +81,7 @@ func runMain(context *cmdArgs) error {
 
 	out.Outf("Computing diff between revisions %s and %s\n", refs[0], refs[1])
 
-	scratchDir, err := ioutil.TempDir("", "hugo_diff")
+	scratchDir, err := ioutil.TempDir("", "grouse-diff")
 	// If this fails, we're unable to do anything with temp storage, so just
 	// panic.
 	check(err)
