@@ -8,7 +8,13 @@ Grouse approximates that process by checking out previous commits, running Hugo,
 
 ## Install
 
-[TODO]
+If you're on Mac OSX and have [homebrew](https://brew.sh) installed:
+
+```sh
+brew install capnfabs/tap/grouse
+```
+
+Otherwise, you can download the [latest release for your platform directly from the releases page](https://github.com/capnfabs/grouse/releases/latest).
 
 ## Usage
 
