@@ -28,11 +28,10 @@ go test ./...
 
 ## Releasing
 
-[TODO]
-
 - Test build artifacts with: `goreleaser --snapshot --skip-publish --rm-dist`
-- Tag with git
-- Push tags
+- Tag with git: `git tag v[whatever]`
+- Push tags: `git push --tags`
+- Actually do the release: `goreleaser --rm-dist`
 
 ## Things that would be nice for the future (roughly ordered)
 - Tests that commands get run correctly.
