@@ -109,7 +109,7 @@ func runMain(context *cmdArgs) error {
 	for _, commit := range context.commits {
 		ref, err := checkout.ResolveUserRef(repo, commit)
 		if err != nil {
-			return errors.WithMessagef(err, "Couldn't resolve '%s'", ref)
+			return errors.WithMessagef(err, "Couldn't resolve '%s'", commit)
 		}
 		refs = append(refs, ref)
 	}
