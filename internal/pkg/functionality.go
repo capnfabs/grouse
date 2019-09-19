@@ -62,8 +62,43 @@ func commitAll(worktree *git.Worktree, msg string) (plumbing.Hash, error) {
 	})
 }
 
+// If we go backwards more than this many directories looking for a git repo,
+// something is very, very wrong.
+const maxPathDepth = 255
+
+// Starts at currentPath and pops directories off the stack until a git repo
+// is found. Returns a git repo, the path difference between the git root and
+// the directory we started in, and an error if any.
+func findRepoInPath(currentPath string) (*git.Repository, string, error) {
+	visitedSubdirs := ""
+
+	for i := 0; i < maxPathDepth; i++ {
+		repo, err := git.PlainOpen(currentPath)
+		if err == nil {
+			return repo, visitedSubdirs, nil
+		} else if err == git.ErrRepositoryNotExists {
+			// Try going to a parent folder
+			var child string
+			// Need to clean the path, because if there's a trailing slash
+			// then we won't wind back a directory
+			currentPath, child = path.Split(path.Clean(currentPath))
+			visitedSubdirs = path.Join(child, visitedSubdirs)
+			if path.Clean(currentPath) == "/" {
+				// We've been unwinding the stack but we got to the root;
+				// safe to assume there's no git repo.
+				return nil, "", git.ErrRepositoryNotExists
+			}
+		} else {
+			// Miscellaneous error
+			return nil, "", err
+		}
+	}
+	// We went back a very long way and still couldn't find a git repo.
+	return nil, "", git.ErrRepositoryNotExists
+}
+
 func runMain(context *cmdArgs) error {
-	repo, err := git.PlainOpen(context.repoDir)
+	repo, hugoRelativeRoot, err := findRepoInPath(context.repoDir)
 	if err != nil {
 		// Should we return these errors instead of doing this?
 		return errors.WithMessagef(err, "Couldn't load the git repo in %s", context.repoDir)
@@ -106,7 +141,7 @@ func runMain(context *cmdArgs) error {
 		srcDir := path.Join(scratchDir, "source", ref.Hash().String())
 		out.Outf("Building revision %s…\n", ref)
 		hash, err := process(
-			outputWorktree, ref, srcDir, outputDir, context.buildArgs)
+			outputWorktree, ref, srcDir, hugoRelativeRoot, outputDir, context.buildArgs)
 
 		switch err.(type) {
 		case *exec.ExitError:
@@ -154,15 +189,15 @@ func eraseDirectoryExceptRootDotGit(directory string) error {
 	return nil
 }
 
-func process(dstWorktree *git.Worktree, ref checkout.ResolvedCommit, hugoWorkingDir string, outputDir string, buildArgs []string) (plumbing.Hash, error) {
-	out.Debugf("Checking out %s to %s…\n", ref, hugoWorkingDir)
-	err := checkout.ExtractCommitToDirectory(ref, hugoWorkingDir)
+func process(dstWorktree *git.Worktree, ref checkout.ResolvedCommit, targetSrcDir string, hugoRelativeRoot string, outputDir string, buildArgs []string) (plumbing.Hash, error) {
+	out.Debugf("Checking out %s to %s…\n", ref, targetSrcDir)
+	err := checkout.ExtractCommitToDirectory(ref, targetSrcDir)
 	if err != nil {
 		return plumbing.ZeroHash, err
 	}
 	out.Debugln("…done checking out.")
 
-	if err = runHugo(hugoWorkingDir, outputDir, buildArgs); err != nil {
+	if err = runHugo(path.Join(targetSrcDir, hugoRelativeRoot), outputDir, buildArgs); err != nil {
 		return plumbing.ZeroHash, err
 	}
 
@@ -174,15 +209,15 @@ func process(dstWorktree *git.Worktree, ref checkout.ResolvedCommit, hugoWorking
 	return hash, nil
 }
 
-func runHugo(repoDir string, outputDir string, userArgs []string) error {
+func runHugo(hugoRootDir string, outputDir string, userArgs []string) error {
 	// Put the 'destination' last. Repeated 'destination' flags only uses the
 	// last one.
 	// Note that we do it with the "--destination=/foo/" instead of "--destination foo"
 	// because the former results in
 	allArgs := append(userArgs, "--destination="+shellquote.Join(outputDir))
 	cmd := exec.Command("hugo", allArgs...)
-	out.Debugf("Running command %s\n", shellquote.Join(cmd.Args...))
-	cmd.Dir = repoDir
+	out.Debugf("Running command\n> %s\n(from directory %s)\n", shellquote.Join(cmd.Args...), hugoRootDir)
+	cmd.Dir = hugoRootDir
 
 	// TODO: if --debug is NOT specified, should hang on to these and then only
 	// print them if an error occurs.
