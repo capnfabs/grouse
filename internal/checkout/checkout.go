@@ -26,11 +26,13 @@ func copyFileTo(fs afero.Fs, file *object.File, outputPath string) error {
 	if err != nil {
 		return err
 	}
+	defer outputFile.Close()
 
 	reader, err := file.Reader()
 	if err != nil {
 		return err
 	}
+	defer reader.Close()
 
 	_, err = io.Copy(outputFile, reader)
 	return err
