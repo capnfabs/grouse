@@ -22,9 +22,8 @@ import (
 )
 
 func TestExtractFilesAtCommitToDir(t *testing.T) {
-	return
 	c := qt.New(t)
-	fs := afero.NewMemMapFs()
+	fs := aferobilly.NewCloseTrackingFs(afero.NewMemMapFs())
 
 	fs.Mkdir("/src", 0755)
 	fs.MkdirAll("/src/x/.y", 0755)
@@ -35,6 +34,9 @@ func TestExtractFilesAtCommitToDir(t *testing.T) {
 	af.WriteFile("/src/x/content/source.txt", []byte("here is some content"), 0644)
 	af.WriteFile("/src/x/content/.hidden", []byte("here is a hidden file"), 0644)
 
+	// TODO: it would be great if we could wrap this in a CloseTrackingFs as well,
+	// but an operation somewhere in what go-git's storage system does isn't
+	// supported by this brittle stack of virtual filesystems.
 	storage := memory.NewStorage()
 
 	repoRoot, err := aferobilly.NewBillyAeroFs(fs).Chroot("/src")
@@ -88,6 +90,8 @@ func TestExtractFilesAtCommitToDir(t *testing.T) {
 
 	content, _ = af.ReadFile("/dst/x/.y/foo")
 	c.Assert(content, qt.DeepEquals, []byte("hello there"))
+	// Shouldn't be any open files
+	c.Assert(fs.OpenFiles(), qt.DeepEquals, []string{})
 }
 
 var cases = []struct {
