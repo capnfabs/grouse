@@ -3,6 +3,8 @@ package checkout
 import (
 	"fmt"
 
+	au "github.com/logrusorgru/aurora"
+
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
 	"gopkg.in/src-d/go-git.v4/plumbing/object"
@@ -83,5 +85,5 @@ func ResolveHash(repo *git.Repository, hash plumbing.Hash) (ResolvedCommit, erro
 }
 
 func (r *resolvedUserRef) String() string {
-	return fmt.Sprintf("%s (%s)", r.userRef, r.hash.String()[:7])
+	return fmt.Sprintf("%s (%s)", au.Blue(r.userRef), au.Yellow(r.hash.String()[:7]))
 }
