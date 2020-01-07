@@ -2,6 +2,7 @@ package git
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"os/exec"
 	"strings"
@@ -119,4 +120,60 @@ func (w *Worktree) Remove() error {
 	cmd.Stdout = &stdout
 	cmd.Dir = w.Location
 	return cmd.Run()
+}
+
+var (
+	ErrRepoExists = errors.New("Repo already exists")
+)
+
+func NewRepository(dst string) (*Repository, error) {
+	_, err := OpenRepository(dst)
+	if err == nil {
+		return nil, ErrRepoExists
+	}
+	cmd := exec.Command("git", "init")
+	var stdout, stderr bytes.Buffer
+	cmd.Stderr = &stderr
+	cmd.Stdout = &stdout
+	cmd.Dir = dst
+	err = cmd.Run()
+	if err != nil {
+		return nil, err
+	}
+	return &Repository{
+		RootDir: dst,
+	}, nil
+}
+
+func (r *Repository) CommitEverythingInWorktree(message string) (Hash, error) {
+	// TODO: if your build produces a .gitignore file, everything that it
+	// references will be excluded from the commit. It probably shouldn't be. 😅
+	cmd := exec.Command("git", "add", ".")
+	var stdout, stderr bytes.Buffer
+	cmd.Stderr = &stderr
+	cmd.Stdout = &stdout
+	cmd.Dir = r.RootDir
+	err := cmd.Run()
+	if err != nil {
+		return NilHash, err
+	}
+
+	cmd = exec.Command("git", "commit", "--message", message)
+	cmd.Stderr = &stderr
+	cmd.Stdout = &stdout
+	cmd.Dir = r.RootDir
+	err = cmd.Run()
+	if err != nil {
+		return NilHash, err
+	}
+
+	cmd = exec.Command("git", "rev-parse", "--verify", "HEAD")
+	cmd.Stderr = &stderr
+	cmd.Stdout = &stdout
+	cmd.Dir = r.RootDir
+	err = cmd.Run()
+	if err != nil {
+		return NilHash, err
+	}
+	return Hash(strings.TrimSpace(stdout.String())), nil
 }

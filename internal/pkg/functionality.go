@@ -1,6 +1,7 @@
 package pkg
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -83,13 +84,9 @@ func runMain(context *cmdArgs) error {
 	// Init the Output Repo
 	outputDir := path.Join(scratchDir, "output")
 	os.MkdirAll(outputDir, os.ModePerm)
-	//outputRepo, err := git.PlainInit(outputDir, false)
+	outputRepo, err := git.NewRepository(outputDir)
 	// Not the user's fault and nothing we can do; panicking is ok.
-	//check(err)
-
-	//outputWorktree, err := outputRepo.Worktree()
-	// Shouldn't be possible; because this isn't a bare repo
-	//check(err)
+	check(err)
 
 	outputHashes := []git.Hash{}
 
@@ -100,7 +97,7 @@ func runMain(context *cmdArgs) error {
 
 		out.Outf("Building revision %s…\n", ref)
 		hash, err := process(
-			srcWorktree, &ref.Commit, relativeRoot, context.buildArgs, outputDir)
+			srcWorktree, &ref.Commit, relativeRoot, context.buildArgs, outputRepo)
 
 		switch err.(type) {
 		case *exec.ExitError:
@@ -150,7 +147,7 @@ func eraseDirectoryExceptRootDotGit(directory string) error {
 }
 
 func process(
-	srcWorktree *git.Worktree, ref *git.ResolvedCommit, hugoRelativeRoot string, buildArgs []string, outputDir string) (git.Hash, error) {
+	srcWorktree *git.Worktree, ref *git.ResolvedCommit, hugoRelativeRoot string, buildArgs []string, outputRepo *git.Repository) (git.Hash, error) {
 	out.Debugf("Checking out %s…\n", ref)
 	err := srcWorktree.Checkout(ref)
 	if err != nil {
@@ -158,19 +155,12 @@ func process(
 	}
 	out.Debugln("…done checking out.")
 
-	if err = runHugo(path.Join(srcWorktree.Location, hugoRelativeRoot), outputDir, buildArgs); err != nil {
+	if err = runHugo(path.Join(srcWorktree.Location, hugoRelativeRoot), outputRepo.RootDir, buildArgs); err != nil {
 		return git.NilHash, err
 	}
 
-	/*
-		commitMessage := fmt.Sprintf("Website content, built from %s", ref)
-		hash, err := commitAll(dstWorktree, commitMessage)
-		if err != nil {
-			return plumbing.ZeroHash, err
-		}
-		return hash, nil
-	*/
-	return git.NilHash, nil
+	commitMessage := fmt.Sprintf("Website content, built from %s", ref)
+	return outputRepo.CommitEverythingInWorktree(commitMessage)
 }
 
 func runHugo(hugoRootDir string, outputDir string, userArgs []string) error {
