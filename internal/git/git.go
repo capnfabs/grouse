@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/capnfabs/grouse/internal/out"
+	"github.com/kballard/go-shellquote"
 	au "github.com/logrusorgru/aurora"
 )
 
@@ -53,35 +54,56 @@ func OpenRepository(repoDir string) (*Repository, error) {
 	}, nil
 }
 
-func GetRelativeLocation(currentDir string) (string, error) {
-	cmd := exec.Command("git", "rev-parse", "--show-prefix")
-	var stdout, stderr bytes.Buffer
-	cmd.Stderr = &stderr
-	cmd.Stdout = &stdout
-	cmd.Dir = currentDir
+type cmdResult struct {
+	stderr string
+	stdout string
+	err    error
+}
+
+func runCommand(workDir string, args ...string) cmdResult {
+	out.Debugln("Running Command: ", shellquote.Join(args...))
+	cmd := exec.Command(args[0], args[1:]...)
+	var stdoutBuf, stderrBuf bytes.Buffer
+	cmd.Stderr = &stderrBuf
+	cmd.Stdout = &stdoutBuf
+	cmd.Dir = workDir
 	err := cmd.Run()
-	if err != nil {
-		return "", err
+	stderr := strings.TrimSpace(stderrBuf.String())
+	stdout := strings.TrimSpace(stdoutBuf.String())
+	out.Debugln("StdErr: ", stderr)
+	out.Debugln("StdOut: ", stdout)
+	return cmdResult{
+		stderr: stderr,
+		stdout: stdout,
+		err:    err,
 	}
-	rootDir := strings.TrimSpace(stdout.String())
-	return rootDir, nil
+
+}
+
+func (r *Repository) runCommand(args ...string) cmdResult {
+	return runCommand(r.RootDir, args...)
+}
+
+func (w *Worktree) runCommand(args ...string) cmdResult {
+	return runCommand(w.Location, args...)
+}
+
+func GetRelativeLocation(currentDir string) (string, error) {
+	cmd := runCommand(currentDir, "git", "rev-parse", "--show-prefix")
+	if cmd.err != nil {
+		return "", cmd.err
+	}
+	return cmd.stdout, nil
 }
 
 func (r *Repository) ResolveCommit(ref string) (*ResolvedUserRef, error) {
-	cmd := exec.Command("git", "rev-parse", "--verify", ref+"^{commit}")
-	var stdout, stderr bytes.Buffer
-	cmd.Stderr = &stderr
-	cmd.Stdout = &stdout
-	cmd.Dir = r.RootDir
-	err := cmd.Run()
-	out.Debugln("Err", stderr.String())
-	out.Debugln("Out", stdout.String())
-	if err != nil {
-		return nil, err
+	cmd := r.runCommand("git", "rev-parse", "--verify", ref+"^{commit}")
+	if cmd.err != nil {
+		return nil, cmd.err
 	}
 	commit := ResolvedCommit{
 		repo: r,
-		hash: Hash(strings.TrimSpace(stdout.String())),
+		hash: Hash(cmd.stdout),
 	}
 	return &ResolvedUserRef{
 		commit,
@@ -90,14 +112,9 @@ func (r *Repository) ResolveCommit(ref string) (*ResolvedUserRef, error) {
 }
 
 func (r *Repository) AddWorktree(dst string) (*Worktree, error) {
-	cmd := exec.Command("git", "worktree", "add", "--detach", dst)
-	var stdout, stderr bytes.Buffer
-	cmd.Stderr = &stderr
-	cmd.Stdout = &stdout
-	cmd.Dir = r.RootDir
-	err := cmd.Run()
-	if err != nil {
-		return nil, err
+	cmd := r.runCommand("git", "worktree", "add", "--detach", dst)
+	if cmd.err != nil {
+		return nil, cmd.err
 	}
 	return &Worktree{
 		Location: dst,
@@ -105,21 +122,13 @@ func (r *Repository) AddWorktree(dst string) (*Worktree, error) {
 }
 
 func (w *Worktree) Checkout(commit *ResolvedCommit) error {
-	cmd := exec.Command("git", "checkout", "--detach", string(commit.hash))
-	var stdout, stderr bytes.Buffer
-	cmd.Stderr = &stderr
-	cmd.Stdout = &stdout
-	cmd.Dir = w.Location
-	return cmd.Run()
+	cmd := w.runCommand("git", "checkout", "--detach", string(commit.hash))
+	return cmd.err
 }
 
 func (w *Worktree) Remove() error {
-	cmd := exec.Command("git", "worktree", "remove", w.Location)
-	var stdout, stderr bytes.Buffer
-	cmd.Stderr = &stderr
-	cmd.Stdout = &stdout
-	cmd.Dir = w.Location
-	return cmd.Run()
+	cmd := w.runCommand("git", "worktree", "remove", w.Location)
+	return cmd.err
 }
 
 var (
@@ -131,14 +140,9 @@ func NewRepository(dst string) (*Repository, error) {
 	if err == nil {
 		return nil, ErrRepoExists
 	}
-	cmd := exec.Command("git", "init")
-	var stdout, stderr bytes.Buffer
-	cmd.Stderr = &stderr
-	cmd.Stdout = &stdout
-	cmd.Dir = dst
-	err = cmd.Run()
-	if err != nil {
-		return nil, err
+	cmd := runCommand(dst, "git", "init")
+	if cmd.err != nil {
+		return nil, cmd.err
 	}
 	return &Repository{
 		RootDir: dst,
@@ -148,32 +152,19 @@ func NewRepository(dst string) (*Repository, error) {
 func (r *Repository) CommitEverythingInWorktree(message string) (Hash, error) {
 	// TODO: if your build produces a .gitignore file, everything that it
 	// references will be excluded from the commit. It probably shouldn't be. 😅
-	cmd := exec.Command("git", "add", ".")
-	var stdout, stderr bytes.Buffer
-	cmd.Stderr = &stderr
-	cmd.Stdout = &stdout
-	cmd.Dir = r.RootDir
-	err := cmd.Run()
-	if err != nil {
-		return NilHash, err
+	cmd := r.runCommand("git", "add", ".")
+	if cmd.err != nil {
+		return NilHash, cmd.err
 	}
 
-	cmd = exec.Command("git", "commit", "--message", message)
-	cmd.Stderr = &stderr
-	cmd.Stdout = &stdout
-	cmd.Dir = r.RootDir
-	err = cmd.Run()
-	if err != nil {
-		return NilHash, err
+	cmd = r.runCommand("git", "commit", "--message", message)
+	if cmd.err != nil {
+		return NilHash, cmd.err
 	}
 
-	cmd = exec.Command("git", "rev-parse", "--verify", "HEAD")
-	cmd.Stderr = &stderr
-	cmd.Stdout = &stdout
-	cmd.Dir = r.RootDir
-	err = cmd.Run()
-	if err != nil {
-		return NilHash, err
+	cmd = r.runCommand("git", "rev-parse", "--verify", "HEAD")
+	if cmd.err != nil {
+		return NilHash, cmd.err
 	}
-	return Hash(strings.TrimSpace(stdout.String())), nil
+	return Hash(cmd.stdout), nil
 }
