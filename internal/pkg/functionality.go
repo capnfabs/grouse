@@ -1,24 +1,20 @@
 package pkg
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path"
 	"strings"
-	"time"
 
-	"github.com/capnfabs/grouse/internal/checkout"
+	"github.com/capnfabs/grouse/internal/git"
 	"github.com/capnfabs/grouse/internal/out"
 	"github.com/kballard/go-shellquote"
 	"github.com/pkg/errors"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 
-	"gopkg.in/src-d/go-git.v4"
-	"gopkg.in/src-d/go-git.v4/plumbing"
-	"gopkg.in/src-d/go-git.v4/plumbing/object"
+	au "github.com/logrusorgru/aurora"
 )
 
 func check(err error) {
@@ -48,66 +44,24 @@ func RunRootCommand(cmd *cobra.Command) {
 	}
 }
 
-func commitAll(worktree *git.Worktree, msg string) (plumbing.Hash, error) {
-	_, err := worktree.Add(".")
-	if err != nil {
-		return plumbing.ZeroHash, err
-	}
-	return worktree.Commit(msg, &git.CommitOptions{
-		Author: &object.Signature{
-			Name:  "Grouse Diff",
-			Email: "grouse-diff@example.com",
-			When:  time.Now(),
-		},
-	})
-}
-
-// If we go backwards more than this many directories looking for a git repo,
-// something is very, very wrong.
-const maxPathDepth = 255
-
-// Starts at currentPath and pops directories off the stack until a git repo
-// is found. Returns a git repo, the path difference between the git root and
-// the directory we started in, and an error if any.
-func findRepoInPath(currentPath string) (*git.Repository, string, error) {
-	visitedSubdirs := ""
-
-	for i := 0; i < maxPathDepth; i++ {
-		repo, err := git.PlainOpen(currentPath)
-		if err == nil {
-			return repo, visitedSubdirs, nil
-		} else if err == git.ErrRepositoryNotExists {
-			// Try going to a parent folder
-			var child string
-			// Need to clean the path, because if there's a trailing slash
-			// then we won't wind back a directory
-			currentPath, child = path.Split(path.Clean(currentPath))
-			visitedSubdirs = path.Join(child, visitedSubdirs)
-			if path.Clean(currentPath) == "/" {
-				// We've been unwinding the stack but we got to the root;
-				// safe to assume there's no git repo.
-				return nil, "", git.ErrRepositoryNotExists
-			}
-		} else {
-			// Miscellaneous error
-			return nil, "", err
-		}
-	}
-	// We went back a very long way and still couldn't find a git repo.
-	return nil, "", git.ErrRepositoryNotExists
-}
-
 func runMain(context *cmdArgs) error {
-	repo, hugoRelativeRoot, err := findRepoInPath(context.repoDir)
+	repo, err := git.OpenRepository(context.repoDir)
+
 	if err != nil {
 		// Should we return these errors instead of doing this?
 		return errors.WithMessagef(err, "Couldn't load the git repo in %s", context.repoDir)
 	}
 
-	refs := []checkout.ResolvedCommit{}
+	relativeRoot, err := git.GetRelativeLocation(context.repoDir)
+	// TODO: probably shouldn't happen because we already verified the repo above?
+	check(err)
+
+	out.Debugf("Got repo location %s and relative path %s\n", au.Yellow(repo.RootDir), au.Green(relativeRoot))
+
+	refs := []*git.ResolvedUserRef{}
 
 	for _, commit := range context.commits {
-		ref, err := checkout.ResolveUserRef(repo, commit)
+		ref, err := repo.ResolveCommit(commit)
 		if err != nil {
 			return errors.WithMessagef(err, "Couldn't resolve '%s'", commit)
 		}
@@ -121,27 +75,32 @@ func runMain(context *cmdArgs) error {
 	// panic.
 	check(err)
 
+	srcWorktree, err := repo.AddWorktree(path.Join(scratchDir, "src"))
+	// TODO
+	check(err)
+	defer srcWorktree.Remove()
+
 	// Init the Output Repo
 	outputDir := path.Join(scratchDir, "output")
-	outputRepo, err := git.PlainInit(outputDir, false)
+	os.MkdirAll(outputDir, os.ModePerm)
+	//outputRepo, err := git.PlainInit(outputDir, false)
 	// Not the user's fault and nothing we can do; panicking is ok.
-	check(err)
+	//check(err)
 
-	outputWorktree, err := outputRepo.Worktree()
+	//outputWorktree, err := outputRepo.Worktree()
 	// Shouldn't be possible; because this isn't a bare repo
-	check(err)
+	//check(err)
 
-	outputHashes := []plumbing.Hash{}
+	outputHashes := []git.Hash{}
 
 	for _, ref := range refs {
 		// Make sure the output directory is empty
 		err = eraseDirectoryExceptRootDotGit(outputDir)
 		check(err)
 
-		srcDir := path.Join(scratchDir, "source", ref.Hash().String())
 		out.Outf("Building revision %s…\n", ref)
 		hash, err := process(
-			outputWorktree, ref, srcDir, hugoRelativeRoot, outputDir, context.buildArgs)
+			srcWorktree, &ref.Commit, relativeRoot, context.buildArgs, outputDir)
 
 		switch err.(type) {
 		case *exec.ExitError:
@@ -150,6 +109,7 @@ func runMain(context *cmdArgs) error {
 		case error:
 			panic(err)
 		}
+		out.Outf("Yay! %s\n", hash)
 		outputHashes = append(outputHashes, hash)
 	}
 
@@ -189,24 +149,28 @@ func eraseDirectoryExceptRootDotGit(directory string) error {
 	return nil
 }
 
-func process(dstWorktree *git.Worktree, ref checkout.ResolvedCommit, targetSrcDir string, hugoRelativeRoot string, outputDir string, buildArgs []string) (plumbing.Hash, error) {
-	out.Debugf("Checking out %s to %s…\n", ref, targetSrcDir)
-	err := checkout.ExtractCommitToDirectory(ref, targetSrcDir)
+func process(
+	srcWorktree *git.Worktree, ref *git.ResolvedCommit, hugoRelativeRoot string, buildArgs []string, outputDir string) (git.Hash, error) {
+	out.Debugf("Checking out %s…\n", ref)
+	err := srcWorktree.Checkout(ref)
 	if err != nil {
-		return plumbing.ZeroHash, err
+		return git.NilHash, err
 	}
 	out.Debugln("…done checking out.")
 
-	if err = runHugo(path.Join(targetSrcDir, hugoRelativeRoot), outputDir, buildArgs); err != nil {
-		return plumbing.ZeroHash, err
+	if err = runHugo(path.Join(srcWorktree.Location, hugoRelativeRoot), outputDir, buildArgs); err != nil {
+		return git.NilHash, err
 	}
 
-	commitMessage := fmt.Sprintf("Website content, built from %s", ref)
-	hash, err := commitAll(dstWorktree, commitMessage)
-	if err != nil {
-		return plumbing.ZeroHash, err
-	}
-	return hash, nil
+	/*
+		commitMessage := fmt.Sprintf("Website content, built from %s", ref)
+		hash, err := commitAll(dstWorktree, commitMessage)
+		if err != nil {
+			return plumbing.ZeroHash, err
+		}
+		return hash, nil
+	*/
+	return git.NilHash, nil
 }
 
 func runHugo(hugoRootDir string, outputDir string, userArgs []string) error {
@@ -226,10 +190,10 @@ func runHugo(hugoRootDir string, outputDir string, userArgs []string) error {
 	return cmd.Run()
 }
 
-func runDiff(repoDir, diffCommand string, userArgs []string, hash1, hash2 plumbing.Hash) error {
+func runDiff(repoDir, diffCommand string, userArgs []string, hash1, hash2 git.Hash) error {
 	allArgs := []string{diffCommand}
 	allArgs = append(allArgs, userArgs...)
-	allArgs = append(allArgs, hash1.String(), hash2.String())
+	allArgs = append(allArgs, string(hash1), string(hash2))
 
 	cmd := exec.Command("git", allArgs...)
 	cmd.Stdin = os.Stdin
