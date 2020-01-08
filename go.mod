@@ -13,4 +13,5 @@ require (
 	github.com/spf13/afero v1.1.2
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/pflag v1.0.3
+	gopkg.in/src-d/go-billy.v4 v4.3.2
 )

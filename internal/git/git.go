@@ -16,37 +16,82 @@ import (
 	au "github.com/logrusorgru/aurora"
 )
 
-type Repository struct {
-	RootDir string
+type Repository interface {
+	RootDir() string
+	ResolveCommit(ref string) (ResolvedUserRef, error)
+	AddWorktree(dst string) (Worktree, error)
+	CommitEverythingInWorktree(message string) (Hash, error)
+}
+
+type repository struct {
+	rootDir string
+}
+
+func (r *repository) RootDir() string {
+	return r.rootDir
 }
 
 type Hash string
 
 const NilHash = Hash("")
 
-type ResolvedCommit struct {
-	repo *Repository
+type ResolvedCommit interface {
+	Repo() Repository
+	Hash() Hash
+}
+
+func (r *resolvedCommit) Repo() Repository {
+	return r.repo
+}
+func (r *resolvedCommit) Hash() Hash {
+	return r.hash
+}
+
+type resolvedCommit struct {
+	repo *repository
 	hash Hash
 }
 
-func (r *ResolvedCommit) String() string {
+func (r *resolvedCommit) String() string {
 	return string(r.hash[:7])
 }
 
-type ResolvedUserRef struct {
-	Commit  ResolvedCommit
-	UserRef string
+type ResolvedUserRef interface {
+	Commit() ResolvedCommit
+	UserRef() string
 }
 
-type Worktree struct {
-	Location string
+type resolvedUserRef struct {
+	commit  resolvedCommit
+	userRef string
 }
 
-func (r *ResolvedUserRef) String() string {
-	return fmt.Sprintf("%s (%s)", au.Blue(r.UserRef), au.Yellow(r.Commit.hash[:7]))
+func (r *resolvedUserRef) Commit() ResolvedCommit {
+	return &r.commit
+}
+func (r *resolvedUserRef) UserRef() string {
+	return r.userRef
 }
 
-func OpenRepository(repoDir string) (*Repository, error) {
+type Worktree interface {
+	Location() string
+	Remove() error
+	Checkout(commit ResolvedCommit) error
+}
+
+type worktree struct {
+	location string
+}
+
+func (w *worktree) Location() string {
+	return w.location
+}
+
+func (r *resolvedUserRef) String() string {
+	return fmt.Sprintf("%s (%s)", au.Blue(r.userRef), au.Yellow(r.commit.hash[:7]))
+}
+
+func OpenRepository(repoDir string) (Repository, error) {
 	cmd := exec.Command("git", "rev-parse", "--show-toplevel")
 	var stdout, stderr bytes.Buffer
 	cmd.Stderr = &stderr
@@ -57,8 +102,8 @@ func OpenRepository(repoDir string) (*Repository, error) {
 		return nil, err
 	}
 	rootDir := strings.TrimSpace(stdout.String())
-	return &Repository{
-		RootDir: rootDir,
+	return &repository{
+		rootDir: rootDir,
 	}, nil
 }
 
@@ -88,12 +133,12 @@ func runCommand(workDir string, args ...string) cmdResult {
 
 }
 
-func (r *Repository) runCommand(args ...string) cmdResult {
-	return runCommand(r.RootDir, args...)
+func (r *repository) runCommand(args ...string) cmdResult {
+	return runCommand(r.rootDir, args...)
 }
 
-func (w *Worktree) runCommand(args ...string) cmdResult {
-	return runCommand(w.Location, args...)
+func (w *worktree) runCommand(args ...string) cmdResult {
+	return runCommand(w.location, args...)
 }
 
 func GetRelativeLocation(currentDir string) (string, error) {
@@ -104,21 +149,22 @@ func GetRelativeLocation(currentDir string) (string, error) {
 	return cmd.stdout, nil
 }
 
-func (r *Repository) ResolveCommit(ref string) (*ResolvedUserRef, error) {
+func (r *repository) ResolveCommit(ref string) (ResolvedUserRef, error) {
 	cmd := r.runCommand("git", "rev-parse", "--verify", ref+"^{commit}")
 	if cmd.err != nil {
 		return nil, cmd.err
 	}
-	commit := ResolvedCommit{
+	commit := resolvedCommit{
 		repo: r,
 		hash: Hash(cmd.stdout),
 	}
-	return &ResolvedUserRef{
+	return &resolvedUserRef{
 		commit,
 		ref,
 	}, nil
 }
 
+// TODO: rename
 func findSubmoduleGitRepos(rootDir string) {
 	files, err := ioutil.ReadDir(rootDir)
 	if err != nil {
@@ -149,14 +195,14 @@ func findSubmoduleGitRepos(rootDir string) {
 	}
 }
 
-func (r *Repository) AddWorktree(dst string) (*Worktree, error) {
+func (r *repository) AddWorktree(dst string) (Worktree, error) {
 	cmd := r.runCommand("git", "worktree", "add", "--no-checkout", "--detach", dst)
 	if cmd.err != nil {
 		return nil, cmd.err
 	}
 
-	wt := Worktree{
-		Location: dst,
+	wt := worktree{
+		location: dst,
 	}
 
 	// OPTIMISATION
@@ -175,7 +221,15 @@ func (r *Repository) AddWorktree(dst string) (*Worktree, error) {
 	rootModules := cmd.stdout
 	// Canonicalise it.
 	if !path.IsAbs(rootModules) {
-		rootModules = path.Join(r.RootDir, rootModules)
+		rootModules = path.Join(r.rootDir, rootModules)
+	}
+
+	// Test that there _are_ submodules before trying anything tricky
+	_, err := os.Lstat(rootModules)
+	if err != nil && os.IsNotExist(err) {
+		return &wt, nil
+	} else if err != nil {
+		panic(err)
 	}
 
 	// Now get the modules path for the worktree.
@@ -188,7 +242,7 @@ func (r *Repository) AddWorktree(dst string) (*Worktree, error) {
 	// NOTE: I never observed relative paths with worktrees but I'm still
 	// worried about it.
 	if !path.IsAbs(wtModules) {
-		wtModules = path.Join(wt.Location, wtModules)
+		wtModules = path.Join(wt.location, wtModules)
 	}
 
 	out.Debugln("Hack-copying modules from", rootModules, "to", wtModules)
@@ -208,8 +262,8 @@ func (r *Repository) AddWorktree(dst string) (*Worktree, error) {
 	return &wt, nil
 }
 
-func (w *Worktree) Checkout(commit *ResolvedCommit) error {
-	cmd := w.runCommand("git", "checkout", "--detach", string(commit.hash))
+func (w *worktree) Checkout(commit ResolvedCommit) error {
+	cmd := w.runCommand("git", "checkout", "--detach", string(commit.Hash()))
 	if cmd.err != nil {
 		return cmd.err
 	}
@@ -227,8 +281,12 @@ func (w *Worktree) Checkout(commit *ResolvedCommit) error {
 	return cmd.err
 }
 
-func (w *Worktree) Remove() error {
-	cmd := w.runCommand("git", "worktree", "remove", w.Location)
+func (w *worktree) Remove() error {
+	cmd := w.runCommand("git", "submodule", "deinit", "--all")
+	if cmd.err != nil {
+		return cmd.err
+	}
+	cmd = w.runCommand("git", "worktree", "remove", w.location)
 	return cmd.err
 }
 
@@ -236,7 +294,7 @@ var (
 	ErrRepoExists = errors.New("Repo already exists")
 )
 
-func NewRepository(dst string) (*Repository, error) {
+func NewRepository(dst string) (Repository, error) {
 	_, err := OpenRepository(dst)
 	if err == nil {
 		return nil, ErrRepoExists
@@ -245,12 +303,12 @@ func NewRepository(dst string) (*Repository, error) {
 	if cmd.err != nil {
 		return nil, cmd.err
 	}
-	return &Repository{
-		RootDir: dst,
+	return &repository{
+		rootDir: dst,
 	}, nil
 }
 
-func (r *Repository) CommitEverythingInWorktree(message string) (Hash, error) {
+func (r *repository) CommitEverythingInWorktree(message string) (Hash, error) {
 	// TODO: if your build produces a .gitignore file, everything that it
 	// references will be excluded from the commit. It probably shouldn't be. 😅
 	cmd := r.runCommand("git", "add", ".")

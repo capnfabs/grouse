@@ -1,11 +1,6 @@
 package pkg
 
 import (
-	"fmt"
-	"io/ioutil"
-	"os"
-	"os/exec"
-	"path"
 	"testing"
 
 	"github.com/capnfabs/grouse/test/aferobilly"
@@ -15,12 +10,12 @@ import (
 )
 
 /* test ideas:
-
-Test that the commits it runs the diff for are from the right repo
-
-Add a couple of test repos and ensure that they work end-to-end
-
-Test that supplying bad commit refs gives the right errors.
+- A bunch of end-2-end tests:
+  - Normal repo
+  - Really big repo with lots of files
+  - A directory without a git repo
+  - A repo with submodules in use in the tree, without submodules available
+  - A repo that uses the git extensions to Hugo
 */
 
 func useMemFs(fs afero.Fs) func() {
@@ -64,48 +59,4 @@ func TestEraseDirectoryExceptRootDotGit(t *testing.T) {
 
 	content, _ = af.ReadFile("/src/.git/x/file2")
 	c.Assert(content, qt.DeepEquals, []byte("file2"))
-}
-
-func TestResolvesGitPathCorrectly(t *testing.T) {
-	c := qt.New(t)
-
-	cases := []struct {
-		repo            string
-		startingCwd     string
-		expectedSubPath string
-	}{
-		{"tiny.zip", "", ""},
-		{"tiny.zip", "src", "src"},
-		{"tiny.zip", "src/content", "src/content"},
-		{"tiny-norepo.zip", "", "ERROR"},
-		{"tiny-norepo.zip", "src/content", "ERROR"},
-	}
-	for i, tc := range cases {
-		c.Run(fmt.Sprintf("%d_%s", i, tc.repo), func(c *qt.C) {
-			// Setup: extract temporary directory
-			tempDir, err := ioutil.TempDir("", "grouse_test")
-			c.Assert(err, qt.IsNil)
-			wd, _ := os.Getwd()
-			// This is _way_ easier to write than doing it manually within Go,
-			// but it means we have to use the filesystem and it only works on
-			// unix-y OSes. The "right way" to build this would be to add a
-			// zip-file backend for Billy.
-			cmd := exec.Command("unzip", path.Join(wd, "../../test-fixtures", tc.repo), "-d", tempDir)
-			err = cmd.Run()
-			c.Assert(err, qt.IsNil)
-			fmt.Println("Test input directory is", path.Join(tempDir, "input"))
-
-			startingDir := path.Join(tempDir, "input", tc.startingCwd)
-			repo, relDir, err := findRepoInPath(startingDir)
-			if tc.expectedSubPath == "ERROR" {
-				c.Check(repo, qt.IsNil)
-				c.Check(relDir, qt.Equals, "")
-				c.Check(err, qt.ErrorMatches, ".*repository does not exist.*")
-			} else {
-				c.Check(repo, qt.Not(qt.IsNil))
-				c.Check(relDir, qt.Equals, tc.expectedSubPath)
-				c.Check(err, qt.IsNil)
-			}
-		})
-	}
 }

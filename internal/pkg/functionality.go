@@ -54,7 +54,7 @@ func runMain(context *cmdArgs) error {
 
 	out.Debugf("Got repo location %#v and relative path %#v\n", repo.RootDir, relativeRoot)
 
-	refs := []*git.ResolvedUserRef{}
+	refs := []git.ResolvedUserRef{}
 
 	for _, commit := range context.commits {
 		ref, err := repo.ResolveCommit(commit)
@@ -94,7 +94,7 @@ func runMain(context *cmdArgs) error {
 
 		out.Outf("Building revision %s…\n", ref)
 		hash, err := processSourceAtCommit(
-			srcWorktree, &ref.Commit, relativeRoot, context.buildArgs, outputRepo)
+			srcWorktree, ref.Commit(), relativeRoot, context.buildArgs, outputRepo)
 
 		switch err.(type) {
 		case *exec.ExitError:
@@ -143,7 +143,7 @@ func eraseDirectoryExceptRootDotGit(directory string) error {
 }
 
 func processSourceAtCommit(
-	srcWorktree *git.Worktree, ref *git.ResolvedCommit, hugoRelativeRoot string, buildArgs []string, outputRepo *git.Repository) (git.Hash, error) {
+	srcWorktree git.Worktree, ref git.ResolvedCommit, hugoRelativeRoot string, buildArgs []string, outputRepo git.Repository) (git.Hash, error) {
 	out.Debugf("Checking out %s…\n", ref)
 	err := srcWorktree.Checkout(ref)
 	if err != nil {
@@ -151,7 +151,7 @@ func processSourceAtCommit(
 	}
 	out.Debugln("…done checking out.")
 
-	if err = runHugo(path.Join(srcWorktree.Location, hugoRelativeRoot), outputRepo.RootDir, buildArgs); err != nil {
+	if err = runHugo(path.Join(srcWorktree.Location(), hugoRelativeRoot), outputRepo.RootDir(), buildArgs); err != nil {
 		return git.NilHash, err
 	}
 
