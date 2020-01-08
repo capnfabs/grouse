@@ -277,7 +277,7 @@ func (w *worktree) Checkout(commit ResolvedCommit) error {
 	}
 
 	// Checkout submodules
-	cmd = w.runCommand("git", "submodule", "update")
+	cmd = w.runCommand("git", "submodule", "update", "--recursive")
 	return cmd.err
 }
 
