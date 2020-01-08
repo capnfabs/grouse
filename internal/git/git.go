@@ -4,10 +4,14 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"os"
 	"os/exec"
+	"path"
 	"strings"
 
 	"github.com/capnfabs/grouse/internal/out"
+	"github.com/cf-guardian/guardian/kernel/fileutils"
 	"github.com/kballard/go-shellquote"
 	au "github.com/logrusorgru/aurora"
 )
@@ -23,6 +27,10 @@ const NilHash = Hash("")
 type ResolvedCommit struct {
 	repo *Repository
 	hash Hash
+}
+
+func (r *ResolvedCommit) String() string {
+	return string(r.hash[:7])
 }
 
 type ResolvedUserRef struct {
@@ -111,18 +119,111 @@ func (r *Repository) ResolveCommit(ref string) (*ResolvedUserRef, error) {
 	}, nil
 }
 
+func findSubmoduleGitRepos(rootDir string) {
+	files, err := ioutil.ReadDir(rootDir)
+	if err != nil {
+		panic(err)
+	}
+	// Look for a config file
+	for _, file := range files {
+		if file.Name() == "config" && (file.Mode()&os.ModeType) == 0 {
+			// Oh! We have one!
+			p := path.Join(rootDir, "config")
+			out.Debugln("Unsetting core.worktree from file", p)
+			cmd := runCommand("/", "git", "config", "--file", p, "--unset", "core.worktree")
+			if cmd.err == nil {
+				// Ok it worked, no need to look in other directories
+				out.Debugln("Succeeded!")
+				return
+			} else {
+				out.Debugln("Failed, maybe not a git config file :-/")
+				break
+			}
+		}
+	}
+	// Apparently not a git repo, go a level deeper
+	for _, file := range files {
+		if file.IsDir() {
+			findSubmoduleGitRepos(path.Join(rootDir, file.Name()))
+		}
+	}
+}
+
 func (r *Repository) AddWorktree(dst string) (*Worktree, error) {
-	cmd := r.runCommand("git", "worktree", "add", "--detach", dst)
+	cmd := r.runCommand("git", "worktree", "add", "--no-checkout", "--detach", dst)
 	if cmd.err != nil {
 		return nil, cmd.err
 	}
-	return &Worktree{
+
+	wt := Worktree{
 		Location: dst,
-	}, nil
+	}
+
+	// OPTIMISATION
+
+	// Submodule wizardry!
+
+	// First: get the modules path for the base repo.
+	// Note that this is potentially extremely edge-casey -- old versions of git
+	// store their modules in-directory. This effectively assumes a _newer_
+	// version of git.
+	cmd = r.runCommand("git", "rev-parse", "--git-path", "modules")
+	if cmd.err != nil {
+		panic(cmd.err)
+	}
+
+	rootModules := cmd.stdout
+	// Canonicalise it.
+	if !path.IsAbs(rootModules) {
+		rootModules = path.Join(r.RootDir, rootModules)
+	}
+
+	// Now get the modules path for the worktree.
+	cmd = wt.runCommand("git", "rev-parse", "--git-path", "modules")
+	if cmd.err != nil {
+		panic(cmd.err)
+	}
+	wtModules := cmd.stdout
+
+	// NOTE: I never observed relative paths with worktrees but I'm still
+	// worried about it.
+	if !path.IsAbs(wtModules) {
+		wtModules = path.Join(wt.Location, wtModules)
+	}
+
+	out.Debugln("Hack-copying modules from", rootModules, "to", wtModules)
+
+	// I _think_ the way to do this is:
+	// 1. Find submodules that are init'd (`git submodule status` isn't prefixed with a '-')
+	// 2. those will be automatically init'd in new worktree, but the links won't be in place (don't know how to detect this?)
+	// 3. for each of those submodules, copy the object storage across, and modify the `config` file
+	err1 := fileutils.New().Copy(wtModules, rootModules)
+	if err1 != nil {
+		return nil, err1
+	}
+
+	// Manually edit the config files to erase the worktree in them
+	findSubmoduleGitRepos(wtModules)
+
+	return &wt, nil
 }
 
 func (w *Worktree) Checkout(commit *ResolvedCommit) error {
 	cmd := w.runCommand("git", "checkout", "--detach", string(commit.hash))
+	if cmd.err != nil {
+		return cmd.err
+	}
+
+	// Remove stuff that wasn't explicitly checked in.
+	// -x is ??
+	// -ff is to also remove nested git repos (submodules).
+	cmd = w.runCommand("git", "clean", "-ffxd")
+	if cmd.err != nil {
+		return cmd.err
+	}
+
+	// Checkout submodules
+	cmd = w.runCommand("git", "submodule", "update")
 	return cmd.err
 }
 
@@ -157,7 +258,7 @@ func (r *Repository) CommitEverythingInWorktree(message string) (Hash, error) {
 		return NilHash, cmd.err
 	}
 
-	cmd = r.runCommand("git", "commit", "--message", message)
+	cmd = r.runCommand("git", "commit", "--message", message, "--quiet", "--allow-empty")
 	if cmd.err != nil {
 		return NilHash, cmd.err
 	}

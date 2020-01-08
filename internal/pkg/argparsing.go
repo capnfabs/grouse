@@ -29,6 +29,9 @@ func parseArgs(flags flagSet) (*cmdArgs, error) {
 		diffCommand = "diff"
 	}
 
+	debug, err := flags.GetBool("debug")
+	check(err)
+
 	diffArgsStr, err := flags.GetString("diffargs")
 	check(err)
 
@@ -65,6 +68,7 @@ func parseArgs(flags flagSet) (*cmdArgs, error) {
 		commits:     commits,
 		diffArgs:    diffArgs,
 		buildArgs:   buildArgs,
+		debug:       debug,
 	}, nil
 }
 
@@ -74,4 +78,5 @@ type cmdArgs struct {
 	commits     []string
 	diffArgs    []string
 	buildArgs   []string
+	debug       bool
 }

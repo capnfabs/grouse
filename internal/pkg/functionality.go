@@ -14,8 +14,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
-
-	au "github.com/logrusorgru/aurora"
 )
 
 func check(err error) {
@@ -28,16 +26,14 @@ func check(err error) {
 var AppFs = afero.NewOsFs()
 
 func RunRootCommand(cmd *cobra.Command) {
-	debug, err := cmd.Flags().GetBool("debug")
-	check(err)
-	out.Debug = debug
-
 	context, err := parseArgs(cmd.Flags())
 	if err != nil {
 		out.Outln("Error:", err)
 		cmd.Usage()
 		os.Exit(1)
 	}
+	out.Debug = context.debug
+
 	err = runMain(context)
 	if err != nil {
 		out.Outln("Error:", err)
@@ -49,22 +45,21 @@ func runMain(context *cmdArgs) error {
 	repo, err := git.OpenRepository(context.repoDir)
 
 	if err != nil {
-		// Should we return these errors instead of doing this?
 		return errors.WithMessagef(err, "Couldn't load the git repo in %s", context.repoDir)
 	}
 
 	relativeRoot, err := git.GetRelativeLocation(context.repoDir)
-	// TODO: probably shouldn't happen because we already verified the repo above?
+	// Shouldn't happen because we already verified the repo above?
 	check(err)
 
-	out.Debugf("Got repo location %s and relative path %s\n", au.Yellow(repo.RootDir), au.Green(relativeRoot))
+	out.Debugf("Got repo location %#v and relative path %#v\n", repo.RootDir, relativeRoot)
 
 	refs := []*git.ResolvedUserRef{}
 
 	for _, commit := range context.commits {
 		ref, err := repo.ResolveCommit(commit)
 		if err != nil {
-			return errors.WithMessagef(err, "Couldn't resolve '%s'", commit)
+			return errors.WithMessagef(err, "Couldn't resolve '%s' as git commit", commit)
 		}
 		refs = append(refs, ref)
 	}
@@ -77,9 +72,11 @@ func runMain(context *cmdArgs) error {
 	check(err)
 
 	srcWorktree, err := repo.AddWorktree(path.Join(scratchDir, "src"))
-	// TODO
 	check(err)
-	defer srcWorktree.Remove()
+	if !context.debug {
+		// Debug doesn't remove the worktree, so you can inspect it later.
+		defer srcWorktree.Remove()
+	}
 
 	// Init the Output Repo
 	outputDir := path.Join(scratchDir, "output")
@@ -96,7 +93,7 @@ func runMain(context *cmdArgs) error {
 		check(err)
 
 		out.Outf("Building revision %s…\n", ref)
-		hash, err := process(
+		hash, err := processSourceAtCommit(
 			srcWorktree, &ref.Commit, relativeRoot, context.buildArgs, outputRepo)
 
 		switch err.(type) {
@@ -106,7 +103,6 @@ func runMain(context *cmdArgs) error {
 		case error:
 			panic(err)
 		}
-		out.Outf("Yay! %s\n", hash)
 		outputHashes = append(outputHashes, hash)
 	}
 
@@ -146,7 +142,7 @@ func eraseDirectoryExceptRootDotGit(directory string) error {
 	return nil
 }
 
-func process(
+func processSourceAtCommit(
 	srcWorktree *git.Worktree, ref *git.ResolvedCommit, hugoRelativeRoot string, buildArgs []string, outputRepo *git.Repository) (git.Hash, error) {
 	out.Debugf("Checking out %s…\n", ref)
 	err := srcWorktree.Checkout(ref)
@@ -167,7 +163,7 @@ func runHugo(hugoRootDir string, outputDir string, userArgs []string) error {
 	// Put the 'destination' last. Repeated 'destination' flags only uses the
 	// last one.
 	// Note that we do it with the "--destination=/foo/" instead of "--destination foo"
-	// because the former results in
+	// -- there was a reason for this but it's been lost to time.
 	allArgs := append(userArgs, "--destination="+shellquote.Join(outputDir))
 	cmd := exec.Command("hugo", allArgs...)
 	out.Debugf("Running command\n> %s\n(from directory %s)\n", shellquote.Join(cmd.Args...), hugoRootDir)
