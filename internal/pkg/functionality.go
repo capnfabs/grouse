@@ -12,7 +12,6 @@ import (
 	"github.com/capnfabs/grouse/internal/out"
 	"github.com/kballard/go-shellquote"
 	"github.com/pkg/errors"
-	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 )
 
@@ -21,9 +20,6 @@ func check(err error) {
 		panic(err)
 	}
 }
-
-// TODO: get rid of this, put it into a dependency context or something.
-var AppFs = afero.NewOsFs()
 
 func RunRootCommand(cmd *cobra.Command) {
 	context, err := parseArgs(cmd.Flags())
@@ -34,29 +30,29 @@ func RunRootCommand(cmd *cobra.Command) {
 	}
 	out.Debug = context.debug
 
-	err = runMain(context)
+	err = runMain(git.NewGit(), *context)
 	if err != nil {
 		out.Outln("Error:", err)
 		os.Exit(2)
 	}
 }
 
-func runMain(context *cmdArgs) error {
-	repo, err := git.OpenRepository(context.repoDir)
+func runMain(git_ git.Git, userArgs cmdArgs) error {
+	repo, err := git_.OpenRepository(userArgs.repoDir)
 
 	if err != nil {
-		return errors.WithMessagef(err, "Couldn't load the git repo in %s", context.repoDir)
+		return errors.WithMessagef(err, "Couldn't load the git repo in %s", userArgs.repoDir)
 	}
 
-	relativeRoot, err := git.GetRelativeLocation(context.repoDir)
+	relativeRoot, err := git_.GetRelativeLocation(userArgs.repoDir)
 	// Shouldn't happen because we already verified the repo above?
 	check(err)
 
-	out.Debugf("Got repo location %#v and relative path %#v\n", repo.RootDir, relativeRoot)
+	out.Debugf("Got repo location %#v and relative path %#v\n", repo.RootDir(), relativeRoot)
 
 	refs := []git.ResolvedUserRef{}
 
-	for _, commit := range context.commits {
+	for _, commit := range userArgs.commits {
 		ref, err := repo.ResolveCommit(commit)
 		if err != nil {
 			return errors.WithMessagef(err, "Couldn't resolve '%s' as git commit", commit)
@@ -73,7 +69,7 @@ func runMain(context *cmdArgs) error {
 
 	srcWorktree, err := repo.AddWorktree(path.Join(scratchDir, "src"))
 	check(err)
-	if !context.keepWorktree {
+	if !userArgs.keepWorktree {
 		// Debug doesn't remove the worktree, so you can inspect it later.
 		defer srcWorktree.Remove()
 	}
@@ -81,7 +77,7 @@ func runMain(context *cmdArgs) error {
 	// Init the Output Repo
 	outputDir := path.Join(scratchDir, "output")
 	os.MkdirAll(outputDir, os.ModePerm)
-	outputRepo, err := git.NewRepository(outputDir)
+	outputRepo, err := git_.NewRepository(outputDir)
 	// Not the user's fault and nothing we can do; panicking is ok.
 	check(err)
 
@@ -89,12 +85,12 @@ func runMain(context *cmdArgs) error {
 
 	for _, ref := range refs {
 		// Make sure the output directory is empty
-		err = eraseDirectoryExceptRootDotGit(outputDir)
+		err = outputRepo.ClearSourceControlledFilesFromWorktree()
 		check(err)
 
 		out.Outf("Building revision %s…\n", ref)
 		hash, err := processSourceAtCommit(
-			srcWorktree, ref.Commit(), relativeRoot, context.buildArgs, outputRepo)
+			srcWorktree, ref.Commit(), relativeRoot, userArgs.buildArgs, outputRepo)
 
 		switch err.(type) {
 		case *exec.ExitError:
@@ -108,36 +104,18 @@ func runMain(context *cmdArgs) error {
 
 	// Do the actual diff
 	out.Outln("Diffing…")
-	err = runDiff(outputDir, context.diffCommand, context.diffArgs, outputHashes[0], outputHashes[1])
+	err = runDiff(outputDir, userArgs.diffCommand, userArgs.diffArgs, outputHashes[0], outputHashes[1])
 	switch e := err.(type) {
 	case *exec.ExitError:
 		if strings.Contains(e.Error(), "signal: broken pipe") {
 			// It's not an error; but the user exited 'less' or whatever
 		} else {
 			err := errors.Wrapf(
-				err, "Running git %s failed", context.diffCommand)
+				err, "Running git %s failed", userArgs.diffCommand)
 			return err
 		}
 	case error:
 		panic(err)
-	}
-	return nil
-}
-
-func eraseDirectoryExceptRootDotGit(directory string) error {
-	infos, err := afero.ReadDir(AppFs, directory)
-	if err != nil {
-		return err
-	}
-	for _, info := range infos {
-		if info.Name() == ".git" {
-			continue
-		}
-
-		err := AppFs.RemoveAll(path.Join(directory, info.Name()))
-		if err != nil {
-			return err
-		}
 	}
 	return nil
 }

@@ -26,6 +26,18 @@ go test ./...
 - They're _not_ very comprehensive at the moment. I found testing in Go really hard.
 - To compress a hugo site repo for the tests, rename the directory to `input` and then run e.g. `zip -r tiny.zip input`
 
+Mocks:
+
+```sh
+export GOBIN=$PWD/bin
+export PATH=$GOBIN:$PATH
+bin/mockery -dir internal/git -all
+```
+
+See also https://github.com/vektra/mockery/issues/210
+
+See this for installing tools: https://stackoverflow.com/a/57317864/996592
+
 ## Releasing
 
 - Test build artifacts with: `goreleaser --snapshot --skip-publish --rm-dist`

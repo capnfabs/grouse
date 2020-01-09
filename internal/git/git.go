@@ -1,19 +1,26 @@
 package git
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"os"
-	"os/exec"
 	"path"
-	"strings"
 
+	"github.com/capnfabs/grouse/internal/exec"
 	"github.com/capnfabs/grouse/internal/out"
 	"github.com/cf-guardian/guardian/kernel/fileutils"
-	"github.com/kballard/go-shellquote"
 	au "github.com/logrusorgru/aurora"
 )
+
+type Git interface {
+	NewRepository(dst string) (Repository, error)
+	OpenRepository(repoDir string) (Repository, error)
+	GetRelativeLocation(currentDir string) (string, error)
+}
+
+func NewGit() Git {
+	return git{}
+}
 
 // Repository represents a git repository, somewhere on disk.
 type Repository interface {
@@ -21,6 +28,7 @@ type Repository interface {
 	ResolveCommit(ref string) (ResolvedUserRef, error)
 	AddWorktree(dst string) (Worktree, error)
 	CommitEverythingInWorktree(message string) (Hash, error)
+	ClearSourceControlledFilesFromWorktree() error
 }
 
 type repository struct {
@@ -104,70 +112,44 @@ func (r *resolvedUserRef) String() string {
 // OpenRepository opens an existing git repository in repoDir. If repoDir is a
 // subdirectory in the repository, OpenRepository walks up the file tree to find
 // the git repo.
-func OpenRepository(repoDir string) (Repository, error) {
-	cmd := runCommand(repoDir, "git", "rev-parse", "--show-toplevel")
-	if cmd.err != nil {
-		return nil, cmd.err
+func (g git) OpenRepository(repoDir string) (Repository, error) {
+	cmd := exec.Exec(repoDir, "git", "rev-parse", "--show-toplevel")
+	if cmd.Err != nil {
+		return nil, cmd.Err
 	}
-	rootDir := cmd.stdout
+	rootDir := cmd.StdOut
 	return &repository{
 		rootDir: rootDir,
 	}, nil
 }
 
-type cmdResult struct {
-	stderr string
-	stdout string
-	err    error
+func (r *repository) runCommand(args ...string) exec.CmdResult {
+	return exec.Exec(r.rootDir, args...)
 }
 
-func runCommand(workDir string, args ...string) cmdResult {
-	out.Debugln("Running Command: ", shellquote.Join(args...))
-	cmd := exec.Command(args[0], args[1:]...)
-	var stdoutBuf, stderrBuf bytes.Buffer
-	cmd.Stderr = &stderrBuf
-	cmd.Stdout = &stdoutBuf
-	cmd.Dir = workDir
-	err := cmd.Run()
-	stderr := strings.TrimSpace(stderrBuf.String())
-	stdout := strings.TrimSpace(stdoutBuf.String())
-	out.Debugln("StdErr: ", stderr)
-	out.Debugln("StdOut: ", stdout)
-	return cmdResult{
-		stderr: stderr,
-		stdout: stdout,
-		err:    err,
-	}
-
-}
-
-func (r *repository) runCommand(args ...string) cmdResult {
-	return runCommand(r.rootDir, args...)
-}
-
-func (w *worktree) runCommand(args ...string) cmdResult {
-	return runCommand(w.location, args...)
+func (w *worktree) runCommand(args ...string) exec.CmdResult {
+	return exec.Exec(w.location, args...)
 }
 
 // GetRelativeLocation gets the relative path from the root of a git repo to
 // currentDir. e.g. if there's a git repo in ~/hello, and currentDir is
 // ~/hello/potato/tomato, returns "potato/tomato".
-func GetRelativeLocation(currentDir string) (string, error) {
-	cmd := runCommand(currentDir, "git", "rev-parse", "--show-prefix")
-	if cmd.err != nil {
-		return "", cmd.err
+func (g git) GetRelativeLocation(currentDir string) (string, error) {
+	cmd := exec.Exec(currentDir, "git", "rev-parse", "--show-prefix")
+	if cmd.Err != nil {
+		return "", cmd.Err
 	}
-	return cmd.stdout, nil
+	return cmd.StdOut, nil
 }
 
 func (r *repository) ResolveCommit(ref string) (ResolvedUserRef, error) {
 	cmd := r.runCommand("git", "rev-parse", "--verify", ref+"^{commit}")
-	if cmd.err != nil {
-		return nil, cmd.err
+	if cmd.Err != nil {
+		return nil, cmd.Err
 	}
 	commit := resolvedCommit{
 		repo: r,
-		hash: Hash(cmd.stdout),
+		hash: Hash(cmd.StdOut),
 	}
 	return &resolvedUserRef{
 		commit,
@@ -181,11 +163,11 @@ func isFile(file os.FileInfo) bool {
 
 func (w *worktree) getModulesPath() string {
 	cmd := w.runCommand("git", "rev-parse", "--git-path", "modules")
-	if cmd.err != nil {
+	if cmd.Err != nil {
 		// This should always be available
-		panic(cmd.err)
+		panic(cmd.Err)
 	}
-	wtModules := cmd.stdout
+	wtModules := cmd.StdOut
 	// NOTE: I never observed relative paths with worktrees but I'm still
 	// worried about it; canonicalize as required.
 	if !path.IsAbs(wtModules) {
@@ -210,11 +192,11 @@ func prepSubmodulesForWorktree(baseRepo *repository, newWorktree *worktree) erro
 	// their modules in the worktree for the module. This effectively assumes a
 	// _newer_ version of git.
 	cmd := baseRepo.runCommand("git", "rev-parse", "--git-path", "modules")
-	if cmd.err != nil {
-		panic(cmd.err)
+	if cmd.Err != nil {
+		panic(cmd.Err)
 	}
 
-	rootModules := cmd.stdout
+	rootModules := cmd.StdOut
 
 	// Canonicalize it!
 	if !path.IsAbs(rootModules) {
@@ -248,8 +230,8 @@ func prepSubmodulesForWorktree(baseRepo *repository, newWorktree *worktree) erro
 
 func (r *repository) AddWorktree(dst string) (Worktree, error) {
 	cmd := r.runCommand("git", "worktree", "add", "--no-checkout", "--detach", dst)
-	if cmd.err != nil {
-		return nil, cmd.err
+	if cmd.Err != nil {
+		return nil, cmd.Err
 	}
 
 	wt := &worktree{
@@ -264,65 +246,72 @@ func (r *repository) AddWorktree(dst string) (Worktree, error) {
 
 func (w *worktree) Checkout(commit ResolvedCommit) error {
 	cmd := w.runCommand("git", "checkout", "--detach", string(commit.Hash()))
-	if cmd.err != nil {
-		return cmd.err
+	if cmd.Err != nil {
+		return cmd.Err
 	}
 
 	// Remove stuff that wasn't explicitly checked in.
 	// -x is ??
 	// -ff is to also remove nested git repos (submodules).
 	cmd = w.runCommand("git", "clean", "-ffxd")
-	if cmd.err != nil {
-		return cmd.err
+	if cmd.Err != nil {
+		return cmd.Err
 	}
 
 	// Checkout submodules
 	cmd = w.runCommand("git", "submodule", "update", "--recursive")
-	return cmd.err
+	return cmd.Err
 }
 
 func (w *worktree) Remove() error {
 	cmd := w.runCommand("git", "worktree", "remove", "--force", w.location)
-	return cmd.err
+	return cmd.Err
 }
 
 var (
-	// The given directory already has a git repository in it, and a new
-	// repository can't be created there.
+	// ErrRepoExists means that the given directory already has a git repository
+	// in it, and a new repository can't be created there.
 	ErrRepoExists = errors.New("Repo already exists")
 )
 
+type git struct{}
+
 // NewRepository creates a new git repository in the given directory.
-func NewRepository(dst string) (Repository, error) {
-	_, err := OpenRepository(dst)
+func (g git) NewRepository(dst string) (Repository, error) {
+	_, err := g.OpenRepository(dst)
 	if err == nil {
 		return nil, ErrRepoExists
 	}
-	cmd := runCommand(dst, "git", "init")
-	if cmd.err != nil {
-		return nil, cmd.err
+	cmd := exec.Exec(dst, "git", "init")
+	if cmd.Err != nil {
+		return nil, cmd.Err
 	}
 	return &repository{
 		rootDir: dst,
 	}, nil
 }
 
+func (r *repository) ClearSourceControlledFilesFromWorktree() error {
+	cmd := r.runCommand("git", "rm", "-r", "-q", "--ignore-unmatch", ".")
+	return cmd.Err
+}
+
 func (r *repository) CommitEverythingInWorktree(message string) (Hash, error) {
 	// TODO: if your build produces a .gitignore file, everything that it
 	// references will be excluded from the commit. It probably shouldn't be. 😅
 	cmd := r.runCommand("git", "add", ".")
-	if cmd.err != nil {
-		return NilHash, cmd.err
+	if cmd.Err != nil {
+		return NilHash, cmd.Err
 	}
 
 	cmd = r.runCommand("git", "commit", "--message", message, "--quiet", "--allow-empty")
-	if cmd.err != nil {
-		return NilHash, cmd.err
+	if cmd.Err != nil {
+		return NilHash, cmd.Err
 	}
 
 	cmd = r.runCommand("git", "rev-parse", "--verify", "HEAD")
-	if cmd.err != nil {
-		return NilHash, cmd.err
+	if cmd.Err != nil {
+		return NilHash, cmd.Err
 	}
-	return Hash(cmd.stdout), nil
+	return Hash(cmd.StdOut), nil
 }

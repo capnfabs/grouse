@@ -3,10 +3,10 @@ package pkg
 import (
 	"testing"
 
-	"github.com/capnfabs/grouse/test/aferobilly"
-	"github.com/spf13/afero"
-
-	qt "github.com/frankban/quicktest"
+	"github.com/capnfabs/grouse/internal/exec"
+	"github.com/capnfabs/grouse/internal/git"
+	"github.com/capnfabs/grouse/mocks"
+	"github.com/stretchr/testify/mock"
 )
 
 /* test ideas:
@@ -16,47 +16,90 @@ import (
   - A directory without a git repo
   - A repo with submodules in use in the tree, without submodules available
   - A repo that uses the git extensions to Hugo
+
+- Unit tests:
+	- Test that args are passed thru to hugo
+	- Test that args are passed thru to git diff
+	- Test --tool
+	- Test console output.
 */
 
-func useMemFs(fs afero.Fs) func() {
-	oldFs := AppFs
-	AppFs = fs
-	return func() {
-		AppFs = oldFs
-	}
+type MockGit struct {
+	mock.Mock
 }
 
-func TestEraseDirectoryExceptRootDotGit(t *testing.T) {
-	c := qt.New(t)
+func (m *MockGit) NewRepository(dst string) (git.Repository, error) {
+	args := m.Called(dst)
+	return args.Get(0).(git.Repository), args.Error(1)
+}
 
-	fs := afero.NewMemMapFs()
-	defer useMemFs(fs)()
+func (m *MockGit) OpenRepository(repoDir string) (git.Repository, error) {
+	args := m.Called(repoDir)
+	return args.Get(0).(git.Repository), args.Error(1)
+}
 
-	fs.Mkdir("/src", 0755)
-	fs.MkdirAll("/src/x/.y", 0755)
-	fs.MkdirAll("/src/x/content", 0755)
-	fs.MkdirAll("/src/.git/x", 0755)
+func (m *MockGit) GetRelativeLocation(currentDir string) (string, error) {
+	args := m.Called(currentDir)
+	return args.String(0), args.Error(1)
+}
 
-	af := &afero.Afero{Fs: fs}
-	af.WriteFile("/src/x/.y/foo", []byte("hello there"), 0644)
-	af.WriteFile("/src/x/content/source.txt", []byte("here is some content"), 0644)
-	af.WriteFile("/src/x/content/.hidden", []byte("here is a hidden file"), 0644)
-	af.WriteFile("/src/.git/file1", []byte("file1"), 0644)
-	af.WriteFile("/src/.git/x/file2", []byte("file2"), 0644)
+func mockWriteRepo() *mocks.Repository {
+	r := new(mocks.Repository)
+	r.On("RootDir").Return("/tmp/repo")
+	// TODO: make this hash value change?
+	r.On("CommitEverythingInWorktree", mock.Anything).Return("123123d", nil)
+	r.On("ClearSourceControlledFilesFromWorktree").Return(nil)
+	return r
+}
 
-	eraseDirectoryExceptRootDotGit("/src/")
+func mockReadRepo() *mocks.Repository {
+	r := new(mocks.Repository)
+	wt := new(mocks.Worktree)
+	wt.On("Location").Return("/tmp/worktree")
+	wt.On("Remove").Return(nil)
+	wt.On("Checkout", mock.Anything).Return(nil)
 
-	paths := aferobilly.EnumeratePaths(af, "/src")
-	c.Assert(paths, qt.ContentEquals, []string{
-		"/src",
-		"/src/.git",
-		"/src/.git/x",
-		"/src/.git/file1",
-		"/src/.git/x/file2",
+	commit := new(mocks.ResolvedCommit)
+	commit.On("Repo").Return(r)
+	commit.On("Hash").Return("123123123123123123123")
+
+	ref := new(mocks.ResolvedUserRef)
+	ref.On("Commit").Return(commit)
+	ref.On("UserRef", "tags/nope")
+
+	r.On("RootDir").Return("/tmp/repo")
+	r.On("ResolveCommit", mock.Anything).Return(ref, nil)
+	r.On("AddWorktree", mock.Anything).Return(wt, nil)
+	return r
+}
+
+func TestPassthroughBuildArgs(t *testing.T) {
+
+	mockExec := mock.Mock{}
+	exec.Exec = func(workDir string, args ...string) exec.CmdResult {
+		res := mockExec.Called(workDir, args)
+		return res.Get(0).(exec.CmdResult)
+	}
+
+	mockExec.On("func1", mock.Anything, mock.Anything).Return(exec.CmdResult{
+		StdErr: "",
+		StdOut: "",
+		Err:    nil,
 	})
-	content, _ := af.ReadFile("/src/.git/file1")
-	c.Assert(content, qt.DeepEquals, []byte("file1"))
 
-	content, _ = af.ReadFile("/src/.git/x/file2")
-	c.Assert(content, qt.DeepEquals, []byte("file2"))
+	mockGit := new(MockGit)
+	mockGit.On("OpenRepository", mock.Anything).Return(mockReadRepo(), nil)
+	mockGit.On("GetRelativeLocation", mock.Anything).Return("potato/tomato", nil)
+	mockGit.On("NewRepository", mock.Anything).Return(mockWriteRepo(), nil)
+
+	args := cmdArgs{
+		repoDir:      "",
+		diffCommand:  "diff",
+		commits:      []string{"HEAD^", "HEAD"},
+		diffArgs:     []string{},
+		buildArgs:    []string{"--here-is-a-build-arg", "message text with 'apostrophes'"},
+		debug:        false,
+		keepWorktree: false,
+	}
+	runMain(mockGit, args)
 }

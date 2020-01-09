@@ -23,10 +23,12 @@ func (f flags) Args() []string {
 
 func defaultFlags() flags {
 	return flags{
-		"diffargs":  "--potato 'excellent'",
-		"buildargs": "--carrot",
-		"tool":      true,
-		"_args":     []string{"b1234553", "HEAD^"},
+		"diffargs":      "--potato 'excellent'",
+		"buildargs":     "--carrot",
+		"tool":          true,
+		"_args":         []string{"b1234553", "HEAD^"},
+		"keep-worktree": false,
+		"debug":         false,
 	}
 }
 

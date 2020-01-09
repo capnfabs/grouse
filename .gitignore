@@ -5,3 +5,4 @@
 # I wouldn't have bothered including this but goreleaser is complaining about
 # the working tree being dirty.
 /test-fixtures/*/
+/bin/
