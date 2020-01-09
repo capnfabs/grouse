@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path"
@@ -16,6 +15,7 @@ import (
 	au "github.com/logrusorgru/aurora"
 )
 
+// Repository represents a git repository, somewhere on disk.
 type Repository interface {
 	RootDir() string
 	ResolveCommit(ref string) (ResolvedUserRef, error)
@@ -31,10 +31,14 @@ func (r *repository) RootDir() string {
 	return r.rootDir
 }
 
+// Hash is a git SHA-1, base16 encoded
 type Hash string
 
+// NilHash is the zero value, i.e. the absence of a Hash.
 const NilHash = Hash("")
 
+// ResolvedCommit represents a commit which definitely exists within its
+// associated repository.
 type ResolvedCommit interface {
 	Repo() Repository
 	Hash() Hash
@@ -56,6 +60,10 @@ func (r *resolvedCommit) String() string {
 	return string(r.hash[:7])
 }
 
+// ResolvedUserRef represents a user-provided commit-ish, which has then been
+// resolved to a commit in the git repo. This is useful info together for
+// referring back to input that the user has supplied; notably, the String()
+// method returns a representation of the user's input and the SHA together.
 type ResolvedUserRef interface {
 	Commit() ResolvedCommit
 	UserRef() string
@@ -73,6 +81,8 @@ func (r *resolvedUserRef) UserRef() string {
 	return r.userRef
 }
 
+// Worktree represents a git worktree - it may or may not be the primary
+// worktree for the repo or a secondary worktree.
 type Worktree interface {
 	Location() string
 	Remove() error
@@ -91,17 +101,15 @@ func (r *resolvedUserRef) String() string {
 	return fmt.Sprintf("%s (%s)", au.Blue(r.userRef), au.Yellow(r.commit.hash[:7]))
 }
 
+// OpenRepository opens an existing git repository in repoDir. If repoDir is a
+// subdirectory in the repository, OpenRepository walks up the file tree to find
+// the git repo.
 func OpenRepository(repoDir string) (Repository, error) {
-	cmd := exec.Command("git", "rev-parse", "--show-toplevel")
-	var stdout, stderr bytes.Buffer
-	cmd.Stderr = &stderr
-	cmd.Stdout = &stdout
-	cmd.Dir = repoDir
-	err := cmd.Run()
-	if err != nil {
-		return nil, err
+	cmd := runCommand(repoDir, "git", "rev-parse", "--show-toplevel")
+	if cmd.err != nil {
+		return nil, cmd.err
 	}
-	rootDir := strings.TrimSpace(stdout.String())
+	rootDir := cmd.stdout
 	return &repository{
 		rootDir: rootDir,
 	}, nil
@@ -141,6 +149,9 @@ func (w *worktree) runCommand(args ...string) cmdResult {
 	return runCommand(w.location, args...)
 }
 
+// GetRelativeLocation gets the relative path from the root of a git repo to
+// currentDir. e.g. if there's a git repo in ~/hello, and currentDir is
+// ~/hello/potato/tomato, returns "potato/tomato".
 func GetRelativeLocation(currentDir string) (string, error) {
 	cmd := runCommand(currentDir, "git", "rev-parse", "--show-prefix")
 	if cmd.err != nil {
@@ -164,35 +175,75 @@ func (r *repository) ResolveCommit(ref string) (ResolvedUserRef, error) {
 	}, nil
 }
 
-// TODO: rename
-func findSubmoduleGitRepos(rootDir string) {
-	files, err := ioutil.ReadDir(rootDir)
-	if err != nil {
-		panic(err)
+func isFile(file os.FileInfo) bool {
+	return file.Mode()&os.ModeType == 0
+}
+
+func (w *worktree) getModulesPath() string {
+	cmd := w.runCommand("git", "rev-parse", "--git-path", "modules")
+	if cmd.err != nil {
+		// This should always be available
+		panic(cmd.err)
 	}
-	// Look for a config file
-	for _, file := range files {
-		if file.Name() == "config" && (file.Mode()&os.ModeType) == 0 {
-			// Oh! We have one!
-			p := path.Join(rootDir, "config")
-			out.Debugln("Unsetting core.worktree from file", p)
-			cmd := runCommand("/", "git", "config", "--file", p, "--unset", "core.worktree")
-			if cmd.err == nil {
-				// Ok it worked, no need to look in other directories
-				out.Debugln("Succeeded!")
-				return
-			} else {
-				out.Debugln("Failed, maybe not a git config file :-/")
-				break
-			}
-		}
+	wtModules := cmd.stdout
+	// NOTE: I never observed relative paths with worktrees but I'm still
+	// worried about it; canonicalize as required.
+	if !path.IsAbs(wtModules) {
+		wtModules = path.Join(w.location, wtModules)
 	}
-	// Apparently not a git repo, go a level deeper
-	for _, file := range files {
-		if file.IsDir() {
-			findSubmoduleGitRepos(path.Join(rootDir, file.Name()))
-		}
+	return wtModules
+}
+
+// prepSubmodulesForWorktree is Dark Magic that bootstraps git submodules for a
+// secondary worktree so that you don't need to have internet to run
+// `submodule update` within the worktree.
+// HOW DOES IT WORK?
+// - Copy-paste the `.git/modules` directory from the base repository to the
+//   worktree (usually .git/worktrees/[name]/modules)
+// - For each module, edit the `config` file to remove the `worktree` section
+//	 (i.e.) disassociate the module from its original worktree.
+// - Then, `git submodule update` from within the worktree _just works_ and uses
+//   the existing context.
+func prepSubmodulesForWorktree(baseRepo *repository, newWorktree *worktree) error {
+	// First: get the modules path for the base repo.
+	// Note that this is potentially edge-casey -- old versions of git store
+	// their modules in the worktree for the module. This effectively assumes a
+	// _newer_ version of git.
+	cmd := baseRepo.runCommand("git", "rev-parse", "--git-path", "modules")
+	if cmd.err != nil {
+		panic(cmd.err)
 	}
+
+	rootModules := cmd.stdout
+
+	// Canonicalize it!
+	if !path.IsAbs(rootModules) {
+		rootModules = path.Join(baseRepo.rootDir, rootModules)
+	}
+
+	// Test that there _are_ submodules before trying anything tricky
+	_, err := os.Lstat(rootModules)
+	if err != nil && os.IsNotExist(err) {
+		// No submodules, just chill.
+		return nil
+	} else if err != nil {
+		// I can't imagine what error this could be...
+		return err
+	}
+
+	// Now get the modules path for the worktree.
+	wtModules := newWorktree.getModulesPath()
+
+	out.Debugln("Hack-copying modules from", rootModules, "to", wtModules)
+
+	// Not a regular error type; so use a different variable name
+	// TODO: maybe don't import some random library just for this function?
+	err1 := fileutils.New().Copy(wtModules, rootModules)
+	if err1 != nil {
+		return err1
+	}
+
+	return nil
 }
 
 func (r *repository) AddWorktree(dst string) (Worktree, error) {
@@ -201,65 +252,14 @@ func (r *repository) AddWorktree(dst string) (Worktree, error) {
 		return nil, cmd.err
 	}
 
-	wt := worktree{
+	wt := &worktree{
 		location: dst,
 	}
 
-	// OPTIMISATION
-
-	// Submodule wizardry!
-
-	// First: get the modules path for the base repo.
-	// Note that this is potentially extremely edge-casey -- old versions of git
-	// store their modules in-directory. This effectively assumes a _newer_
-	// version of git.
-	cmd = r.runCommand("git", "rev-parse", "--git-path", "modules")
-	if cmd.err != nil {
-		panic(cmd.err)
+	if err := prepSubmodulesForWorktree(r, wt); err != nil {
+		return nil, err
 	}
-
-	rootModules := cmd.stdout
-	// Canonicalise it.
-	if !path.IsAbs(rootModules) {
-		rootModules = path.Join(r.rootDir, rootModules)
-	}
-
-	// Test that there _are_ submodules before trying anything tricky
-	_, err := os.Lstat(rootModules)
-	if err != nil && os.IsNotExist(err) {
-		return &wt, nil
-	} else if err != nil {
-		panic(err)
-	}
-
-	// Now get the modules path for the worktree.
-	cmd = wt.runCommand("git", "rev-parse", "--git-path", "modules")
-	if cmd.err != nil {
-		panic(cmd.err)
-	}
-	wtModules := cmd.stdout
-
-	// NOTE: I never observed relative paths with worktrees but I'm still
-	// worried about it.
-	if !path.IsAbs(wtModules) {
-		wtModules = path.Join(wt.location, wtModules)
-	}
-
-	out.Debugln("Hack-copying modules from", rootModules, "to", wtModules)
-
-	// I _think_ the way to do this is:
-	// 1. Find submodules that are init'd (`git submodule status` isn't prefixed with a '-')
-	// 2. those will be automatically init'd in new worktree, but the links won't be in place (don't know how to detect this?)
-	// 3. for each of those submodules, copy the object storage across, and modify the `config` file
-	err1 := fileutils.New().Copy(wtModules, rootModules)
-	if err1 != nil {
-		return nil, err1
-	}
-
-	// Manually edit the config files to erase the worktree in them
-	findSubmoduleGitRepos(wtModules)
-
-	return &wt, nil
+	return wt, nil
 }
 
 func (w *worktree) Checkout(commit ResolvedCommit) error {
@@ -286,14 +286,21 @@ func (w *worktree) Remove() error {
 	if cmd.err != nil {
 		return cmd.err
 	}
+	// Delete the modules path; this tricks git into thinking that it's ok to
+	// remove the worktree
+	os.RemoveAll(w.getModulesPath())
+
 	cmd = w.runCommand("git", "worktree", "remove", w.location)
 	return cmd.err
 }
 
 var (
+	// The given directory already has a git repository in it, and a new
+	// repository can't be created there.
 	ErrRepoExists = errors.New("Repo already exists")
 )
 
+// NewRepository creates a new git repository in the given directory.
 func NewRepository(dst string) (Repository, error) {
 	_, err := OpenRepository(dst)
 	if err == nil {

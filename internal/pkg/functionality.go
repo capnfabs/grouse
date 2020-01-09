@@ -73,7 +73,7 @@ func runMain(context *cmdArgs) error {
 
 	srcWorktree, err := repo.AddWorktree(path.Join(scratchDir, "src"))
 	check(err)
-	if !context.debug {
+	if !context.keepWorktree {
 		// Debug doesn't remove the worktree, so you can inspect it later.
 		defer srcWorktree.Remove()
 	}
