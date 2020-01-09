@@ -282,15 +282,7 @@ func (w *worktree) Checkout(commit ResolvedCommit) error {
 }
 
 func (w *worktree) Remove() error {
-	cmd := w.runCommand("git", "submodule", "deinit", "--all")
-	if cmd.err != nil {
-		return cmd.err
-	}
-	// Delete the modules path; this tricks git into thinking that it's ok to
-	// remove the worktree
-	os.RemoveAll(w.getModulesPath())
-
-	cmd = w.runCommand("git", "worktree", "remove", w.location)
+	cmd := w.runCommand("git", "worktree", "remove", "--force", w.location)
 	return cmd.err
 }
 
