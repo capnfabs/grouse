@@ -16,6 +16,25 @@ type CmdResult struct {
 }
 
 type Executor func(workDir string, args ...string) CmdResult
+type CommandRunner func(cmd *Cmd) error
+
+type Cmd struct {
+	*exec.Cmd
+}
+
+// Probably a better way to do this, but it works for now!
+func (c *Cmd) Run(DONT_CALL_THIS string) {
+	// This doesn't support test injection, so do this other thing instead.
+	panic("Don't call this; use Run(cmd) instead")
+}
+
+func Command(name string, arg ...string) *Cmd {
+	return &Cmd{exec.Command(name, arg...)}
+}
+
+var Run CommandRunner = func(cmd *Cmd) error {
+	return cmd.Cmd.Run()
+}
 
 var Exec Executor = func(workDir string, args ...string) CmdResult {
 	out.Debugln("Running Command: ", shellquote.Join(args...))
@@ -35,3 +54,5 @@ var Exec Executor = func(workDir string, args ...string) CmdResult {
 		Err:    err,
 	}
 }
+
+type ExitError = exec.ExitError

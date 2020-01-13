@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"os/exec"
 	"path"
 	"strings"
 
+	"github.com/capnfabs/grouse/internal/exec"
 	"github.com/capnfabs/grouse/internal/git"
 	"github.com/capnfabs/grouse/internal/out"
 	"github.com/kballard/go-shellquote"
@@ -76,7 +76,9 @@ func runMain(git_ git.Git, userArgs cmdArgs) error {
 
 	// Init the Output Repo
 	outputDir := path.Join(scratchDir, "output")
-	os.MkdirAll(outputDir, os.ModePerm)
+	err = os.MkdirAll(outputDir, os.ModePerm)
+	check(err)
+
 	outputRepo, err := git_.NewRepository(outputDir)
 	// Not the user's fault and nothing we can do; panicking is ok.
 	check(err)
@@ -151,7 +153,7 @@ func runHugo(hugoRootDir string, outputDir string, userArgs []string) error {
 	// print them if an error occurs.
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
-	return cmd.Run()
+	return exec.Run(cmd)
 }
 
 func runDiff(repoDir, diffCommand string, userArgs []string, hash1, hash2 git.Hash) error {
@@ -167,5 +169,5 @@ func runDiff(repoDir, diffCommand string, userArgs []string, hash1, hash2 git.Ha
 	out.Debugf("Running command %s\n", shellquote.Join(cmd.Args...))
 	// This gets surfaced to the user because they're allowed to pass in diff
 	// args, so it's probably (?) something they can fix?
-	return cmd.Run()
+	return exec.Run(cmd)
 }
