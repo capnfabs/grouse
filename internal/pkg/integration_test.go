@@ -224,6 +224,11 @@ func TestEnd2End(t *testing.T) {
 			labels[tc.label] = struct{}{}
 		}
 	}
+
+	if testing.Short() {
+		t.Skip("skipping test in short mode.")
+	}
+
 	for _, tc := range TestCases {
 		t.Run(tc.label, func(t *testing.T) {
 			runTest(t, tc)
