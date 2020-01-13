@@ -32,6 +32,19 @@ go test -short ./...
 go test ./...
 ```
 
+### Running Integration Tests on CircleCI
+
+- The integration tests have some ugly dependencies, so I put them all in a docker container.
+- To push a new version of the docker container:
+
+```sh
+# Bump as required
+VERSION=0.1
+docker build -t "capnfabs/grouse-integration:$VERSION" .circleci/images/primary
+docker push
+# Now update .circleci/config.yml to refer to the new image.
+```
+
 ### Mocks in Unit Tests
 
 These are done with `mockery` and `testify`. Here's how (sorry this is badly documented, future me):

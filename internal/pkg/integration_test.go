@@ -154,6 +154,13 @@ func skipRegexes() []*regexp.Regexp {
 		regexp.MustCompile(`Total in \d+ ms`),
 		// It's a log line for the current date :-/
 		regexp.MustCompile(`WARN \d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}`),
+		// These two are only issues in the nested-submodules tests. Maybe
+		// we should modify those tests?
+		// Under limited (and unknown) circumstances, commit SHAs can change,
+		// so ignore them in diffs.
+		regexp.MustCompile(`^index [a-f0-9]{7}\.\.[a-f0-9]{7} 100644$`),
+		// This has a hash in it too :-/
+		regexp.MustCompile(`https://example\.com/css/site\.min`),
 	}
 }
 
@@ -196,7 +203,10 @@ func runTest(t *testing.T, tc TestCase) {
 	stdout, err := captureOutput(func() error {
 		return runMain(git.NewGit(), buildContext(&tc, inputDir))
 	})
-	require.Nil(t, err)
+	if err != nil {
+		fmt.Println(string(stdout))
+		require.Nil(t, err)
+	}
 	fmt.Println("Stdout is", len(stdout), "bytes")
 
 	if out, ok := os.LookupEnv("WRITE_TEST_OUTPUT"); ok && out == "1" {
