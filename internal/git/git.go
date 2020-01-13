@@ -304,7 +304,7 @@ func (r *repository) CommitEverythingInWorktree(message string) (Hash, error) {
 		return NilHash, cmd.Err
 	}
 
-	cmd = r.runCommand("git", "commit", "--message", message, "--quiet", "--allow-empty")
+	cmd = r.runCommand("git", "-c", "user.name='Grouse Diff'", "-c", "user.email='grouse-diff@example.com'", "commit", "--message", message, "--quiet", "--allow-empty")
 	if cmd.Err != nil {
 		return NilHash, cmd.Err
 	}
