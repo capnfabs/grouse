@@ -1,0 +1,366 @@
+Computing diff between revisions [34mb789d11b2eaa2e3e4c1f942b2580492274fd32a4[0m ([33mb789d11[0m) and [34m10730e4c7f320144af7055b37daecd240b4b0b72[0m ([33m10730e4[0m)
+Building revision [34mb789d11b2eaa2e3e4c1f942b2580492274fd32a4[0m ([33mb789d11[0m)…
+Building sites … WARN 2020/01/13 12:24:16 Page.Hugo is deprecated and will be removed in a future release. Use the global hugo function.
+WARN 2020/01/13 12:24:16 Page.RSSLink is deprecated and will be removed in a future release. Use the Output Format's link, e.g. something like: 
+    {{ with .OutputFormats.Get "RSS" }}{{ .RelPermalink }}{{ end }}
+WARN 2020/01/13 12:24:16 Page.URL is deprecated and will be removed in a future release. Use .Permalink or .RelPermalink. If what you want is the front matter URL value, use .Params.url
+
+                   | EN  
++------------------+----+
+  Pages            | 10  
+  Paginator pages  |  0  
+  Non-page files   |  0  
+  Static files     |  3  
+  Processed images |  0  
+  Aliases          |  1  
+  Sitemaps         |  1  
+  Cleaned          |  0  
+
+Total in 41 ms
+Building revision [34m10730e4c7f320144af7055b37daecd240b4b0b72[0m ([33m10730e4[0m)…
+Building sites … WARN 2020/01/13 12:24:16 Page.Hugo is deprecated and will be removed in a future release. Use the global hugo function.
+WARN 2020/01/13 12:24:16 Page.RSSLink is deprecated and will be removed in a future release. Use the Output Format's link, e.g. something like: 
+    {{ with .OutputFormats.Get "RSS" }}{{ .RelPermalink }}{{ end }}
+WARN 2020/01/13 12:24:16 Page.URL is deprecated and will be removed in a future release. Use .Permalink or .RelPermalink. If what you want is the front matter URL value, use .Params.url
+
+                   | EN  
++------------------+----+
+  Pages            | 11  
+  Paginator pages  |  0  
+  Non-page files   |  0  
+  Static files     |  3  
+  Processed images |  0  
+  Aliases          |  1  
+  Sitemaps         |  1  
+  Cleaned          |  0  
+
+Total in 42 ms
+Diffing…
+diff --git a/index.html b/index.html
+index d375b5a..6d74c1e 100644
+--- a/index.html
++++ b/index.html
+@@ -32,7 +32,7 @@
+ <meta property="og:description" content="" />
+ <meta property="og:type" content="website" />
+ <meta property="og:url" content="http://example.org/" />
+-<meta property="og:updated_time" content="2019-09-03T23:31:30+02:00" />
++<meta property="og:updated_time" content="2019-09-03T23:34:21+02:00" />
+ <meta itemprop="name" content="My New Hugo Site">
+ <meta itemprop="description" content=""><meta name="twitter:card" content="summary"/>
+ <meta name="twitter:title" content="My New Hugo Site"/>
+@@ -111,6 +111,31 @@
+         
+           <div class="relative w-100 mb4">
+             
++<article class="bb b--black-10">
++  <div class="db pv4 ph3 ph0-l no-underline dark-gray">
++    <div class="flex flex-column flex-row-ns">
++      
++      <div class="blah w-100">
++        <h1 class="f3 fw1 athelas mt0 lh-title">
++          <a href="/posts/a-second-post/" class="color-inherit dim link">
++            Bad Wordsworth
++            </a>
++        </h1>
++        <div class="f6 f5-l lh-copy nested-copy-line-height nested-links">
++          The solitude of glory with all the dreary lambs, a thousand valleys of harmony for i am lying still, black blisses miles above
++ &ndash; Courtesy of Botnik Studios
++        </div>
++          <a href="/posts/a-second-post/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
++        
++      </div>
++    </div>
++  </div>
++</article>
++
++          </div>
++        
++          <div class="relative w-100 mb4">
++            
+ <article class="bb b--black-10">
+   <div class="db pv4 ph3 ph0-l no-underline dark-gray">
+     <div class="flex flex-column flex-row-ns">
+diff --git a/index.xml b/index.xml
+index 22b72c4..b24fbf9 100644
+--- a/index.xml
++++ b/index.xml
+@@ -6,11 +6,21 @@
+     <description>Recent content on My New Hugo Site</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+-    <lastBuildDate>Tue, 03 Sep 2019 23:31:30 +0200</lastBuildDate>
++    <lastBuildDate>Tue, 03 Sep 2019 23:34:21 +0200</lastBuildDate>
+     
+ 	<atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
+     
+     
++    <item>
++      <title>Bad Wordsworth</title>
++      <link>http://example.org/posts/a-second-post/</link>
++      <pubDate>Tue, 03 Sep 2019 23:34:21 +0200</pubDate>
++      
++      <guid>http://example.org/posts/a-second-post/</guid>
++      <description>The solitude of glory with all the dreary lambs, a thousand valleys of harmony for i am lying still, black blisses miles above
++ &amp;ndash; Courtesy of Botnik Studios</description>
++    </item>
++    
+     <item>
+       <title>My First Post</title>
+       <link>http://example.org/posts/my-first-post/</link>
+diff --git a/posts/a-second-post/index.html b/posts/a-second-post/index.html
+new file mode 100644
+index 0000000..9804a1d
+--- /dev/null
++++ b/posts/a-second-post/index.html
+@@ -0,0 +1,157 @@
++<!DOCTYPE html>
++<html lang="en-us">
++  <head>
++    <meta charset="utf-8">
++    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
++    
++    <title>My New Hugo Site  | Bad Wordsworth</title>
++    <meta name="viewport" content="width=device-width,minimum-scale=1">
++    <meta name="generator" content="Hugo 0.62.2" />
++    
++    
++      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
++    
++
++    
++    
++      <link href="/dist/css/app.d98f2eb6bcd1eaedb7edf166bd16af26.css" rel="stylesheet">
++    
++
++    
++
++    
++      
++    
++
++    
++
++    <meta property="og:title" content="Bad Wordsworth" />
++<meta property="og:description" content="The solitude of glory with all the dreary lambs, a thousand valleys of harmony for i am lying still, black blisses miles above
++ &ndash; Courtesy of Botnik Studios" />
++<meta property="og:type" content="article" />
++<meta property="og:url" content="http://example.org/posts/a-second-post/" />
++<meta property="article:published_time" content="2019-09-03T23:34:21+02:00" />
++<meta property="article:modified_time" content="2019-09-03T23:34:21+02:00" />
++<meta itemprop="name" content="Bad Wordsworth">
++<meta itemprop="description" content="The solitude of glory with all the dreary lambs, a thousand valleys of harmony for i am lying still, black blisses miles above
++ &ndash; Courtesy of Botnik Studios">
++<meta itemprop="datePublished" content="2019-09-03T23:34:21&#43;02:00" />
++<meta itemprop="dateModified" content="2019-09-03T23:34:21&#43;02:00" />
++<meta itemprop="wordCount" content="28">
++
++
++
++<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
++<meta name="twitter:title" content="Bad Wordsworth"/>
++<meta name="twitter:description" content="The solitude of glory with all the dreary lambs, a thousand valleys of harmony for i am lying still, black blisses miles above
++ &ndash; Courtesy of Botnik Studios"/>
++
++  </head>
++
++  <body class="ma0 avenir bg-near-white">
++
++    
++   
++  
++
++  <header>
++    <div class="bg-black">
++      <nav class="pv3 ph3 ph4-ns" role="navigation">
++  <div class="flex-l justify-between items-center center">
++    <a href="http://example.org/" class="f3 fw2 hover-white no-underline white-90 dib">
++      My New Hugo Site
++    </a>
++    <div class="flex-l items-center">
++      
++
++      
++      
++
++
++
++
++
++
++
++
++
++
++
++    </div>
++  </div>
++</nav>
++
++    </div>
++  </header>
++
++
++
++    <main class="pb7" role="main">
++      
++  
++  <article class="flex-l flex-wrap justify-between mw8 center ph3">
++
++    <header class="mt4 w-100">
++      <p class="f6 b helvetica tracked">
++          
++        POSTS
++      </p>
++      <h1 class="f1 athelas mb1">Bad Wordsworth</h1>
++      
++      <time class="f6 mv4 dib tracked" datetime="2019-09-03T23:34:21&#43;02:00">September 3, 2019</time>
++      
++      
++    </header>
++
++    <section class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><blockquote>
++<p>The solitude of glory
++with all the dreary lambs, a thousand valleys of harmony
++for i am lying still, black blisses miles above</p>
++</blockquote>
++<p>&ndash; Courtesy of <a href="https://botnik.org/apps/writer/?source=8d6d6722d49fb38ff08016af7a1db7f6">Botnik Studios</a></p>
++<ul class="pa0">
++  
++</ul>
++<div class="mt6">
++      
++      
++      </div>
++    </section>
++
++    <aside class="w-30-l mt6-l">
++
++
++
++
++</aside>
++
++  </article>
++
++    </main>
++    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
++  <div class="flex justify-between">
++  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="http://example.org/" >
++    &copy; 2020 My New Hugo Site
++  </a>
++    <div>
++
++
++
++
++
++
++
++
++
++
++</div>
++  </div>
++</footer>
++
++    
++
++  <script src="/dist/js/app.3fc0f988d21662902933.js"></script>
++
++
++  </body>
++</html>
+diff --git a/posts/index.html b/posts/index.html
+index 15953c6..2c3c0d5 100644
+--- a/posts/index.html
++++ b/posts/index.html
+@@ -32,7 +32,7 @@
+ <meta property="og:description" content="" />
+ <meta property="og:type" content="website" />
+ <meta property="og:url" content="http://example.org/posts/" />
+-<meta property="og:updated_time" content="2019-09-03T23:31:30+02:00" />
++<meta property="og:updated_time" content="2019-09-03T23:34:21+02:00" />
+ <meta itemprop="name" content="Posts">
+ <meta itemprop="description" content=""><meta name="twitter:card" content="summary"/>
+ <meta name="twitter:title" content="Posts"/>
+@@ -89,6 +89,22 @@
+       
+         <div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+   <div class="bg-white mb3 pa4 gray overflow-hidden">
++    <span class="f6 db">Posts</span>
++    <h1 class="f3 near-black">
++      <a href="/posts/a-second-post/" class="link black dim">
++        Bad Wordsworth
++      </a>
++    </h1>
++    <div class="nested-links f5 lh-copy nested-copy-line-height">
++      The solitude of glory with all the dreary lambs, a thousand valleys of harmony for i am lying still, black blisses miles above
++ &ndash; Courtesy of Botnik Studios
++    </div>
++  </div>
++</div>
++</div>
++      
++        <div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
++  <div class="bg-white mb3 pa4 gray overflow-hidden">
+     <span class="f6 db">Posts</span>
+     <h1 class="f3 near-black">
+       <a href="/posts/my-first-post/" class="link black dim">
+diff --git a/posts/index.xml b/posts/index.xml
+index 2e7745b..4d85f09 100644
+--- a/posts/index.xml
++++ b/posts/index.xml
+@@ -6,11 +6,21 @@
+     <description>Recent content in Posts on My New Hugo Site</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+-    <lastBuildDate>Tue, 03 Sep 2019 23:31:30 +0200</lastBuildDate>
++    <lastBuildDate>Tue, 03 Sep 2019 23:34:21 +0200</lastBuildDate>
+     
+ 	<atom:link href="http://example.org/posts/index.xml" rel="self" type="application/rss+xml" />
+     
+     
++    <item>
++      <title>Bad Wordsworth</title>
++      <link>http://example.org/posts/a-second-post/</link>
++      <pubDate>Tue, 03 Sep 2019 23:34:21 +0200</pubDate>
++      
++      <guid>http://example.org/posts/a-second-post/</guid>
++      <description>The solitude of glory with all the dreary lambs, a thousand valleys of harmony for i am lying still, black blisses miles above
++ &amp;ndash; Courtesy of Botnik Studios</description>
++    </item>
++    
+     <item>
+       <title>My First Post</title>
+       <link>http://example.org/posts/my-first-post/</link>
+diff --git a/sitemap.xml b/sitemap.xml
+index e2b3705..f0a6e73 100644
+--- a/sitemap.xml
++++ b/sitemap.xml
+@@ -3,17 +3,22 @@
+   xmlns:xhtml="http://www.w3.org/1999/xhtml">
+   
+   <url>
+-    <loc>http://example.org/posts/my-first-post/</loc>
+-    <lastmod>2019-09-03T23:31:30+02:00</lastmod>
++    <loc>http://example.org/posts/a-second-post/</loc>
++    <lastmod>2019-09-03T23:34:21+02:00</lastmod>
+   </url>
+   
+   <url>
+     <loc>http://example.org/</loc>
+-    <lastmod>2019-09-03T23:31:30+02:00</lastmod>
++    <lastmod>2019-09-03T23:34:21+02:00</lastmod>
+   </url>
+   
+   <url>
+     <loc>http://example.org/posts/</loc>
++    <lastmod>2019-09-03T23:34:21+02:00</lastmod>
++  </url>
++  
++  <url>
++    <loc>http://example.org/posts/my-first-post/</loc>
+     <lastmod>2019-09-03T23:31:30+02:00</lastmod>
+   </url>
+   

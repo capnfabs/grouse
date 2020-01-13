@@ -34,6 +34,8 @@ export PATH=$GOBIN:$PATH
 bin/mockery -dir internal/git -all
 ```
 
+Integration tests?
+
 See also https://github.com/vektra/mockery/issues/210
 
 See this for installing tools: https://stackoverflow.com/a/57317864/996592
