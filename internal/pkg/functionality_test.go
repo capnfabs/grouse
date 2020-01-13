@@ -1,111 +1,252 @@
 package pkg
 
 import (
-	"fmt"
-	"io/ioutil"
-	"os"
-	"os/exec"
-	"path"
 	"testing"
 
-	"github.com/capnfabs/grouse/test/aferobilly"
-	"github.com/spf13/afero"
-
-	qt "github.com/frankban/quicktest"
+	"github.com/capnfabs/grouse/internal/exec"
+	"github.com/capnfabs/grouse/internal/git"
+	"github.com/capnfabs/grouse/internal/out"
+	"github.com/capnfabs/grouse/mocks"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
-/* test ideas:
+type MockGit struct {
+	mock.Mock
+}
 
-Test that the commits it runs the diff for are from the right repo
+func (m *MockGit) NewRepository(dst string) (git.Repository, error) {
+	args := m.Called(dst)
+	return args.Get(0).(git.Repository), args.Error(1)
+}
 
-Add a couple of test repos and ensure that they work end-to-end
+func (m *MockGit) OpenRepository(repoDir string) (git.Repository, error) {
+	args := m.Called(repoDir)
+	return args.Get(0).(git.Repository), args.Error(1)
+}
 
-Test that supplying bad commit refs gives the right errors.
-*/
+func (m *MockGit) GetRelativeLocation(currentDir string) (string, error) {
+	args := m.Called(currentDir)
+	return args.String(0), args.Error(1)
+}
 
-func useMemFs(fs afero.Fs) func() {
-	oldFs := AppFs
-	AppFs = fs
-	return func() {
-		AppFs = oldFs
+// Here's two examples.
+var WrittenCommitRefs []git.Hash = []git.Hash{
+	"f2999e8ac89b88a590b9902e9283dc76790ba384",
+	"04beca3bd964b7049f34b037d3c86c8edd991b36",
+}
+
+func mockWriteRepo() *mocks.Repository {
+	r := new(mocks.Repository)
+	r.On("RootDir").Return("/tmp/repo")
+	// Cycles based on the number of times it's called.
+	counter := 0
+	r.On("CommitEverythingInWorktree", mock.Anything).Return(func(message string) git.Hash {
+		val := WrittenCommitRefs[counter]
+		counter++
+		return val
+	}, nil)
+	r.On("ClearSourceControlledFilesFromWorktree").Return(nil)
+	return r
+}
+
+func resolve(r *mocks.Repository, hash string, userRef string) *mocks.ResolvedUserRef {
+	commit := new(mocks.ResolvedCommit)
+	commit.On("Repo").Return(r)
+	commit.On("Hash").Return(git.Hash(hash))
+
+	ref := new(mocks.ResolvedUserRef)
+	ref.On("Commit").Return(commit)
+	ref.On("UserRef", userRef)
+	return ref
+}
+
+func mockReadRepo() *mocks.Repository {
+	r := new(mocks.Repository)
+	wt := new(mocks.Worktree)
+	wt.On("Location").Return("/tmp/worktree")
+	wt.On("Remove").Return(nil)
+	wt.On("Checkout", mock.Anything).Return(nil)
+
+	ref := resolve(r, "123123123123123123123", "tags/nope")
+
+	r.On("RootDir").Return("/tmp/repo")
+	r.On("ResolveCommit", mock.Anything).Return(ref, nil)
+	r.On("AddWorktree", mock.Anything).Return(wt, nil)
+	return r
+}
+
+type m struct {
+	Exec *mock.Mock
+	Run  *mock.Mock
+}
+
+func installFixtures() (m, func()) {
+	out.Debug = true
+
+	exec, cexec := installMockExec()
+	run, crun := installMockRun()
+
+	return m{Exec: exec, Run: run}, func() {
+		out.Debug = false
+		cexec()
+		crun()
 	}
 }
 
-func TestEraseDirectoryExceptRootDotGit(t *testing.T) {
-	c := qt.New(t)
+func installMockExec() (*mock.Mock, func()) {
+	mockExec := mock.Mock{}
+	old := exec.Exec
+	exec.Exec = func(workDir string, args ...string) exec.CmdResult {
+		res := mockExec.Called(workDir, args)
+		return res.Get(0).(exec.CmdResult)
+	}
 
-	fs := afero.NewMemMapFs()
-	defer useMemFs(fs)()
-
-	fs.Mkdir("/src", 0755)
-	fs.MkdirAll("/src/x/.y", 0755)
-	fs.MkdirAll("/src/x/content", 0755)
-	fs.MkdirAll("/src/.git/x", 0755)
-
-	af := &afero.Afero{Fs: fs}
-	af.WriteFile("/src/x/.y/foo", []byte("hello there"), 0644)
-	af.WriteFile("/src/x/content/source.txt", []byte("here is some content"), 0644)
-	af.WriteFile("/src/x/content/.hidden", []byte("here is a hidden file"), 0644)
-	af.WriteFile("/src/.git/file1", []byte("file1"), 0644)
-	af.WriteFile("/src/.git/x/file2", []byte("file2"), 0644)
-
-	eraseDirectoryExceptRootDotGit("/src/")
-
-	paths := aferobilly.EnumeratePaths(af, "/src")
-	c.Assert(paths, qt.ContentEquals, []string{
-		"/src",
-		"/src/.git",
-		"/src/.git/x",
-		"/src/.git/file1",
-		"/src/.git/x/file2",
+	mockExec.On("func1", mock.Anything, mock.Anything).Return(exec.CmdResult{
+		StdErr: "",
+		StdOut: "",
+		Err:    nil,
 	})
-	content, _ := af.ReadFile("/src/.git/file1")
-	c.Assert(content, qt.DeepEquals, []byte("file1"))
-
-	content, _ = af.ReadFile("/src/.git/x/file2")
-	c.Assert(content, qt.DeepEquals, []byte("file2"))
+	return &mockExec, func() {
+		exec.Exec = old
+	}
 }
 
-func TestResolvesGitPathCorrectly(t *testing.T) {
-	c := qt.New(t)
-
-	cases := []struct {
-		repo            string
-		startingCwd     string
-		expectedSubPath string
-	}{
-		{"tiny.zip", "", ""},
-		{"tiny.zip", "src", "src"},
-		{"tiny.zip", "src/content", "src/content"},
-		{"tiny-norepo.zip", "", "ERROR"},
-		{"tiny-norepo.zip", "src/content", "ERROR"},
+func installMockRun() (*mock.Mock, func()) {
+	mockRun := mock.Mock{}
+	old := exec.Run
+	exec.Run = func(cmd *exec.Cmd) error {
+		res := mockRun.Called(cmd)
+		return res.Error(0)
 	}
-	for i, tc := range cases {
-		c.Run(fmt.Sprintf("%d_%s", i, tc.repo), func(c *qt.C) {
-			// Setup: extract temporary directory
-			tempDir, err := ioutil.TempDir("", "grouse_test")
-			c.Assert(err, qt.IsNil)
-			wd, _ := os.Getwd()
-			// This is _way_ easier to write than doing it manually within Go,
-			// but it means we have to use the filesystem and it only works on
-			// unix-y OSes. The "right way" to build this would be to add a
-			// zip-file backend for Billy.
-			cmd := exec.Command("unzip", path.Join(wd, "../../test-fixtures", tc.repo), "-d", tempDir)
-			err = cmd.Run()
-			c.Assert(err, qt.IsNil)
-			fmt.Println("Test input directory is", path.Join(tempDir, "input"))
 
-			startingDir := path.Join(tempDir, "input", tc.startingCwd)
-			repo, relDir, err := findRepoInPath(startingDir)
-			if tc.expectedSubPath == "ERROR" {
-				c.Check(repo, qt.IsNil)
-				c.Check(relDir, qt.Equals, "")
-				c.Check(err, qt.ErrorMatches, ".*repository does not exist.*")
-			} else {
-				c.Check(repo, qt.Not(qt.IsNil))
-				c.Check(relDir, qt.Equals, tc.expectedSubPath)
-				c.Check(err, qt.IsNil)
+	mockRun.On("func1", mock.Anything).Return(nil)
+
+	return &mockRun, func() {
+		exec.Run = old
+	}
+}
+
+func TestPassthroughBuildArgs(t *testing.T) {
+	mocks, cleanup := installFixtures()
+	defer cleanup()
+
+	mockGit := new(MockGit)
+	mockGit.On("OpenRepository", mock.Anything).Return(mockReadRepo(), nil)
+	mockGit.On("GetRelativeLocation", mock.Anything).Return("potato/tomato", nil)
+	mockGit.On("NewRepository", mock.Anything).Return(mockWriteRepo(), nil)
+
+	args := cmdArgs{
+		repoDir:      "",
+		diffCommand:  "diff",
+		commits:      []string{"HEAD^", "HEAD"},
+		diffArgs:     []string{},
+		buildArgs:    []string{"--here-is-a-build-arg", "message text with 'apostrophes'"},
+		debug:        false,
+		keepWorktree: false,
+	}
+	runMain(mockGit, args)
+
+	cmds := findCmdsMatchingArgs(mocks.Run.Calls, "hugo")
+	for _, cmd := range cmds {
+		assert.Equal(
+			t,
+			[]string{"hugo", "--here-is-a-build-arg", "message text with 'apostrophes'", "--destination=/tmp/repo"},
+			cmd.Args)
+	}
+	// Two build commands
+	assert.Equal(t, 2, len(cmds))
+}
+
+func matchHash(hash string) interface{} {
+	return mock.MatchedBy(func(c git.ResolvedCommit) bool {
+		return c.Hash() == git.Hash(hash)
+	})
+}
+
+func TestChecksOutCorrectSrcShas(t *testing.T) {
+	_, cleanup := installFixtures()
+	defer cleanup()
+
+	mockGit := new(MockGit)
+	mockReadRepo := new(mocks.Repository)
+	mockReadRepo.On("RootDir").Return("/tmp/repo")
+	mockReadRepo.On("ResolveCommit", "origin/YOLO").Return(resolve(mockReadRepo, "111de18a818abd90ebdf1e5628820cd10d4e3efe", "origin/YOLO"), nil)
+	mockReadRepo.On("ResolveCommit", "HEAD").Return(resolve(mockReadRepo, "301e857edf2f032ff58cd812fca526c5bae64569", "HEAD"), nil)
+
+	wt := new(mocks.Worktree)
+	wt.On("Location").Return("/tmp/worktree")
+	wt.On("Remove").Return(nil)
+	wt.On("Checkout", mock.Anything).Return(nil)
+	mockReadRepo.On("AddWorktree", mock.Anything).Return(wt, nil)
+
+	mockGit.On("OpenRepository", mock.Anything).Return(mockReadRepo, nil)
+	mockGit.On("GetRelativeLocation", mock.Anything).Return("potato/tomato", nil)
+	mockGit.On("NewRepository", mock.Anything).Return(mockWriteRepo(), nil)
+
+	args := cmdArgs{
+		repoDir:      "",
+		diffCommand:  "diff",
+		commits:      []string{"origin/YOLO", "HEAD"},
+		diffArgs:     []string{},
+		buildArgs:    []string{""},
+		debug:        false,
+		keepWorktree: false,
+	}
+	runMain(mockGit, args)
+
+	wt.AssertCalled(t, "Checkout", matchHash("111de18a818abd90ebdf1e5628820cd10d4e3efe"))
+	wt.AssertCalled(t, "Checkout", matchHash("301e857edf2f032ff58cd812fca526c5bae64569"))
+	wt.AssertNumberOfCalls(t, "Checkout", 2)
+}
+
+func TestDiffArgs(t *testing.T) {
+	for _, cmd := range []string{"diff", "difftool"} {
+		t.Run("command_"+cmd, func(t *testing.T) {
+			mocks, cleanup := installFixtures()
+			defer cleanup()
+
+			mockGit := new(MockGit)
+			mockGit.On("OpenRepository", mock.Anything).Return(mockReadRepo(), nil)
+			mockGit.On("GetRelativeLocation", mock.Anything).Return("potato/tomato", nil)
+			mockGit.On("NewRepository", mock.Anything).Return(mockWriteRepo(), nil)
+
+			args := cmdArgs{
+				repoDir:      "",
+				diffCommand:  "diff",
+				commits:      []string{"HEAD^", "HEAD"},
+				diffArgs:     []string{"hello", "--from-the-other-siiiiiiiiiiide"},
+				buildArgs:    []string{""},
+				debug:        false,
+				keepWorktree: false,
 			}
+			runMain(mockGit, args)
+			diffCmds := findCmdsMatchingArgs(mocks.Run.Calls, "git", "diff")
+			assert.Equal(t, 1, len(diffCmds))
+			assert.Equal(t, []string{"git", "diff", "hello", "--from-the-other-siiiiiiiiiiide", string(WrittenCommitRefs[0]), string(WrittenCommitRefs[1])}, diffCmds[0].Args)
 		})
 	}
+}
+
+func findCmdsMatchingArgs(calls []mock.Call, args ...string) []*exec.Cmd {
+	matches := []*exec.Cmd{}
+	for _, call := range calls {
+		cmd := call.Arguments[0].(*exec.Cmd)
+		if len(cmd.Args) >= len(args) && equal(cmd.Args[:len(args)], args) {
+			matches = append(matches, cmd)
+		}
+	}
+	return matches
+}
+
+func equal(sliceA, sliceB []string) bool {
+	if len(sliceA) != len(sliceB) {
+		return false
+	}
+	for i := range sliceA {
+		if sliceA[i] != sliceB[i] {
+			return false
+		}
+	}
+	return true
 }
