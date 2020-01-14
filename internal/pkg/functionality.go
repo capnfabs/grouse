@@ -70,7 +70,8 @@ func runMain(git_ git.Git, userArgs cmdArgs) error {
 	srcWorktree, err := repo.AddWorktree(path.Join(scratchDir, "src"))
 	check(err)
 	if !userArgs.keepWorktree {
-		// Debug doesn't remove the worktree, so you can inspect it later.
+		// If keepWorktree is set, keep the worktree so you can inspect it
+		// later.
 		defer srcWorktree.Remove()
 	}
 

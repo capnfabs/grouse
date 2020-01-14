@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"regexp"
+	"strconv"
+	"strings"
 
 	"github.com/capnfabs/grouse/internal/exec"
 	"github.com/capnfabs/grouse/internal/out"
@@ -18,8 +21,55 @@ type Git interface {
 	GetRelativeLocation(currentDir string) (string, error)
 }
 
+type gitVersion struct {
+	major int
+	minor int
+	patch int
+}
+
+func (v *gitVersion) isNewerThanOrEqualTo(major, minor, patch int) bool {
+	if v.major > major {
+		return true
+	}
+	if v.major == major {
+		if v.minor > minor {
+			return true
+		}
+		if v.minor == minor {
+			if v.patch >= patch {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+var noVersion = gitVersion{0, 0, 0}
+
+func parseVersionString(vs string) gitVersion {
+	parts := strings.Split(vs, ".")
+	if len(parts) != 3 {
+		return noVersion
+	}
+	major, errA := strconv.Atoi(parts[0])
+	minor, errB := strconv.Atoi(parts[1])
+	patch, errC := strconv.Atoi(parts[2])
+	if errA != nil || errB != nil || errC != nil {
+		return noVersion
+	}
+	return gitVersion{major, minor, patch}
+}
+
 func NewGit() Git {
-	return git{}
+	cmd := exec.Exec("git", "version")
+	submatches := regexp.MustCompile(`^git version (\d+\.\d+\.\d+)`).FindStringSubmatch(cmd.StdOut)
+	var version gitVersion = noVersion
+	if submatches != nil {
+		version = parseVersionString(submatches[1])
+	}
+	return git{
+		version: version,
+	}
 }
 
 // Repository represents a git repository, somewhere on disk.
@@ -33,6 +83,7 @@ type Repository interface {
 
 type repository struct {
 	rootDir string
+	git_    *git
 }
 
 func (r *repository) RootDir() string {
@@ -99,6 +150,7 @@ type Worktree interface {
 
 type worktree struct {
 	location string
+	git_     *git
 }
 
 func (w *worktree) Location() string {
@@ -229,13 +281,22 @@ func prepSubmodulesForWorktree(baseRepo *repository, newWorktree *worktree) erro
 }
 
 func (r *repository) AddWorktree(dst string) (Worktree, error) {
-	cmd := r.runCommand("git", "worktree", "add", "--no-checkout", "--detach", dst)
+	var args []string
+	if r.git_.version.isNewerThanOrEqualTo(2, 9, 0) {
+		args = []string{"git", "worktree", "add", "--no-checkout", "--detach", dst}
+	} else {
+		// --no-checkout not supported, doesn't matter much because we just
+		// used it as a performance optimisation. Skip it.
+		args = []string{"git", "worktree", "add", "--detach", dst}
+	}
+	cmd := r.runCommand(args...)
 	if cmd.Err != nil {
 		return nil, cmd.Err
 	}
 
 	wt := &worktree{
 		location: dst,
+		git_:     r.git_,
 	}
 
 	if err := prepSubmodulesForWorktree(r, wt); err != nil {
@@ -264,8 +325,13 @@ func (w *worktree) Checkout(commit ResolvedCommit) error {
 }
 
 func (w *worktree) Remove() error {
-	cmd := w.runCommand("git", "worktree", "remove", "--force", w.location)
-	return cmd.Err
+	if w.git_.version.isNewerThanOrEqualTo(2, 17, 0) {
+		cmd := w.runCommand("git", "worktree", "remove", "--force", w.location)
+		return cmd.Err
+	} else {
+		// TODO: manual deletion as per https://git-scm.com/docs/git-worktree/2.17.0#_description
+		return nil
+	}
 }
 
 var (
@@ -274,7 +340,9 @@ var (
 	ErrRepoExists = errors.New("Repo already exists")
 )
 
-type git struct{}
+type git struct {
+	version gitVersion
+}
 
 // NewRepository creates a new git repository in the given directory.
 func (g git) NewRepository(dst string) (Repository, error) {
