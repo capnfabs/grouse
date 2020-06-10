@@ -99,6 +99,10 @@ func (g git) NewRepository(dst string) (WriteableRepository, error) {
 // subdirectory in the repository, OpenRepository walks up the file tree to find
 // the git repo.
 func (g git) OpenRepository(repoDir string) (Repository, error) {
+	return g.openRepository(repoDir)
+}
+
+func (g git) openRepository(repoDir string) (*repository, error) {
 	cmd := exec.Exec(repoDir, "git", "rev-parse", "--show-toplevel")
 	if cmd.Err != nil {
 		return nil, cmd.Err

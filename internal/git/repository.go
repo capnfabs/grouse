@@ -77,18 +77,24 @@ func isFile(file os.FileInfo) bool {
 	return file.Mode()&os.ModeType == 0
 }
 
-func (r *repository) getSubmodulePaths() ([]string, error) {
+type submodInfo struct {
+	// (e.g. `submodules.themes/paperesque`)
+	configPrefix string
+	path         string
+}
+
+func (r *repository) getSubmodulePaths() ([]submodInfo, error) {
 	_, err := os.Lstat(path.Join(r.rootDir, ".gitmodules"))
 	if err != nil && os.IsNotExist(err) {
 		// No submodules, just chill.
 		// TODO: make this a log statement
 		println("NO SUBMODULES")
-		return []string{}, nil
+		return []submodInfo{}, nil
 	} else if err != nil {
 		// I can't imagine what error this could be...
 		// TODO: log this.
 		println(err)
-		return []string{}, err
+		return []submodInfo{}, err
 	}
 	// This fetches one line per submodule, e.g.
 	// submodule.themes/paperesque.path themes/paperesque
@@ -96,16 +102,20 @@ func (r *repository) getSubmodulePaths() ([]string, error) {
 	if cmd.Err != nil {
 		// TODO: Log this
 		println("COMMAND ERROR")
-		return []string{}, cmd.Err
+		return []submodInfo{}, cmd.Err
 	}
 	lines := strings.Split(cmd.StdOut, "\n")
-	submodulePaths := []string{}
+	submodules := []submodInfo{}
 	for _, line := range lines {
 		if line != "" {
-			submodulePaths = append(submodulePaths, strings.Fields(line)[1])
+			fields := strings.Fields(line)
+			submodules = append(submodules, submodInfo{
+				configPrefix: strings.TrimSuffix(fields[0], ".path"),
+				path:         fields[1],
+			})
 		}
 	}
-	return submodulePaths, nil
+	return submodules, nil
 }
 
 // prepSubmodulesForWorktree is Dark Magic that bootstraps git submodules for a
@@ -117,26 +127,53 @@ func prepSubmodulesForSharedClone(src *repository, dst *worktreeRepository) erro
 		return err
 	}
 
-	for _, p := range submodPaths {
-		println(src.rootDir, p, src.gitInterface)
-		submodRepo, err := src.gitInterface.OpenRepository(path.Join(src.rootDir, p))
+	cmd := dst.runCommand("git", "submodule", "init")
+	if cmd.Err != nil {
+		// TODO: better error handling
+		// Dunno what to make of this
+		return cmd.Err
+	}
+
+	for _, submod := range submodPaths {
+		submodRepo, err := src.gitInterface.openRepository(path.Join(src.rootDir, submod.path))
 		if err != nil {
 			// maybe it wasn't checked out, not important, just continue.
 			// TODO: log the error
 			continue
 		}
-		_, err = submodRepo.RecursiveSharedCloneTo(path.Join(dst.rootDir, p))
+		clonedSubmodRepo, err := submodRepo.recursiveSharedCloneTo(path.Join(dst.rootDir, submod.path))
 
 		if err != nil {
 			// this should only happen in real bad circumstances, so panic,
 			// even though it's probably recoverable.
 			panic(err)
 		}
+
+		// TODO: extract this code to patch up the config
+		urlConfigName := submod.configPrefix + ".url"
+		cmd = src.runCommand("git", "config", urlConfigName)
+		realRemoteUrl := cmd.StdOut
+		if cmd.Err != nil {
+			panic(cmd.Err)
+		}
+		cmd = dst.runCommand("git", "config", urlConfigName, realRemoteUrl)
+		if cmd.Err != nil {
+			panic(cmd.Err)
+		}
+		// _AND_ we have to change the remote so we can pull commits if we have to.
+		cmd = clonedSubmodRepo.runCommand("git", "remote", "set-url", "origin", realRemoteUrl)
+		if cmd.Err != nil {
+			panic(cmd.Err)
+		}
 	}
 	return nil
 }
 
 func (r *repository) RecursiveSharedCloneTo(dst string) (WorktreeRepository, error) {
+	return r.recursiveSharedCloneTo(dst)
+}
+
+func (r *repository) recursiveSharedCloneTo(dst string) (*worktreeRepository, error) {
 	var args []string
 
 	// Note: using "--no-checkout" here works great for the root repo, but
