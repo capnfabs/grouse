@@ -67,7 +67,7 @@ func runMain(git_ git.Git, userArgs cmdArgs) error {
 	// panic.
 	check(err)
 
-	srcWorktree, err := repo.AddWorktree(path.Join(scratchDir, "src"))
+	srcWorktree, err := repo.RecursiveSharedCloneTo(path.Join(scratchDir, "src"))
 	check(err)
 	if !userArgs.keepWorktree {
 		// If keepWorktree is set, keep the worktree so you can inspect it
@@ -124,7 +124,7 @@ func runMain(git_ git.Git, userArgs cmdArgs) error {
 }
 
 func processSourceAtCommit(
-	srcWorktree git.Worktree, ref git.ResolvedCommit, hugoRelativeRoot string, buildArgs []string, outputRepo git.Repository) (git.Hash, error) {
+	srcWorktree git.WorktreeRepository, ref git.ResolvedCommit, hugoRelativeRoot string, buildArgs []string, outputRepo git.WriteableRepository) (git.Hash, error) {
 	out.Debugf("Checking out %s…\n", ref)
 	err := srcWorktree.Checkout(ref)
 	if err != nil {
@@ -132,7 +132,7 @@ func processSourceAtCommit(
 	}
 	out.Debugln("…done checking out.")
 
-	if err = runHugo(path.Join(srcWorktree.Location(), hugoRelativeRoot), outputRepo.RootDir(), buildArgs); err != nil {
+	if err = runHugo(path.Join(srcWorktree.RootDir(), hugoRelativeRoot), outputRepo.RootDir(), buildArgs); err != nil {
 		return git.NilHash, err
 	}
 

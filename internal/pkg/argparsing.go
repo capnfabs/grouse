@@ -35,7 +35,7 @@ func parseArgs(flags flagSet) (*cmdArgs, error) {
 	diffArgsStr, err := flags.GetString("diffargs")
 	check(err)
 
-	keepWorktree, err := flags.GetBool("keep-worktree")
+	keepWorktree, err := flags.GetBool("keep-cache")
 	check(err)
 
 	diffArgs, err := shellquote.Split(diffArgsStr)
@@ -77,11 +77,12 @@ func parseArgs(flags flagSet) (*cmdArgs, error) {
 }
 
 type cmdArgs struct {
-	repoDir      string
-	diffCommand  string
-	commits      []string
-	diffArgs     []string
-	buildArgs    []string
-	debug        bool
+	repoDir     string
+	diffCommand string
+	commits     []string
+	diffArgs    []string
+	buildArgs   []string
+	debug       bool
+	// TODO: rename
 	keepWorktree bool
 }
