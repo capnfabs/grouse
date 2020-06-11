@@ -5,11 +5,19 @@ import (
 	"log"
 )
 
+var Silent = false
+
 func Outf(format string, args ...interface{}) {
+	if Silent {
+		return
+	}
 	fmt.Printf(format, args...)
 }
 
 func Outln(args ...interface{}) {
+	if Silent {
+		return
+	}
 	fmt.Println(args...)
 }
 

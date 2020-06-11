@@ -29,6 +29,7 @@ func RunRootCommand(cmd *cobra.Command) {
 		os.Exit(1)
 	}
 	out.Debug = context.debug
+	out.Silent = context.silent
 
 	err = runMain(git.NewGit(), *context)
 	if err != nil {
@@ -151,8 +152,10 @@ func runHugo(hugoRootDir string, outputDir string, userArgs []string) error {
 
 	// TODO: if --debug is NOT specified, should hang on to these and then only
 	// print them if an error occurs.
-	cmd.Stderr = os.Stderr
-	cmd.Stdout = os.Stdout
+	if !out.Silent {
+		cmd.Stderr = os.Stderr
+		cmd.Stdout = os.Stdout
+	}
 	return exec.Run(cmd)
 }
 

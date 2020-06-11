@@ -32,6 +32,9 @@ func parseArgs(flags flagSet) (*cmdArgs, error) {
 	debug, err := flags.GetBool("debug")
 	check(err)
 
+	silent, err := flags.GetBool("silent")
+	check(err)
+
 	diffArgsStr, err := flags.GetString("diffargs")
 	check(err)
 
@@ -72,6 +75,7 @@ func parseArgs(flags flagSet) (*cmdArgs, error) {
 		diffArgs:     diffArgs,
 		buildArgs:    buildArgs,
 		debug:        debug,
+		silent:       silent,
 		keepWorktree: keepWorktree,
 	}, nil
 }
@@ -83,5 +87,6 @@ type cmdArgs struct {
 	diffArgs     []string
 	buildArgs    []string
 	debug        bool
+	silent       bool
 	keepWorktree bool
 }
