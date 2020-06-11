@@ -23,6 +23,7 @@ func (f flags) Args() []string {
 
 func defaultFlags() flags {
 	return flags{
+		"gitargs":       "--potato 'excellent'",
 		"diffargs":      "--potato 'excellent'",
 		"buildargs":     "--carrot",
 		"tool":          true,
@@ -41,6 +42,7 @@ func TestArgParsingBaseCase(t *testing.T) {
 	c.Check(context.diffCommand, qt.Equals, "difftool")
 	c.Check(context.commits, qt.DeepEquals, []string{"b1234553", "HEAD^"})
 	c.Check(context.diffArgs, qt.DeepEquals, []string{"--potato", "excellent"})
+	c.Check(context.gitArgs, qt.DeepEquals, []string{"--potato", "excellent"})
 	c.Check(context.buildArgs, qt.DeepEquals, []string{"--carrot"})
 }
 
@@ -60,6 +62,15 @@ func TestArgParsingBadEscapedDiffArgs(t *testing.T) {
 	context, err := parseArgs(f)
 	c.Check(context, qt.IsNil)
 	c.Check(err, qt.ErrorMatches, `.*--diffargs:.*`)
+}
+
+func TestArgParsingBadEscapedGitArgs(t *testing.T) {
+	c := qt.New(t)
+	f := defaultFlags()
+	f["gitargs"] = "--hello='wut" // missing single quote
+	context, err := parseArgs(f)
+	c.Check(context, qt.IsNil)
+	c.Check(err, qt.ErrorMatches, `.*--gitargs:.*`)
 }
 
 func TestArgParsingBadEscapedBuildArgs(t *testing.T) {

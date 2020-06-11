@@ -20,6 +20,7 @@ func versionString() string {
 }
 
 func main() {
+	rootCmd.Flags().String("gitargs", "", "Arguments to pass on to 'git'")
 	rootCmd.Flags().String("diffargs", "", "Arguments to pass on to 'git diff'")
 	rootCmd.Flags().String("buildargs", "", "Arguments to pass on to the hugo build command")
 	rootCmd.Flags().BoolP("tool", "t", false, "Invoke 'git difftool' instead of 'git diff'")

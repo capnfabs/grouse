@@ -106,7 +106,7 @@ func runMain(git_ git.Git, userArgs cmdArgs) error {
 
 	// Do the actual diff
 	out.Outln("Diffing…")
-	err = runDiff(outputDir, userArgs.diffCommand, userArgs.diffArgs, outputHashes[0], outputHashes[1])
+	err = runDiff(outputDir, userArgs.gitArgs, userArgs.diffCommand, userArgs.diffArgs, outputHashes[0], outputHashes[1])
 	switch e := err.(type) {
 	case *exec.ExitError:
 		if strings.Contains(e.Error(), "signal: broken pipe") {
@@ -156,8 +156,9 @@ func runHugo(hugoRootDir string, outputDir string, userArgs []string) error {
 	return exec.Run(cmd)
 }
 
-func runDiff(repoDir, diffCommand string, userArgs []string, hash1, hash2 git.Hash) error {
-	allArgs := []string{diffCommand}
+func runDiff(repoDir string, gitArgs []string, diffCommand string, userArgs []string, hash1, hash2 git.Hash) error {
+	allArgs := gitArgs
+	allArgs = append(allArgs, diffCommand)
 	allArgs = append(allArgs, userArgs...)
 	allArgs = append(allArgs, string(hash1), string(hash2))
 
