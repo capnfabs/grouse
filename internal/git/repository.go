@@ -1,6 +1,7 @@
 package git
 
 import (
+	"fmt"
 	"os"
 	"path"
 	"strings"
@@ -136,11 +137,21 @@ func prepSubmodulesForSharedClone(src *repository, dst *worktreeRepository) erro
 
 	for _, submod := range submodPaths {
 		submodRepo, err := src.gitInterface.openRepository(path.Join(src.rootDir, submod.path))
+		println(fmt.Sprintf("Trying to open repo @%v %v %v\n", submod.path, submodRepo, err))
+
+		if submodRepo.rootDir == src.rootDir {
+			// This indicates that the submodule isn't in the right place etc etc.
+			println("Bailing: wasn't a submodule for whatever reason")
+			continue
+		}
+
 		if err != nil {
 			// maybe it wasn't checked out, not important, just continue.
 			// TODO: log the error
+			println("Misc error", err)
 			continue
 		}
+		println("Prepping", submod.path)
 		clonedSubmodRepo, err := submodRepo.recursiveSharedCloneTo(path.Join(dst.rootDir, submod.path))
 
 		if err != nil {
@@ -152,16 +163,16 @@ func prepSubmodulesForSharedClone(src *repository, dst *worktreeRepository) erro
 		// TODO: extract this code to patch up the config
 		urlConfigName := submod.configPrefix + ".url"
 		cmd = src.runCommand("git", "config", urlConfigName)
-		realRemoteUrl := cmd.StdOut
+		realRemoteURL := cmd.StdOut
 		if cmd.Err != nil {
 			panic(cmd.Err)
 		}
-		cmd = dst.runCommand("git", "config", urlConfigName, realRemoteUrl)
+		cmd = dst.runCommand("git", "config", urlConfigName, realRemoteURL)
 		if cmd.Err != nil {
 			panic(cmd.Err)
 		}
 		// _AND_ we have to change the remote so we can pull commits if we have to.
-		cmd = clonedSubmodRepo.runCommand("git", "remote", "set-url", "origin", realRemoteUrl)
+		cmd = clonedSubmodRepo.runCommand("git", "remote", "set-url", "origin", realRemoteURL)
 		if cmd.Err != nil {
 			panic(cmd.Err)
 		}
