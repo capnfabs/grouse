@@ -210,7 +210,14 @@ func (r *repository) recursiveSharedCloneTo(dst string) (*worktreeRepository, er
 }
 
 func (w *worktreeRepository) Checkout(commit ResolvedCommit) error {
-	cmd := w.runCommand("git", "checkout", "--detach", string(commit.Hash()))
+	// --force is here because of an edge-case -- if you had submodules, and
+	// then replace them with the actual content in the git repo, you need to
+	// use --force to tell git all the old submodule content.
+	// NOTE: I ran into one case where the gitmodules file couldn't be removed
+	// when attempting this on something with nested submodules that had been
+	// moved into the root repo. You can test this out with
+	// `test-fixtures/unirepo-gitinfo.zip` between commits "742de0a", "353bfcb".
+	cmd := w.runCommand("git", "checkout", "--force", "--detach", string(commit.Hash()))
 	if cmd.Err != nil {
 		return cmd.Err
 	}

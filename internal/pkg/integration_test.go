@@ -38,6 +38,17 @@ func (tc TestCase) subdirectory(dir string) TestCase {
 	return tc
 }
 
+func (tc TestCase) commits(sha1, sha2 string) TestCase {
+	tc.ref1 = sha1
+	tc.ref2 = sha2
+	return tc
+}
+
+func (tc TestCase) outfile(label string) TestCase {
+	tc.label = label
+	return tc
+}
+
 func tc(zipFile string) TestCase {
 	label := strings.TrimSuffix(zipFile, ".zip")
 	return TestCase{
@@ -54,6 +65,8 @@ var TestCases []TestCase = []TestCase{
 	tc("nested-submod-deinit.zip"),
 	tc("submod-deinit.zip"),
 	tc("everything-in-subdir.zip").subdirectory("hugodir"),
+	tc("unirepo-gitinfo.zip").commits("742de0a", "353bfcb").outfile("remove-submods"),
+	tc("unirepo-gitinfo.zip"),
 }
 
 // findSubDir returns the path to the single directory within `dir`.
