@@ -12,7 +12,7 @@ Building sites …
   Sitemaps         |  1  
   Cleaned          |  0  
 
-Total in 157 ms
+Total in 154 ms
 Building revision [34mHEAD[0m ([33m742de0a[0m)…
 Building sites … 
                    | EN  
@@ -26,7 +26,7 @@ Building sites …
   Sitemaps         |  1  
   Cleaned          |  0  
 
-Total in 157 ms
+Total in 159 ms
 Diffing…
 diff --git a/categories/features/index.xml b/categories/features/index.xml
 index b5bbc7b..b5b9611 100644

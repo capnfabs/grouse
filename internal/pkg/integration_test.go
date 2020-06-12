@@ -25,35 +25,35 @@ import (
 */
 
 type TestCase struct {
-	label string
-	src   string
-	ref1  string
-	ref2  string
-	args  string
+	label  string
+	src    string
+	ref1   string
+	ref2   string
+	args   string
+	subdir string
+}
+
+func (tc TestCase) subdirectory(dir string) TestCase {
+	tc.subdir = dir
+	return tc
+}
+
+func tc(zipFile string) TestCase {
+	label := strings.TrimSuffix(zipFile, ".zip")
+	return TestCase{
+		label: label,
+		src:   zipFile,
+		ref1:  "HEAD^",
+		ref2:  "HEAD",
+		args:  "",
+	}
 }
 
 var TestCases []TestCase = []TestCase{
-	{
-		label: "nested-submods",
-		src:   "nested-submods.zip",
-		ref1:  "HEAD^",
-		ref2:  "HEAD",
-		args:  "",
-	},
-	{
-		label: "nested-submod-deinit",
-		src:   "nested-submod-deinit.zip",
-		ref1:  "HEAD^",
-		ref2:  "HEAD",
-		args:  "",
-	},
-	{
-		label: "submod-deinit",
-		src:   "submod-deinit.zip",
-		ref1:  "HEAD^",
-		ref2:  "HEAD",
-		args:  "",
-	},
+	tc("nested-submods.zip"),
+	tc("nested-submod-deinit.zip"),
+	tc("submod-deinit.zip"),
+	tc("everything-in-subdir.zip").subdirectory("hugodir"),
 }
 
 // findSubDir returns the path to the single directory within `dir`.
@@ -133,13 +133,9 @@ func skipRegexes() []*regexp.Regexp {
 		regexp.MustCompile(`Total in \d+ ms`),
 		// It's a log line for the current date :-/
 		regexp.MustCompile(`WARN \d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}`),
-		// These two are only issues in the nested-submodules tests. Maybe
-		// we should modify those tests?
 		// Under limited (and unknown) circumstances, commit SHAs can change,
 		// so ignore them in diffs.
 		regexp.MustCompile(`^index [a-f0-9]{7}\.\.[a-f0-9]{7} 100644$`),
-		// This has a hash in it too :-/
-		regexp.MustCompile(`https://example\.com/css/site\.min`),
 	}
 }
 
@@ -177,6 +173,9 @@ func runTest(t *testing.T, tc TestCase) {
 	outputPath := path.Join(wd, "../../test-fixtures", tc.label+"-out.txt")
 
 	inputDir := findSubDir(t, tempDir)
+	if tc.subdir != "" {
+		inputDir = path.Join(inputDir, tc.subdir)
+	}
 	fmt.Println("Test input directory is", inputDir)
 
 	stdout, err := captureOutput(func() error {
