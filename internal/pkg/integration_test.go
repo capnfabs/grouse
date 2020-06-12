@@ -33,56 +33,23 @@ type TestCase struct {
 }
 
 var TestCases []TestCase = []TestCase{
-	TestCase{
-		label: "tiny-simple-branch-diff",
-		src:   "tiny.zip",
-		ref1:  "HEAD^",
-		ref2:  "tawny-shouldered-podargus",
-		args:  "",
-	},
-	TestCase{
-		label: "nomodules-two-commit-diff",
-		src:   "nomodules.zip",
-		ref1:  "b789d11b2eaa2e3e4c1f942b2580492274fd32a4",
-		ref2:  "10730e4c7f320144af7055b37daecd240b4b0b72",
-		args:  "",
-	},
-	TestCase{
-		label: "nomodules-empty-diff",
-		src:   "nomodules.zip",
-		ref1:  "10730e4c7f320144af7055b37daecd240b4b0b72",
-		ref2:  "HEAD",
-		args:  "",
-	},
-	TestCase{
-		// Change theme from 'ananke' to 'piercer'
-		label: "themechange-change-theme",
-		src:   "themechange.zip",
-		ref1:  "4367feb0439721ec67cf4175e59454326643d951",
-		ref2:  "3035eafa7b793b66a76b783846b67b92e0565f56",
-		args:  "",
-	},
-	TestCase{
-		// Delete 'ananke' submodule; should be a noop in terms of diff
-		// but involves automatically cloning a submodule so it's probably slow.
-		label: "themechange-old-theme-missing-from-tree",
-		src:   "themechange.zip",
-		ref1:  "3035eafa7b793b66a76b783846b67b92e0565f56",
-		ref2:  "1da5eec49d7fa3529b553055d86fe801714846f1",
-		args:  "",
-	},
-	TestCase{
-		label: "nested-submodules-everything-present",
-		src:   "nested-submodules-everything-present.zip",
+	{
+		label: "nested-submods",
+		src:   "nested-submods.zip",
 		ref1:  "HEAD^",
 		ref2:  "HEAD",
 		args:  "",
 	},
-	TestCase{
-		// This simulates the case where some nested submodules are missing
-		// from the tree.
-		label: "nested-submodules-missing-submodules",
-		src:   "nested-submodules-missing-submodules.zip",
+	{
+		label: "nested-submod-deinit",
+		src:   "nested-submod-deinit.zip",
+		ref1:  "HEAD^",
+		ref2:  "HEAD",
+		args:  "",
+	},
+	{
+		label: "submod-deinit",
+		src:   "submod-deinit.zip",
 		ref1:  "HEAD^",
 		ref2:  "HEAD",
 		args:  "",
@@ -93,8 +60,20 @@ var TestCases []TestCase = []TestCase{
 func findSubDir(t *testing.T, dir string) string {
 	files, err := ioutil.ReadDir(dir)
 	assert.Nil(t, err)
-	assert.Len(t, files, 1)
-	subdir := files[0]
+
+	filtered := []os.FileInfo{}
+	names := []string{}
+	for _, f := range files {
+		if f.Name() != "__MACOSX" {
+			filtered = append(filtered, f)
+			names = append(names, f.Name())
+		}
+	}
+	if len(filtered) != 1 {
+		panic(fmt.Sprintf("Got more than 1 directory in zipfile: [%s]", strings.Join(names, ", ")))
+	}
+	assert.Len(t, filtered, 1)
+	subdir := filtered[0]
 	assert.True(t, subdir.IsDir())
 	return path.Join(dir, subdir.Name())
 }

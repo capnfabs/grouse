@@ -137,9 +137,10 @@ func prepSubmodulesForSharedClone(src *repository, dst *worktreeRepository) erro
 
 	for _, submod := range submodPaths {
 		submodRepo, err := src.gitInterface.openRepository(path.Join(src.rootDir, submod.path))
-		println(fmt.Sprintf("Trying to open repo @%v %v %v\n", submod.path, submodRepo, err))
+		println(fmt.Sprintf("Trying to open repo @%v %v %v\n", submod.path, submodRepo.rootDir, err))
 
 		if submodRepo.rootDir == src.rootDir {
+			// TODO: abstract this better.
 			// This indicates that the submodule isn't in the right place etc etc.
 			println("Bailing: wasn't a submodule for whatever reason")
 			continue
@@ -222,8 +223,10 @@ func (w *worktreeRepository) Checkout(commit ResolvedCommit) error {
 		return cmd.Err
 	}
 
-	// Checkout submodules
-	cmd = w.runCommand("git", "submodule", "update", "--recursive")
+	// Checkout submodules.
+	// --recursive -- automatically do everything in the entire tree
+	// --init -- if there are uninitialized submodules, then init them.
+	cmd = w.runCommand("git", "submodule", "update", "--recursive", "--init")
 	return cmd.Err
 }
 
