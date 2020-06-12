@@ -82,7 +82,7 @@ func TestHandlesOneCommit(t *testing.T) {
 
 func TestHandlesWrongNumberOfCommits(t *testing.T) {
 	c := qt.New(t)
-	for _, testcase := range [][]string{[]string{}, []string{"b1234553", "HEAD^^", "HEAD"}} {
+	for _, testcase := range [][]string{{}, {"b1234553", "HEAD^^", "HEAD"}} {
 		subtest := fmt.Sprintf("With%dArgs", len(testcase))
 		c.Run(subtest, func(c *qt.C) {
 			f := defaultFlags()
