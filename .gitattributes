@@ -1,5 +1,0 @@
-test-fixtures/nested-submodules-everything-present.zip filter=lfs diff=lfs merge=lfs -text
-test-fixtures/nested-submodules-missing-submodules.zip filter=lfs diff=lfs merge=lfs -text
-test-fixtures/nomodules.zip filter=lfs diff=lfs merge=lfs -text
-test-fixtures/themechange.zip filter=lfs diff=lfs merge=lfs -text
-test-fixtures/tiny.zip filter=lfs diff=lfs merge=lfs -text

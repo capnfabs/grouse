@@ -24,8 +24,8 @@ func main() {
 	rootCmd.Flags().String("buildargs", "", "Arguments to pass on to the hugo build command")
 	rootCmd.Flags().BoolP("tool", "t", false, "Invoke 'git difftool' instead of 'git diff'")
 	rootCmd.Flags().Bool("debug", false, "Enables additional logging")
-	rootCmd.Flags().Bool("keep-worktree", false, "Keeps the source worktree around after running grouse. Useful for debugging and development, but adds cruft to your git repo")
-	rootCmd.Flags().MarkHidden("keep-worktree")
+	rootCmd.Flags().Bool("keep-cache", false, "Keeps the intermediary cache around after running grouse. Useful for debugging and development, but adds cruft to your disk.")
+	rootCmd.Flags().MarkHidden("keep-cache")
 	if err := rootCmd.Execute(); err != nil {
 		out.Outln(err)
 		os.Exit(1)
