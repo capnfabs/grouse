@@ -7,7 +7,7 @@ jobs:
     docker:
       - image: capnfabs/grouse-integration:0.2
     environment:
-      - HUGO_RELEASE: https://github.com/gohugoio/hugo/releases/download/v0.62.2/hugo_0.62.2_Linux-64bit.deb
+      - HUGO_RELEASE: https://github.com/gohugoio/hugo/releases/download/v0.72.0/hugo_0.72.0_Linux-64bit.deb
     steps:
       - run:
           name: Install Hugo
