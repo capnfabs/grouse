@@ -1,12 +1,12 @@
 package git
 
 import (
-	"fmt"
 	"os"
 	"path"
 	"strings"
 
 	"github.com/capnfabs/grouse/internal/exec"
+	"github.com/capnfabs/grouse/internal/out"
 )
 
 // Repository represents a git repository somewhere on disk. It's not able to
@@ -88,21 +88,18 @@ func (r *repository) getSubmodulePaths() ([]submodInfo, error) {
 	_, err := os.Lstat(path.Join(r.rootDir, ".gitmodules"))
 	if err != nil && os.IsNotExist(err) {
 		// No submodules, just chill.
-		// TODO: make this a log statement
-		println("NO SUBMODULES")
+		out.Debugln("No submodules found in repo.")
 		return []submodInfo{}, nil
 	} else if err != nil {
 		// I can't imagine what error this could be...
-		// TODO: log this.
-		println(err)
+		out.Debugf("Got error %v when attempting to find .gitmodules file; pretending there isn't any\n", err)
 		return []submodInfo{}, err
 	}
 	// This fetches one line per submodule, e.g.
 	// submodule.themes/paperesque.path themes/paperesque
 	cmd := r.runCommand("git", "config", "--file", ".gitmodules", "--get-regexp", `submodule\..*\.path`)
 	if cmd.Err != nil {
-		// TODO: Log this
-		println("COMMAND ERROR")
+		out.Debugf("Got error %v when attempting to load submodule config; pretending there aren't any submodules\n", err)
 		return []submodInfo{}, cmd.Err
 	}
 	lines := strings.Split(cmd.StdOut, "\n")
@@ -137,22 +134,23 @@ func prepSubmodulesForSharedClone(src *repository, dst *worktreeRepository) erro
 
 	for _, submod := range submodPaths {
 		submodRepo, err := src.gitInterface.openRepository(path.Join(src.rootDir, submod.path))
-		println(fmt.Sprintf("Trying to open repo @%v %v %v\n", submod.path, submodRepo.rootDir, err))
-
-		if submodRepo.rootDir == src.rootDir {
-			// TODO: abstract this better.
-			// This indicates that the submodule isn't in the right place etc etc.
-			println("Bailing: wasn't a submodule for whatever reason")
-			continue
-		}
 
 		if err != nil {
-			// maybe it wasn't checked out, not important, just continue.
-			// TODO: log the error
-			println("Misc error", err)
+			// Something mysterious went wrong; just ignore and continue.
+			out.Debugf("Unable to prepare submodule: %v\n", err)
 			continue
 		}
-		println("Prepping", submod.path)
+
+		if submodRepo.rootDir == src.rootDir {
+			// TODO: abstract this error handling better, by e.g. making
+			// openRepository take an argument as to whether it's allowed to look further up the tree.
+
+			// This indicates that the submodule isn't in the right place etc etc.
+			out.Debugf("Thought %s was a repo, but it wasn't, abandoning attempt to load submodule\n", submod.path)
+			continue
+		}
+
+		out.Debugf("Recursively cloning submodule at %s...\n", submod.path)
 		clonedSubmodRepo, err := submodRepo.recursiveSharedCloneTo(path.Join(dst.rootDir, submod.path))
 
 		if err != nil {

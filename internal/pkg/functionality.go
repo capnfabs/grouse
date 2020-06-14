@@ -28,7 +28,7 @@ func RunRootCommand(cmd *cobra.Command) {
 		cmd.Usage()
 		os.Exit(1)
 	}
-	out.Debug = context.debug
+	out.Reinit(context.debug)
 
 	err = runMain(git.NewGit(), *context)
 	if err != nil {
@@ -151,9 +151,11 @@ func runHugo(hugoRootDir string, outputDir string, userArgs []string) error {
 	cmd.Dir = hugoRootDir
 
 	// TODO: if --debug is NOT specified, should hang on to these and then only
-	// print them if an error occurs.
+	// print them if an error occurs?
+	// NOTE that this intentionally uses Stderr for both; see
+	// https://github.com/capnfabs/grouse/pull/12#issuecomment-643446418
 	cmd.Stderr = os.Stderr
-	cmd.Stdout = os.Stdout
+	cmd.Stdout = os.Stderr
 	return exec.Run(cmd)
 }
 

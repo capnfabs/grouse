@@ -1,0 +1,30 @@
+Computing diff between revisions [34m742de0a[0m ([33m742de0a[0m) and [34m353bfcb[0m ([33m353bfcb[0m)
+Building revision [34m742de0a[0m ([33m742de0a[0m)…
+Building sites … 
+                   | EN  
+-------------------+-----
+  Pages            | 73  
+  Paginator pages  |  2  
+  Non-page files   |  0  
+  Static files     | 15  
+  Processed images |  0  
+  Aliases          | 21  
+  Sitemaps         |  1  
+  Cleaned          |  0  
+
+Total in 149 ms
+Building revision [34m353bfcb[0m ([33m353bfcb[0m)…
+Building sites … 
+                   | EN  
+-------------------+-----
+  Pages            | 73  
+  Paginator pages  |  2  
+  Non-page files   |  0  
+  Static files     | 15  
+  Processed images |  0  
+  Aliases          | 21  
+  Sitemaps         |  1  
+  Cleaned          |  0  
+
+Total in 146 ms
+Diffing…

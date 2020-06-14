@@ -11,6 +11,7 @@ import (
 	"testing"
 
 	"github.com/capnfabs/grouse/internal/git"
+	"github.com/capnfabs/grouse/internal/out"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -103,15 +104,21 @@ func buildContext(tc *TestCase, repoDir string) cmdArgs {
 	}
 }
 
-func captureOutput(f func() error) ([]byte, error) {
+func captureOutput(f func() error) ([]byte, []byte, error) {
 	oldStdout := os.Stdout
+	oldStderr := os.Stderr
 
 	rout, wout, _ := os.Pipe()
-	// TODO check error
+	rerr, werr, _ := os.Pipe()
+	// TODO check errors
 
 	os.Stdout = wout
+	os.Stderr = werr
+
+	out.Reinit(false)
 
 	outC := make(chan []byte)
+	errC := make(chan []byte)
 
 	go func() {
 		data, err := ioutil.ReadAll(rout)
@@ -122,8 +129,19 @@ func captureOutput(f func() error) ([]byte, error) {
 		outC <- data
 	}()
 
+	go func() {
+		data, err := ioutil.ReadAll(rerr)
+		if err != nil {
+			panic(err)
+		}
+		rerr.Close()
+		errC <- data
+	}()
+
 	restore := func() {
 		os.Stdout = oldStdout
+		os.Stderr = oldStderr
+		out.Reinit(false)
 	}
 
 	call := func() error {
@@ -134,9 +152,11 @@ func captureOutput(f func() error) ([]byte, error) {
 	retVal := call()
 
 	wout.Close()
+	werr.Close()
 
 	stdout := <-outC
-	return stdout, retVal
+	stderr := <-errC
+	return stdout, stderr, retVal
 }
 
 var SKIPS []*regexp.Regexp = skipRegexes()
@@ -184,6 +204,7 @@ func runTest(t *testing.T, tc TestCase) {
 	require.Nil(t, cmd.Run())
 
 	outputPath := path.Join(wd, "../../test-fixtures", tc.label+"-out.txt")
+	errPath := path.Join(wd, "../../test-fixtures", tc.label+"-err.txt")
 
 	inputDir := findSubDir(t, tempDir)
 	if tc.subdir != "" {
@@ -191,7 +212,7 @@ func runTest(t *testing.T, tc TestCase) {
 	}
 	fmt.Println("Test input directory is", inputDir)
 
-	stdout, err := captureOutput(func() error {
+	stdout, stderr, err := captureOutput(func() error {
 		return runMain(git.NewGit(), buildContext(&tc, inputDir))
 	})
 	if err != nil {
@@ -202,17 +223,29 @@ func runTest(t *testing.T, tc TestCase) {
 
 	if out, ok := os.LookupEnv("WRITE_TEST_OUTPUT"); ok && out == "1" {
 		fmt.Println("Writing stdout to", outputPath)
-		file, err := os.Create(outputPath)
+		fmt.Println("Writing stderr to", errPath)
+		outFile, err := os.Create(outputPath)
 		require.Nil(t, err)
-		file.Write(stdout)
+		errFile, err := os.Create(errPath)
+		require.Nil(t, err)
+		outFile.Write(stdout)
+		errFile.Write(stderr)
 	} else {
-		fmt.Println("Comparing stdout to historical value", outputPath)
-		file, err := os.Open(outputPath)
-		require.Nil(t, err)
-		content, err := ioutil.ReadAll(file)
-		require.Nil(t, err)
-		require.Equal(t, filterLines(string(content)), filterLines(string(stdout)))
+		fmt.Println("Comparing stdout/stderr to historical values:")
+		fmt.Println("- stdout:", outputPath)
+		fmt.Println("- stderr:", errPath)
+
+		checkFiltered(t, outputPath, string(stdout))
+		checkFiltered(t, errPath, string(stderr))
 	}
+}
+
+func checkFiltered(t *testing.T, referenceFilePath string, actualValue string) {
+	referenceFile, err := os.Open(referenceFilePath)
+	require.Nil(t, err)
+	content, err := ioutil.ReadAll(referenceFile)
+	require.Nil(t, err)
+	require.Equal(t, filterLines(string(content)), filterLines(actualValue))
 }
 
 func TestEnd2End(t *testing.T) {

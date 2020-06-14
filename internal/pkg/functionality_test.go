@@ -63,13 +63,13 @@ type m struct {
 }
 
 func installFixtures() (m, func()) {
-	out.Debug = true
+	out.Reinit(true)
 
 	exec, cexec := installMockExec()
 	run, crun := installMockRun()
 
 	return m{Exec: exec, Run: run}, func() {
-		out.Debug = false
+		out.Reinit(false)
 		cexec()
 		crun()
 	}
