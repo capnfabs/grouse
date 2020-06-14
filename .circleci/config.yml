@@ -1,12 +1,17 @@
 # Golang CircleCI 2.0 configuration file
 #
 # Check https://circleci.com/docs/2.0/language-go/ for more details
-version: 2
+version: 2.1
 jobs:
   build:
     docker:
       - image: capnfabs/grouse-integration:0.2
+    environment:
+      - HUGO_RELEASE: https://github.com/gohugoio/hugo/releases/download/v0.62.2/hugo_0.62.2_Linux-64bit.deb
     steps:
+      - run:
+          name: Install Hugo
+          command: curl -L $HUGO_RELEASE -o hugo.deb && sudo dpkg -i hugo.deb && rm hugo.deb
       - checkout
       - run: go build ./...
       - run: go test ./...
