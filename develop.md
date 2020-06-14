@@ -39,9 +39,9 @@ go test ./...
 
 ```sh
 # Bump as required
-VERSION=0.1
+export VERSION=0.2
 docker build -t "capnfabs/grouse-integration:$VERSION" .circleci/images/primary
-docker push
+docker push "capnfabs/grouse-integration"
 # Now update .circleci/config.yml to refer to the new image.
 ```
 
