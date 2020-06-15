@@ -215,10 +215,10 @@ func TestDiffArgs(t *testing.T) {
 func TestGitArgs(t *testing.T) {
 
 	t.Run("command_", func(t *testing.T) {
-		mocks, cleanup := installFixtures()
+		runnerMocks, cleanup := installFixtures()
 		defer cleanup()
 
-		mockGit := new(MockGit)
+		mockGit := new(mocks.Git)
 		mockGit.On("OpenRepository", mock.Anything).Return(mockReadRepo(), nil)
 		mockGit.On("GetRelativeLocation", mock.Anything).Return("potato/tomato", nil)
 		mockGit.On("NewRepository", mock.Anything).Return(mockWriteRepo(), nil)
@@ -233,7 +233,7 @@ func TestGitArgs(t *testing.T) {
 			keepWorktree: false,
 		}
 		runMain(mockGit, args)
-		gitCmds := findCmdsMatchingArgs(mocks.Run.Calls, "git")
+		gitCmds := findCmdsMatchingArgs(runnerMocks.Run.Calls, "git")
 		assert.Equal(t, 1, len(gitCmds))
 		assert.Equal(t, []string{"git", "hello", "--from-the-other-siiiiiiiiiiide", "diff", string(WrittenCommitRefs[0]), string(WrittenCommitRefs[1])}, gitCmds[0].Args)
 	})
