@@ -122,6 +122,7 @@ func TestPassthroughBuildArgs(t *testing.T) {
 		diffCommand:  "diff",
 		commits:      []string{"HEAD^", "HEAD"},
 		diffArgs:     []string{},
+		gitArgs:      []string{},
 		buildArgs:    []string{"--here-is-a-build-arg", "message text with 'apostrophes'"},
 		debug:        false,
 		keepWorktree: false,
@@ -170,6 +171,7 @@ func TestChecksOutCorrectSrcShas(t *testing.T) {
 		diffCommand:  "diff",
 		commits:      []string{"origin/YOLO", "HEAD"},
 		diffArgs:     []string{},
+		gitArgs:      []string{},
 		buildArgs:    []string{""},
 		debug:        false,
 		keepWorktree: false,
@@ -196,6 +198,7 @@ func TestDiffArgs(t *testing.T) {
 				repoDir:      "",
 				diffCommand:  "diff",
 				commits:      []string{"HEAD^", "HEAD"},
+				gitArgs:      []string{},
 				diffArgs:     []string{"hello", "--from-the-other-siiiiiiiiiiide"},
 				buildArgs:    []string{""},
 				debug:        false,
@@ -207,6 +210,34 @@ func TestDiffArgs(t *testing.T) {
 			assert.Equal(t, []string{"git", "diff", "hello", "--from-the-other-siiiiiiiiiiide", string(WrittenCommitRefs[0]), string(WrittenCommitRefs[1])}, diffCmds[0].Args)
 		})
 	}
+}
+
+func TestGitArgs(t *testing.T) {
+
+	t.Run("command_", func(t *testing.T) {
+		runnerMocks, cleanup := installFixtures()
+		defer cleanup()
+
+		mockGit := new(mocks.Git)
+		mockGit.On("OpenRepository", mock.Anything).Return(mockReadRepo(), nil)
+		mockGit.On("GetRelativeLocation", mock.Anything).Return("potato/tomato", nil)
+		mockGit.On("NewRepository", mock.Anything).Return(mockWriteRepo(), nil)
+
+		args := cmdArgs{
+			repoDir:      "",
+			diffCommand:  "diff",
+			commits:      []string{"HEAD^", "HEAD"},
+			gitArgs:      []string{"hello", "--from-the-other-siiiiiiiiiiide"},
+			buildArgs:    []string{""},
+			debug:        false,
+			keepWorktree: false,
+		}
+		runMain(mockGit, args)
+		gitCmds := findCmdsMatchingArgs(runnerMocks.Run.Calls, "git")
+		assert.Equal(t, 1, len(gitCmds))
+		assert.Equal(t, []string{"git", "hello", "--from-the-other-siiiiiiiiiiide", "diff", string(WrittenCommitRefs[0]), string(WrittenCommitRefs[1])}, gitCmds[0].Args)
+	})
+
 }
 
 func findCmdsMatchingArgs(calls []mock.Call, args ...string) []*exec.Cmd {
