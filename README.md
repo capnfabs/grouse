@@ -49,7 +49,7 @@ Anything you can `git diff` against works as a commit reference for Grouse:
 - `grouse --diffargs="--stat"` will give you a short list of which files have changed and how much they've changed by:
 
     ```
-    $ grouse --diffargs="--stat" master
+    $ grouse --diffargs="--stat" [default-branch]
 
     index.html                       |  4 ++++
     index.xml                        | 11 +++++++++-

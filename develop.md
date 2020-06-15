@@ -12,9 +12,15 @@ go build -o grouse
 
 To run,
 
-```
+```sh
 cd your-hugo-directory
 grouse <ref> [<ref>]
+```
+
+My standard build and run iteration loop command is:
+
+```sh
+go build -o grouse && (G=`pwd`/grouse; cd ../capnfabs.github.io; $G --debug --keep-cache 'HEAD^^^' 'HEAD' )
 ```
 
 ## Tests
@@ -22,28 +28,17 @@ grouse <ref> [<ref>]
 There are two kinds of tests:
 
 - fast-ish unit tests
-- some really fat integration tests that require `git-lfs`, `hugo`, and `git` to be installed. These unzip entire repos stored in zip files and then run grouse on them, and check that the output hasn't changed from the snapshot saved in the repo (then you can git diff the output files to see what's changed).
+- some fat integration tests that require `hugo`, and `git` to be installed, and an internet connection. These unzip entire repos stored in zip files and then run grouse on them, and check that the output hasn't changed from the snapshot saved in the repo (then you can git diff the output files to see what's changed).
 
 ```sh
 # Unit tests!
 go test -short ./...
 
-# Also include tests on 180MB repos which may clone random stuff from github :-/
+# Also include integration tests, which may clone random stuff from github and take ~20 seconds
 go test ./...
 ```
 
-### Running Integration Tests on CircleCI
-
-- The integration tests have some ugly dependencies, so I put them all in a docker container.
-- To push a new version of the docker container:
-
-```sh
-# Bump as required
-export VERSION=0.2
-docker build -t "capnfabs/grouse-integration:$VERSION" .circleci/images/primary
-docker push "capnfabs/grouse-integration"
-# Now update .circleci/config.yml to refer to the new image.
-```
+These all get run automatically on CircleCI every commit (I think).
 
 ### Mocks in Unit Tests
 
@@ -70,5 +65,4 @@ bin/mockery -dir internal/git -all
 
 ## Things that would be nice for the future (roughly ordered, see also [#enhancements](https://github.com/capnfabs/grouse/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement))
 - Try to autodetect a few common static site generators (hugo, jekyll, gatsby)
-- Cache historical builds in the temp dir.
-- Maybe? Force the same timestamp so that themes which use timestamps won't generate false-positives everywhere.
+- Cache historical builds + repos in the temp dir.
