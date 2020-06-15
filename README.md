@@ -1,5 +1,7 @@
 # Grouse
 
+[![Grouse Build](https://circleci.com/gh/capnfabs/grouse.svg?style=shield)](https://circleci.com/gh/capnfabs/grouse)
+
 Like `git diff`, but for generated [Hugo](https://gohugo.io) sites.
 
 Imagine that, every time you pushed changes to your Hugo site, you also version-controlled the generated HTML/CSS/JS files. Then, when you were changing anything important on your site, you could also run `git diff` to see whether your changes had unintended side effects.

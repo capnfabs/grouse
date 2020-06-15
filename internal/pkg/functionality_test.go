@@ -11,35 +11,16 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-type MockGit struct {
-	mock.Mock
-}
-
-func (m *MockGit) NewRepository(dst string) (git.Repository, error) {
-	args := m.Called(dst)
-	return args.Get(0).(git.Repository), args.Error(1)
-}
-
-func (m *MockGit) OpenRepository(repoDir string) (git.Repository, error) {
-	args := m.Called(repoDir)
-	return args.Get(0).(git.Repository), args.Error(1)
-}
-
-func (m *MockGit) GetRelativeLocation(currentDir string) (string, error) {
-	args := m.Called(currentDir)
-	return args.String(0), args.Error(1)
-}
-
 // Here's two examples.
 var WrittenCommitRefs []git.Hash = []git.Hash{
 	"f2999e8ac89b88a590b9902e9283dc76790ba384",
 	"04beca3bd964b7049f34b037d3c86c8edd991b36",
 }
 
-func mockWriteRepo() *mocks.Repository {
-	r := new(mocks.Repository)
+func mockWriteRepo() *mocks.WriteableRepository {
+	r := new(mocks.WriteableRepository)
 	r.On("RootDir").Return("/tmp/repo")
-	// Cycles based on the number of times it's called.
+	// Gives a different value from WrittenCommitRefs each time.
 	counter := 0
 	r.On("CommitEverythingInWorktree", mock.Anything).Return(func(message string) git.Hash {
 		val := WrittenCommitRefs[counter]
@@ -63,8 +44,8 @@ func resolve(r *mocks.Repository, hash string, userRef string) *mocks.ResolvedUs
 
 func mockReadRepo() *mocks.Repository {
 	r := new(mocks.Repository)
-	wt := new(mocks.Worktree)
-	wt.On("Location").Return("/tmp/worktree")
+	wt := new(mocks.WorktreeRepository)
+	wt.On("RootDir").Return("/tmp/worktree")
 	wt.On("Remove").Return(nil)
 	wt.On("Checkout", mock.Anything).Return(nil)
 
@@ -72,7 +53,7 @@ func mockReadRepo() *mocks.Repository {
 
 	r.On("RootDir").Return("/tmp/repo")
 	r.On("ResolveCommit", mock.Anything).Return(ref, nil)
-	r.On("AddWorktree", mock.Anything).Return(wt, nil)
+	r.On("RecursiveSharedCloneTo", mock.Anything).Return(wt, nil)
 	return r
 }
 
@@ -82,13 +63,13 @@ type m struct {
 }
 
 func installFixtures() (m, func()) {
-	out.Debug = true
+	out.Reinit(true)
 
 	exec, cexec := installMockExec()
 	run, crun := installMockRun()
 
 	return m{Exec: exec, Run: run}, func() {
-		out.Debug = false
+		out.Reinit(false)
 		cexec()
 		crun()
 	}
@@ -128,13 +109,13 @@ func installMockRun() (*mock.Mock, func()) {
 }
 
 func TestPassthroughBuildArgs(t *testing.T) {
-	mocks, cleanup := installFixtures()
+	runnerMocks, cleanup := installFixtures()
 	defer cleanup()
 
-	mockGit := new(MockGit)
+	mockGit := new(mocks.Git)
+	mockGit.On("NewRepository", mock.Anything).Return(mockWriteRepo(), nil)
 	mockGit.On("OpenRepository", mock.Anything).Return(mockReadRepo(), nil)
 	mockGit.On("GetRelativeLocation", mock.Anything).Return("potato/tomato", nil)
-	mockGit.On("NewRepository", mock.Anything).Return(mockWriteRepo(), nil)
 
 	args := cmdArgs{
 		repoDir:      "",
@@ -148,7 +129,7 @@ func TestPassthroughBuildArgs(t *testing.T) {
 	}
 	runMain(mockGit, args)
 
-	cmds := findCmdsMatchingArgs(mocks.Run.Calls, "hugo")
+	cmds := findCmdsMatchingArgs(runnerMocks.Run.Calls, "hugo")
 	for _, cmd := range cmds {
 		assert.Equal(
 			t,
@@ -169,21 +150,21 @@ func TestChecksOutCorrectSrcShas(t *testing.T) {
 	_, cleanup := installFixtures()
 	defer cleanup()
 
-	mockGit := new(MockGit)
+	mockGit := new(mocks.Git)
 	mockReadRepo := new(mocks.Repository)
 	mockReadRepo.On("RootDir").Return("/tmp/repo")
 	mockReadRepo.On("ResolveCommit", "origin/YOLO").Return(resolve(mockReadRepo, "111de18a818abd90ebdf1e5628820cd10d4e3efe", "origin/YOLO"), nil)
 	mockReadRepo.On("ResolveCommit", "HEAD").Return(resolve(mockReadRepo, "301e857edf2f032ff58cd812fca526c5bae64569", "HEAD"), nil)
 
-	wt := new(mocks.Worktree)
-	wt.On("Location").Return("/tmp/worktree")
+	wt := new(mocks.WorktreeRepository)
+	wt.On("RootDir").Return("/tmp/worktree")
 	wt.On("Remove").Return(nil)
 	wt.On("Checkout", mock.Anything).Return(nil)
-	mockReadRepo.On("AddWorktree", mock.Anything).Return(wt, nil)
+	mockReadRepo.On("RecursiveSharedCloneTo", mock.Anything).Return(wt, nil)
 
+	mockGit.On("NewRepository", mock.Anything).Return(mockWriteRepo(), nil)
 	mockGit.On("OpenRepository", mock.Anything).Return(mockReadRepo, nil)
 	mockGit.On("GetRelativeLocation", mock.Anything).Return("potato/tomato", nil)
-	mockGit.On("NewRepository", mock.Anything).Return(mockWriteRepo(), nil)
 
 	args := cmdArgs{
 		repoDir:      "",
@@ -205,10 +186,10 @@ func TestChecksOutCorrectSrcShas(t *testing.T) {
 func TestDiffArgs(t *testing.T) {
 	for _, cmd := range []string{"diff", "difftool"} {
 		t.Run("command_"+cmd, func(t *testing.T) {
-			mocks, cleanup := installFixtures()
+			runnerMocks, cleanup := installFixtures()
 			defer cleanup()
 
-			mockGit := new(MockGit)
+			mockGit := new(mocks.Git)
 			mockGit.On("OpenRepository", mock.Anything).Return(mockReadRepo(), nil)
 			mockGit.On("GetRelativeLocation", mock.Anything).Return("potato/tomato", nil)
 			mockGit.On("NewRepository", mock.Anything).Return(mockWriteRepo(), nil)
@@ -224,7 +205,7 @@ func TestDiffArgs(t *testing.T) {
 				keepWorktree: false,
 			}
 			runMain(mockGit, args)
-			diffCmds := findCmdsMatchingArgs(mocks.Run.Calls, "git", "diff")
+			diffCmds := findCmdsMatchingArgs(runnerMocks.Run.Calls, "git", "diff")
 			assert.Equal(t, 1, len(diffCmds))
 			assert.Equal(t, []string{"git", "diff", "hello", "--from-the-other-siiiiiiiiiiide", string(WrittenCommitRefs[0]), string(WrittenCommitRefs[1])}, diffCmds[0].Args)
 		})

@@ -1,30 +1,38 @@
 package out
 
 import (
-	"fmt"
+	"io/ioutil"
 	"log"
+	"os"
+
+	"github.com/logrusorgru/aurora"
 )
 
+var loggerOut = log.New(os.Stderr, "", 0)
+var loggerDebug = log.New(ioutil.Discard, "", 0)
+
+func Reinit(debug bool) {
+	if debug {
+		loggerOut = log.New(os.Stderr, aurora.Magenta(" [USER] ").String(), log.LstdFlags)
+		loggerDebug = log.New(os.Stderr, "[DEBUG] ", log.LstdFlags)
+	} else {
+		loggerOut = log.New(os.Stderr, "", 0)
+		loggerDebug = log.New(ioutil.Discard, "", 0)
+	}
+}
+
 func Outf(format string, args ...interface{}) {
-	fmt.Printf(format, args...)
+	loggerOut.Printf(format, args...)
 }
 
 func Outln(args ...interface{}) {
-	fmt.Println(args...)
+	loggerOut.Println(args...)
 }
 
-var Debug = false
-
 func Debugf(format string, args ...interface{}) {
-	if !Debug {
-		return
-	}
-	log.Printf(format, args...)
+	loggerDebug.Printf(format, args...)
 }
 
 func Debugln(args ...interface{}) {
-	if !Debug {
-		return
-	}
-	log.Println(args...)
+	loggerDebug.Println(args...)
 }

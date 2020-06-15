@@ -1,0 +1,1951 @@
+diff --git a/404.html b/404.html
+index 1e4f369..a5c0c7e 100644
+--- a/404.html
++++ b/404.html
+@@ -5,15 +5,15 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='404 Page not found • My New Hugo Site'>
++<meta property='og:title' content='404 Page not found • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/404.html'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>404 Page not found • My New Hugo Site</title>
++  <title>404 Page not found • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/404.html'>
+   
+   
+@@ -46,7 +46,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/authors/index.html b/authors/index.html
+index c1b894a..0426c24 100644
+--- a/authors/index.html
++++ b/authors/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Authors • My New Hugo Site'>
++<meta property='og:title' content='Authors • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/authors/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Authors • My New Hugo Site</title>
++  <title>Authors • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/authors/'>
+   
+-    <link href="http://example.org/authors/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/authors/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/authors/index.xml b/authors/index.xml
+index d97cef5..34bbcdb 100644
+--- a/authors/index.xml
++++ b/authors/index.xml
+@@ -1,9 +1,9 @@
+ <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+   <channel>
+-    <title>Authors on My New Hugo Site</title>
++    <title>Authors on SUBDIRECTORY</title>
+     <link>http://example.org/authors/</link>
+-    <description>Recent content in Authors on My New Hugo Site</description>
++    <description>Recent content in Authors on SUBDIRECTORY</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+     
+diff --git a/categories/features/index.html b/categories/features/index.html
+index a2e4c28..c8cac1e 100644
+--- a/categories/features/index.html
++++ b/categories/features/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Category: features • My New Hugo Site'>
++<meta property='og:title' content='Category: features • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/categories/features/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Category: features • My New Hugo Site</title>
++  <title>Category: features • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/categories/features/'>
+   
+-    <link href="http://example.org/categories/features/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/categories/features/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/categories/features/index.xml b/categories/features/index.xml
+index b5b9611..7549a8e 100644
+--- a/categories/features/index.xml
++++ b/categories/features/index.xml
+@@ -1,9 +1,9 @@
+ <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+   <channel>
+-    <title>features on My New Hugo Site</title>
++    <title>features on SUBDIRECTORY</title>
+     <link>http://example.org/categories/features/</link>
+-    <description>Recent content in features on My New Hugo Site</description>
++    <description>Recent content in features on SUBDIRECTORY</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+     <lastBuildDate>Sun, 12 Aug 2018 12:30:00 +0600</lastBuildDate>
+diff --git a/categories/features/page/2/index.html b/categories/features/page/2/index.html
+index add8461..bc2eadb 100644
+--- a/categories/features/page/2/index.html
++++ b/categories/features/page/2/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Category: features • My New Hugo Site'>
++<meta property='og:title' content='Category: features • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/categories/features/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Category: features • My New Hugo Site</title>
++  <title>Category: features • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/categories/features/'>
+   
+-    <link href="http://example.org/categories/features/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/categories/features/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/categories/index.html b/categories/index.html
+index bfc1906..ebeb073 100644
+--- a/categories/index.html
++++ b/categories/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Categories • My New Hugo Site'>
++<meta property='og:title' content='Categories • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/categories/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Categories • My New Hugo Site</title>
++  <title>Categories • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/categories/'>
+   
+-    <link href="http://example.org/categories/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/categories/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/categories/index.xml b/categories/index.xml
+index 24fbeee..b791da9 100644
+--- a/categories/index.xml
++++ b/categories/index.xml
+@@ -1,9 +1,9 @@
+ <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+   <channel>
+-    <title>Categories on My New Hugo Site</title>
++    <title>Categories on SUBDIRECTORY</title>
+     <link>http://example.org/categories/</link>
+-    <description>Recent content in Categories on My New Hugo Site</description>
++    <description>Recent content in Categories on SUBDIRECTORY</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+     <lastBuildDate>Sun, 12 Aug 2018 12:30:00 +0600</lastBuildDate>
+diff --git a/categories/others/index.html b/categories/others/index.html
+index 4347f41..14785a3 100644
+--- a/categories/others/index.html
++++ b/categories/others/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Category: others • My New Hugo Site'>
++<meta property='og:title' content='Category: others • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/categories/others/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Category: others • My New Hugo Site</title>
++  <title>Category: others • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/categories/others/'>
+   
+-    <link href="http://example.org/categories/others/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/categories/others/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/categories/others/index.xml b/categories/others/index.xml
+index 382cd8f..b862a2c 100644
+--- a/categories/others/index.xml
++++ b/categories/others/index.xml
+@@ -1,9 +1,9 @@
+ <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+   <channel>
+-    <title>others on My New Hugo Site</title>
++    <title>others on SUBDIRECTORY</title>
+     <link>http://example.org/categories/others/</link>
+-    <description>Recent content in others on My New Hugo Site</description>
++    <description>Recent content in others on SUBDIRECTORY</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+     <lastBuildDate>Mon, 25 Sep 2017 08:00:00 +0600</lastBuildDate>
+@@ -18,7 +18,7 @@
+       
+       <guid>http://example.org/docs/config-file/</guid>
+       <description>This is the Minimo&amp;rsquo;s configuration file ( config.toml ) file of this site:
+-baseURL = &amp;#34;http://example.org/&amp;#34; languageCode = &amp;#34;en-us&amp;#34; title = &amp;#34;My New Hugo Site&amp;#34; theme = &amp;#34;minimo&amp;#34;  </description>
++baseURL = &amp;#34;http://example.org/&amp;#34; languageCode = &amp;#34;en-us&amp;#34; title = &amp;#34;SUBDIRECTORY&amp;#34; theme = &amp;#34;minimo&amp;#34;  </description>
+     </item>
+     
+   </channel>
+diff --git a/categories/tutorial/index.html b/categories/tutorial/index.html
+index f21ebc1..2ef0edb 100644
+--- a/categories/tutorial/index.html
++++ b/categories/tutorial/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Category: Tutorial • My New Hugo Site'>
++<meta property='og:title' content='Category: Tutorial • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/categories/tutorial/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Category: Tutorial • My New Hugo Site</title>
++  <title>Category: Tutorial • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/categories/tutorial/'>
+   
+-    <link href="http://example.org/categories/tutorial/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/categories/tutorial/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/categories/tutorial/index.xml b/categories/tutorial/index.xml
+index a0c65d1..a9f3387 100644
+--- a/categories/tutorial/index.xml
++++ b/categories/tutorial/index.xml
+@@ -1,9 +1,9 @@
+ <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+   <channel>
+-    <title>Tutorial on My New Hugo Site</title>
++    <title>Tutorial on SUBDIRECTORY</title>
+     <link>http://example.org/categories/tutorial/</link>
+-    <description>Recent content in Tutorial on My New Hugo Site</description>
++    <description>Recent content in Tutorial on SUBDIRECTORY</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+     <lastBuildDate>Mon, 25 Sep 2017 06:00:00 +0600</lastBuildDate>
+diff --git a/docs/authors/index.html b/docs/authors/index.html
+index 80030da..e9116a4 100644
+--- a/docs/authors/index.html
++++ b/docs/authors/index.html
+@@ -18,7 +18,7 @@ Author&rsquo;s Profile For adding an author to your site:
+ /data/authors/muniftanjim.toml
+ id = &#34;muniftanjim&#34; [email] username = &#34;YELLING&#34; host = &#34;example.'>
+ <meta property='og:url' content='http://example.org/docs/authors/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='article'><meta property='og:image' content='https://www.gravatar.com/avatar/12dd0f181193d01d6478c957cf6fddfb?s=256'><meta property='article:author' content='https://facebook.com/nah'><meta property='article:section' content='docs'><meta property='article:tag' content='authors'><meta property='article:published_time' content='2017-09-26T06:00:00&#43;06:00'/><meta property='article:modified_time' content='2017-10-11T17:30:00&#43;06:00'/><meta name='twitter:card' content='summary'><meta name='twitter:creator' content='@yes'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+@@ -56,7 +56,7 @@ id = &#34;muniftanjim&#34; [email] username = &#34;YELLING&#34; host = &#34;exam
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/docs/comments-support/index.html b/docs/comments-support/index.html
+index 17d735f..c11605d 100644
+--- a/docs/comments-support/index.html
++++ b/docs/comments-support/index.html
+@@ -14,7 +14,7 @@ Enable/Disable Comments Globally For enabling or disabling comments globally, ch
+ [params.comments] enable = false  params.comments [Map]:  enable [Boolean]: Enable/Disable comments globally    For Specific Posts The global .Site.Params.comments.enable setting can be overridden for specific posts in their content&rsquo;s frontmatter with this option:
+ --- comments: true ---  comments [Boolean]: Enable/Disable comments for specific posts  Of course, you&rsquo;ll also need to setup a comment system ( Disqus or Staticman ).'>
+ <meta property='og:url' content='http://example.org/docs/comments-support/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='article'><meta property='og:image' content='https://www.gravatar.com/avatar/12dd0f181193d01d6478c957cf6fddfb?s=256'><meta property='article:author' content='https://facebook.com/nah'><meta property='article:section' content='docs'><meta property='article:tag' content='config'><meta property='article:published_time' content='2018-03-29T09:00:00&#43;06:00'/><meta property='article:modified_time' content='2019-07-12T23:00:00&#43;06:00'/><meta name='twitter:card' content='summary'><meta name='twitter:creator' content='@yes'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+@@ -52,7 +52,7 @@ Enable/Disable Comments Globally For enabling or disabling comments globally, ch
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/docs/config-file/index.html b/docs/config-file/index.html
+index 72eee58..af23aa7 100644
+--- a/docs/config-file/index.html
++++ b/docs/config-file/index.html
+@@ -3,14 +3,14 @@
+   <meta charset='utf-8'>
+ <meta name='viewport' content='width=device-width, initial-scale=1'>
+ <meta name='description' content='This is the Minimo&rsquo;s configuration file ( config.toml ) file of this site:
+-baseURL = &#34;http://example.org/&#34; languageCode = &#34;en-us&#34; title = &#34;My New Hugo Site&#34; theme = &#34;minimo&#34;  '>
++baseURL = &#34;http://example.org/&#34; languageCode = &#34;en-us&#34; title = &#34;SUBDIRECTORY&#34; theme = &#34;minimo&#34;  '>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+ <meta property='og:title' content='Configuration File: config.toml • A test'>
+ <meta property='og:description' content='This is the Minimo&rsquo;s configuration file ( config.toml ) file of this site:
+-baseURL = &#34;http://example.org/&#34; languageCode = &#34;en-us&#34; title = &#34;My New Hugo Site&#34; theme = &#34;minimo&#34;  '>
++baseURL = &#34;http://example.org/&#34; languageCode = &#34;en-us&#34; title = &#34;SUBDIRECTORY&#34; theme = &#34;minimo&#34;  '>
+ <meta property='og:url' content='http://example.org/docs/config-file/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='article'><meta property='og:image' content='https://www.gravatar.com/avatar/12dd0f181193d01d6478c957cf6fddfb?s=256'><meta property='article:author' content='https://facebook.com/nah'><meta property='article:section' content='docs'><meta property='article:tag' content='config'><meta property='article:published_time' content='2017-09-25T08:00:00&#43;06:00'/><meta property='article:modified_time' content='2018-02-08T15:15:00&#43;06:00'/><meta name='twitter:card' content='summary'><meta name='twitter:creator' content='@yes'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+@@ -48,7 +48,7 @@ baseURL = &#34;http://example.org/&#34; languageCode = &#34;en-us&#34; title = &
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+@@ -99,7 +99,7 @@ baseURL = &#34;http://example.org/&#34; languageCode = &#34;en-us&#34; title = &
+   <p>This is the Minimo&rsquo;s configuration file ( <code>config.toml</code> ) file of this site:</p>
+ <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">baseURL</span> = <span style="color:#e6db74">&#34;http://example.org/&#34;</span>
+ <span style="color:#a6e22e">languageCode</span> = <span style="color:#e6db74">&#34;en-us&#34;</span>
+-<span style="color:#a6e22e">title</span> = <span style="color:#e6db74">&#34;My New Hugo Site&#34;</span>
++<span style="color:#a6e22e">title</span> = <span style="color:#e6db74">&#34;SUBDIRECTORY&#34;</span>
+ <span style="color:#a6e22e">theme</span> = <span style="color:#e6db74">&#34;minimo&#34;</span>
+ 
+ </code></pre></div>
+diff --git a/docs/cover-image/index.html b/docs/cover-image/index.html
+index 490952a..1ca559d 100644
+--- a/docs/cover-image/index.html
++++ b/docs/cover-image/index.html
+@@ -14,7 +14,7 @@ You can directly provide the image url:
+ --- cover: /images/eden-farm-children-s-village.jpg ---  cover [String]: path/url of the cover image  Or you can provide additional information:
+ --- cover: image: /images/eden-farm-children-s-village.jpg alternate: Picture of a yellow wall with a blue window in the upper-left corner caption: Eden Farm Children&#39;s Village by Gareth Harper on Unsplash style: full ---  cover [Map]:  image [String]: path/url of the cover image alternate [String]: alternate text for the image caption [String]: caption for the cover image style [String]: full / wide / normal    '>
+ <meta property='og:url' content='http://example.org/docs/cover-image/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='article'><meta property='og:image' content='http://example.org/images/eden-farm-children-s-village.jpg'><meta property='article:author' content='https://facebook.com/nah'><meta property='article:section' content='docs'><meta property='article:published_time' content='2017-09-30T14:00:00&#43;06:00'/><meta property='article:modified_time' content='2018-06-04T23:00:00&#43;06:00'/><meta name='twitter:card' content='summary_large_image'><meta name='twitter:creator' content='@yes'><meta property='twitter:image' content='http://example.org/images/eden-farm-children-s-village.jpg'><meta property='twitter:image:alt' content='Eden Farm Children&rsquo;s Village by Gareth Harper on Unsplash'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+@@ -52,7 +52,7 @@ You can directly provide the image url:
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/docs/emoji-support/index.html b/docs/emoji-support/index.html
+index af9a1b5..63676b4 100644
+--- a/docs/emoji-support/index.html
++++ b/docs/emoji-support/index.html
+@@ -16,7 +16,7 @@ For example:
+ No, it&rsquo;ll probably not be that colorful! Unless your device&rsquo;s operating system natively supports colorful emojis, you will see a black &amp; white one instead. :fire:
+ :pencil2: For getting that colorful look, you will have to add this to your content&rsquo;s frontmatter:'>
+ <meta property='og:url' content='http://example.org/docs/emoji-support/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='article'><meta property='og:image' content='https://www.gravatar.com/avatar/12dd0f181193d01d6478c957cf6fddfb?s=256'><meta property='article:author' content='https://facebook.com/nah'><meta property='article:section' content='docs'><meta property='article:tag' content='config'><meta property='article:published_time' content='2018-02-27T21:00:00&#43;06:00'/><meta property='article:modified_time' content='2018-02-27T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'><meta name='twitter:creator' content='@yes'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+@@ -54,7 +54,7 @@ No, it&rsquo;ll probably not be that colorful! Unless your device&rsquo;s operat
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/docs/index.html b/docs/index.html
+index 9e0d00f..558318d 100644
+--- a/docs/index.html
++++ b/docs/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Documentation • My New Hugo Site'>
++<meta property='og:title' content='Documentation • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/docs/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Documentation • My New Hugo Site</title>
++  <title>Documentation • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/docs/'>
+   
+-    <link href="http://example.org/docs/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/docs/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/docs/index.xml b/docs/index.xml
+index 4c00775..37d64d5 100644
+--- a/docs/index.xml
++++ b/docs/index.xml
+@@ -1,9 +1,9 @@
+ <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+   <channel>
+-    <title>Documentation on My New Hugo Site</title>
++    <title>Documentation on SUBDIRECTORY</title>
+     <link>http://example.org/docs/</link>
+-    <description>Recent content in Documentation on My New Hugo Site</description>
++    <description>Recent content in Documentation on SUBDIRECTORY</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+     <lastBuildDate>Sun, 12 Aug 2018 12:30:00 +0600</lastBuildDate>
+@@ -224,7 +224,7 @@ id = &amp;#34;muniftanjim&amp;#34; [email] username = &amp;#34;YELLING&amp;#34;
+       
+       <guid>http://example.org/docs/config-file/</guid>
+       <description>This is the Minimo&amp;rsquo;s configuration file ( config.toml ) file of this site:
+-baseURL = &amp;#34;http://example.org/&amp;#34; languageCode = &amp;#34;en-us&amp;#34; title = &amp;#34;My New Hugo Site&amp;#34; theme = &amp;#34;minimo&amp;#34;  </description>
++baseURL = &amp;#34;http://example.org/&amp;#34; languageCode = &amp;#34;en-us&amp;#34; title = &amp;#34;SUBDIRECTORY&amp;#34; theme = &amp;#34;minimo&amp;#34;  </description>
+     </item>
+     
+     <item>
+diff --git a/docs/installation/index.html b/docs/installation/index.html
+index 48dfe36..5601938 100644
+--- a/docs/installation/index.html
++++ b/docs/installation/index.html
+@@ -16,7 +16,7 @@ Installing Minimo There are two different ways you can install Minimo:
+  As clone As submodule  The second method is recommended.
+ Install Minimo as clone With this method, you will simply clone it. And a copy of Minimo&rsquo;s repository will be stored with the rest of you site.'>
+ <meta property='og:url' content='http://example.org/docs/installation/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='article'><meta property='og:image' content='https://www.gravatar.com/avatar/12dd0f181193d01d6478c957cf6fddfb?s=256'><meta property='article:author' content='https://facebook.com/nah'><meta property='article:section' content='docs'><meta property='article:published_time' content='2017-09-25T02:00:00&#43;06:00'/><meta property='article:modified_time' content='2018-02-08T15:00:00&#43;06:00'/><meta name='twitter:card' content='summary'><meta name='twitter:creator' content='@yes'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+@@ -54,7 +54,7 @@ Install Minimo as clone With this method, you will simply clone it. And a copy o
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/docs/katex-support/index.html b/docs/katex-support/index.html
+index adcd26c..5458657 100644
+--- a/docs/katex-support/index.html
++++ b/docs/katex-support/index.html
+@@ -12,7 +12,7 @@ When {{&lt; katex inline &gt;}} a \ne 0 {{&lt; /katex &gt;}}, there are two solu
+ Here&rsquo;s an example Markdown content:
+ When {{&lt; katex inline &gt;}} a \ne 0 {{&lt; /katex &gt;}}, there are two solutions to {{&lt; katex &gt;}} ax^2 &#43; bx &#43; c = 0 {{&lt; /katex &gt;}} and they are: {{&lt; katex &gt;}} x = {-b \pm \sqrt{b^2-4ac} \over 2a} {{&lt; /katex &gt;}} Output:'>
+ <meta property='og:url' content='http://example.org/docs/katex-support/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='article'><meta property='og:image' content='https://www.gravatar.com/avatar/12dd0f181193d01d6478c957cf6fddfb?s=256'><meta property='article:author' content='https://facebook.com/nah'><meta property='article:section' content='docs'><meta property='article:tag' content='config'><meta property='article:tag' content='katex'><meta property='article:published_time' content='2018-08-12T12:30:00&#43;06:00'/><meta property='article:modified_time' content='2019-07-07T02:00:00&#43;06:00'/><meta name='twitter:card' content='summary'><meta name='twitter:creator' content='@yes'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+@@ -50,7 +50,7 @@ When {{&lt; katex inline &gt;}} a \ne 0 {{&lt; /katex &gt;}}, there are two solu
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/docs/mathjax-support/index.html b/docs/mathjax-support/index.html
+index 5c2f1da..a29009b 100644
+--- a/docs/mathjax-support/index.html
++++ b/docs/mathjax-support/index.html
+@@ -16,7 +16,7 @@ For mathematics blocks you can use either $$&hellip;$$ or \\[&hellip;\\] as deli
+ Here&rsquo;s an example Markdown content:
+ When \\( a \ne 0 \\), there are two solutions to $$ ax^2 &#43; bx &#43; c = 0 $$ and they are: \\[ x = {-b \pm \sqrt{b^2-4ac} \over 2a} \\] Output:'>
+ <meta property='og:url' content='http://example.org/docs/mathjax-support/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='article'><meta property='og:image' content='https://www.gravatar.com/avatar/12dd0f181193d01d6478c957cf6fddfb?s=256'><meta property='article:author' content='https://facebook.com/nah'><meta property='article:section' content='docs'><meta property='article:tag' content='config'><meta property='article:published_time' content='2018-02-27T18:00:00&#43;06:00'/><meta property='article:modified_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'><meta name='twitter:creator' content='@yes'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+@@ -54,7 +54,7 @@ When \\( a \ne 0 \\), there are two solutions to $$ ax^2 &#43; bx &#43; c = 0 $$
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/docs/menus/index.html b/docs/menus/index.html
+index d0bcee7..7748617 100644
+--- a/docs/menus/index.html
++++ b/docs/menus/index.html
+@@ -20,7 +20,7 @@ You can hide the Main Menu using the following option in your config.toml file:
+ [params.settings] hideMainMenu = true Sidebar Menu name: sidebar
+ Social Menu is available as Widget: sidebar_menu. Add it to the sidebar Widget Area to use it.'>
+ <meta property='og:url' content='http://example.org/docs/menus/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='article'><meta property='og:image' content='https://www.gravatar.com/avatar/12dd0f181193d01d6478c957cf6fddfb?s=256'><meta property='article:author' content='https://facebook.com/nah'><meta property='article:section' content='docs'><meta property='article:tag' content='menus'><meta property='article:published_time' content='2017-09-27T10:00:00&#43;06:00'/><meta property='article:modified_time' content='2018-05-24T02:10:00&#43;06:00'/><meta name='twitter:card' content='summary'><meta name='twitter:creator' content='@yes'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+@@ -58,7 +58,7 @@ Social Menu is available as Widget: sidebar_menu. Add it to the sidebar Widget A
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/docs/opengraph/index.html b/docs/opengraph/index.html
+index 5335f28..7a0e074 100644
+--- a/docs/opengraph/index.html
++++ b/docs/opengraph/index.html
+@@ -12,7 +12,7 @@ You can use these options in you content&rsquo;s front-matter:
+ You can use these options in you content&rsquo;s front-matter:
+ --- audios: [] # for og:audio tags images: [] # for og:image tags videos: [] # for og:video tags ---  audios [Array of Strings]: path/url of audio files images [Array of Strings]: path/url of image files videos [Array of Strings]: path/url of video files  N.'>
+ <meta property='og:url' content='http://example.org/docs/opengraph/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='article'><meta property='og:image' content='https://www.gravatar.com/avatar/12dd0f181193d01d6478c957cf6fddfb?s=256'><meta property='article:author' content='https://facebook.com/nah'><meta property='article:section' content='docs'><meta property='article:tag' content='og'><meta property='article:published_time' content='2017-09-26T08:00:00&#43;06:00'/><meta property='article:modified_time' content='2017-10-11T18:00:00&#43;06:00'/><meta name='twitter:card' content='summary'><meta name='twitter:creator' content='@yes'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+@@ -50,7 +50,7 @@ You can use these options in you content&rsquo;s front-matter:
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/docs/page/2/index.html b/docs/page/2/index.html
+index 707eef5..1a1b27c 100644
+--- a/docs/page/2/index.html
++++ b/docs/page/2/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Documentation • My New Hugo Site'>
++<meta property='og:title' content='Documentation • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/docs/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Documentation • My New Hugo Site</title>
++  <title>Documentation • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/docs/'>
+   
+-    <link href="http://example.org/docs/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/docs/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/docs/search-algolia/index.html b/docs/search-algolia/index.html
+index b877b53..0bffce4 100644
+--- a/docs/search-algolia/index.html
++++ b/docs/search-algolia/index.html
+@@ -14,7 +14,7 @@ default: minimo_site searchApiKey [String]: Algolia Search-Only API Key    You&r
+ [params.search.algolia] appId = &#34;&#34; indexName = &#34;&#34; searchApiKey = &#34;&#34;  params.search.algolia [Map]:  appId [String]: Algolia Application ID indexName [String]: Name for Algolia Indices
+ default: minimo_site searchApiKey [String]: Algolia Search-Only API Key    You&rsquo;ll find various information related to your Algolia account in the Algolia Dashboard.'>
+ <meta property='og:url' content='http://example.org/docs/search-algolia/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='article'><meta property='og:image' content='https://www.gravatar.com/avatar/12dd0f181193d01d6478c957cf6fddfb?s=256'><meta property='article:author' content='https://facebook.com/nah'><meta property='article:section' content='docs'><meta property='article:tag' content='search'><meta property='article:tag' content='algolia'><meta property='article:published_time' content='2018-07-05T23:30:00&#43;06:00'/><meta property='article:modified_time' content='2018-07-05T23:30:00&#43;06:00'/><meta name='twitter:card' content='summary'><meta name='twitter:creator' content='@yes'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+@@ -52,7 +52,7 @@ default: minimo_site searchApiKey [String]: Algolia Search-Only API Key    You&r
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/docs/search-fuse-js/index.html b/docs/search-fuse-js/index.html
+index 48867c9..8df99e1 100644
+--- a/docs/search-fuse-js/index.html
++++ b/docs/search-fuse-js/index.html
+@@ -10,7 +10,7 @@
+ <meta property='og:description' content='Configure Fuse.js Search Client Select Fuse.js as the search client in your config.toml file:
+ [params.search] client = &#34;fuse&#34; '>
+ <meta property='og:url' content='http://example.org/docs/search-fuse-js/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='article'><meta property='og:image' content='https://www.gravatar.com/avatar/12dd0f181193d01d6478c957cf6fddfb?s=256'><meta property='article:author' content='https://facebook.com/nah'><meta property='article:section' content='docs'><meta property='article:tag' content='search'><meta property='article:tag' content='fuse.js'><meta property='article:published_time' content='2018-07-06T01:00:00&#43;06:00'/><meta property='article:modified_time' content='2018-07-20T20:00:00&#43;06:00'/><meta name='twitter:card' content='summary'><meta name='twitter:creator' content='@yes'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/docs/search-lunr-js/index.html b/docs/search-lunr-js/index.html
+index 8bb904e..c1d8493 100644
+--- a/docs/search-lunr-js/index.html
++++ b/docs/search-lunr-js/index.html
+@@ -14,7 +14,7 @@ Install Dependencies Node.js must be installed on your system for using the gene
+ Minimo comes with a script for generating the search index for Lunr.js: /scripts/generate-search-index-lunr.js.
+ Install Dependencies Node.js must be installed on your system for using the generator script.'>
+ <meta property='og:url' content='http://example.org/docs/search-lunr-js/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='article'><meta property='og:image' content='https://www.gravatar.com/avatar/12dd0f181193d01d6478c957cf6fddfb?s=256'><meta property='article:author' content='https://facebook.com/nah'><meta property='article:section' content='docs'><meta property='article:tag' content='search'><meta property='article:tag' content='lunr.js'><meta property='article:published_time' content='2018-07-05T20:30:00&#43;06:00'/><meta property='article:modified_time' content='2018-07-05T20:30:00&#43;06:00'/><meta name='twitter:card' content='summary'><meta name='twitter:creator' content='@yes'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+@@ -52,7 +52,7 @@ Install Dependencies Node.js must be installed on your system for using the gene
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/docs/search-support/index.html b/docs/search-support/index.html
+index d7f55c8..ba842b6 100644
+--- a/docs/search-support/index.html
++++ b/docs/search-support/index.html
+@@ -16,7 +16,7 @@ Create Search Page First of all, you&rsquo;ll need to create a search page.
+ Create a markdown file under /content/page/ directory with the filename search. If your site is multilingual, you can include language code in the filename. For example:
+  /content/page/search.md /content/page/search.en.md  Add the following options in the frontmatter:'>
+ <meta property='og:url' content='http://example.org/docs/search-support/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='article'><meta property='og:image' content='https://www.gravatar.com/avatar/12dd0f181193d01d6478c957cf6fddfb?s=256'><meta property='article:author' content='https://facebook.com/nah'><meta property='article:section' content='docs'><meta property='article:tag' content='search'><meta property='article:published_time' content='2018-07-05T20:00:00&#43;06:00'/><meta property='article:modified_time' content='2018-07-06T01:30:00&#43;06:00'/><meta name='twitter:card' content='summary'><meta name='twitter:creator' content='@yes'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+@@ -54,7 +54,7 @@ Create a markdown file under /content/page/ directory with the filename search.
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/docs/shortcodes/index.html b/docs/shortcodes/index.html
+index 9ad6529..6424488 100644
+--- a/docs/shortcodes/index.html
++++ b/docs/shortcodes/index.html
+@@ -16,7 +16,7 @@ center: Parameters  Markdown content between opening and closing tags.  center:
+ Center Aligned Text   Shortcode: convo Renders conversation blocks.
+ convo: Parameters  sep [String] (optional): seperator between person and text (default: &ldquo;:&rdquo;)  convo: Inner Syntax person :: text You can remove the person part, if you want.'>
+ <meta property='og:url' content='http://example.org/docs/shortcodes/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='article'><meta property='og:image' content='https://www.gravatar.com/avatar/12dd0f181193d01d6478c957cf6fddfb?s=256'><meta property='article:author' content='https://facebook.com/nah'><meta property='article:section' content='docs'><meta property='article:tag' content='shortcode'><meta property='article:published_time' content='2017-10-05T20:00:00&#43;06:00'/><meta property='article:modified_time' content='2019-07-07T02:00:00&#43;06:00'/><meta name='twitter:card' content='summary'><meta name='twitter:creator' content='@yes'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+@@ -54,7 +54,7 @@ convo: Parameters  sep [String] (optional): seperator between person and text (d
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/docs/sidebar/index.html b/docs/sidebar/index.html
+index 3077e50..f7e5287 100644
+--- a/docs/sidebar/index.html
++++ b/docs/sidebar/index.html
+@@ -10,7 +10,7 @@
+ <meta property='og:description' content='Enabling Sidebar For enabling Sidebar, use the following configuration options in your config.toml file:
+ [params.sidebar] enable = true  params.sidebar [Map]:  enable [Boolean]: Switch for enabling sidebar    Adding Widgets to Sidebar For adding Widgets to the Sidebar, check the Widgets documentation.'>
+ <meta property='og:url' content='http://example.org/docs/sidebar/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='article'><meta property='og:image' content='https://www.gravatar.com/avatar/12dd0f181193d01d6478c957cf6fddfb?s=256'><meta property='article:author' content='https://facebook.com/nah'><meta property='article:section' content='docs'><meta property='article:tag' content='config'><meta property='article:published_time' content='2018-02-07T19:15:00&#43;06:00'/><meta property='article:modified_time' content='2018-03-29T05:20:00&#43;06:00'/><meta name='twitter:card' content='summary'><meta name='twitter:creator' content='@yes'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/docs/syntax-highlighting/index.html b/docs/syntax-highlighting/index.html
+index 50851ad..955fa2c 100644
+--- a/docs/syntax-highlighting/index.html
++++ b/docs/syntax-highlighting/index.html
+@@ -10,7 +10,7 @@ For detailed information about Syntax Highlighting in Hugo, check the Hugo&rsquo
+ <meta property='og:description' content='Hugo uses Chroma as it&rsquo;s built-in syntax-highlighter.
+ For detailed information about Syntax Highlighting in Hugo, check the Hugo&rsquo;s Syntax Highlighting Documentation.'>
+ <meta property='og:url' content='http://example.org/docs/syntax-highlighting/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='article'><meta property='og:image' content='https://www.gravatar.com/avatar/12dd0f181193d01d6478c957cf6fddfb?s=256'><meta property='article:author' content='https://facebook.com/nah'><meta property='article:section' content='docs'><meta property='article:tag' content='pygments'><meta property='article:tag' content='chroma'><meta property='article:published_time' content='2017-09-27T12:00:00&#43;06:00'/><meta property='article:modified_time' content='2017-09-27T12:00:00&#43;06:00'/><meta name='twitter:card' content='summary'><meta name='twitter:creator' content='@yes'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+@@ -48,7 +48,7 @@ For detailed information about Syntax Highlighting in Hugo, check the Hugo&rsquo
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/docs/translation/index.html b/docs/translation/index.html
+index 29d3e54..3619b2e 100644
+--- a/docs/translation/index.html
++++ b/docs/translation/index.html
+@@ -16,7 +16,7 @@ For example, if you want to translate Minimo in Spanish, you will have to add th
+ For reference template you can see the en.toml file.
+ If you want your translation file to be included in Minimo repository, feel free to create a pull request.'>
+ <meta property='og:url' content='http://example.org/docs/translation/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='article'><meta property='og:image' content='https://www.gravatar.com/avatar/12dd0f181193d01d6478c957cf6fddfb?s=256'><meta property='article:author' content='https://facebook.com/nah'><meta property='article:section' content='docs'><meta property='article:tag' content='translation'><meta property='article:tag' content='i18n'><meta property='article:published_time' content='2017-09-27T14:00:00&#43;06:00'/><meta property='article:modified_time' content='2017-09-27T14:00:00&#43;06:00'/><meta name='twitter:card' content='summary'><meta name='twitter:creator' content='@yes'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+@@ -54,7 +54,7 @@ If you want your translation file to be included in Minimo repository, feel free
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/docs/updating/index.html b/docs/updating/index.html
+index 5671e9f..cf01917 100644
+--- a/docs/updating/index.html
++++ b/docs/updating/index.html
+@@ -12,7 +12,7 @@ git add themes/minimo git commit -m &#34;update [theme]: minimo&#34; Update Mini
+ rm -rf themes/minimo git clone --depth 1 https://github.com/MunifTanjim/minimo themes/minimo Then, commit the changes:
+ git add themes/minimo git commit -m &#34;update [theme]: minimo&#34; Update Minimo submodule cd themes/minimo git checkout master git fetch &amp;&amp; git pull cd ../.. git add themes/minimo git commit -m &#34;update [theme]: minimo&#34; To Do After Updating Minimo After updating Minimo, always check that your site&rsquo;s config.'>
+ <meta property='og:url' content='http://example.org/docs/updating/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='article'><meta property='og:image' content='https://www.gravatar.com/avatar/12dd0f181193d01d6478c957cf6fddfb?s=256'><meta property='article:author' content='https://facebook.com/nah'><meta property='article:section' content='docs'><meta property='article:published_time' content='2017-09-25T06:00:00&#43;06:00'/><meta property='article:modified_time' content='2018-02-08T14:45:00&#43;06:00'/><meta name='twitter:card' content='summary'><meta name='twitter:creator' content='@yes'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+@@ -50,7 +50,7 @@ git add themes/minimo git commit -m &#34;update [theme]: minimo&#34; Update Mini
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/docs/widgets/index.html b/docs/widgets/index.html
+index ee47b0e..444dff5 100644
+--- a/docs/widgets/index.html
++++ b/docs/widgets/index.html
+@@ -14,7 +14,7 @@ Available Widgets Minimo has the following built-in Widgets:
+    Name Slug     About | about Breadcrumbs | breadcrumbs Recent Posts | recent_posts Search | search Sidebar Menu | sidebar_menu Social Menu | social_menu Taxonomy Cloud | taxonomy_cloud  Widget Configuration Options Here are the configuration options available for the Widgets:
+ Widget: About  about [Map]:  title [String]: Title'>
+ <meta property='og:url' content='http://example.org/docs/widgets/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='article'><meta property='og:image' content='https://www.gravatar.com/avatar/12dd0f181193d01d6478c957cf6fddfb?s=256'><meta property='article:author' content='https://facebook.com/nah'><meta property='article:section' content='docs'><meta property='article:tag' content='config'><meta property='article:tag' content='widgets'><meta property='article:published_time' content='2018-02-07T18:30:00&#43;06:00'/><meta property='article:modified_time' content='2018-11-21T19:00:00&#43;06:00'/><meta name='twitter:card' content='summary'><meta name='twitter:creator' content='@yes'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+@@ -52,7 +52,7 @@ Widget: About  about [Map]:  title [String]: Title'>
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/index.html b/index.html
+index 394bea0..5bfaad9 100644
+--- a/index.html
++++ b/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='My New Hugo Site'>
++<meta property='og:title' content='SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>My New Hugo Site</title>
++  <title>SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/'>
+   
+-    <link href="http://example.org/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><h1 class='site-title title'>My New Hugo Site</h1><p class='desc site-desc'></p>
++          <div class='header-info'><h1 class='site-title title'>SUBDIRECTORY</h1><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/index.xml b/index.xml
+index 5e73d32..27a5ce8 100644
+--- a/index.xml
++++ b/index.xml
+@@ -1,9 +1,9 @@
+ <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+   <channel>
+-    <title>Home on My New Hugo Site</title>
++    <title>Home on SUBDIRECTORY</title>
+     <link>http://example.org/</link>
+-    <description>Recent content in Home on My New Hugo Site</description>
++    <description>Recent content in Home on SUBDIRECTORY</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+     <lastBuildDate>Sun, 12 Aug 2018 12:30:00 +0600</lastBuildDate>
+@@ -246,7 +246,7 @@ id = &amp;#34;muniftanjim&amp;#34; [email] username = &amp;#34;YELLING&amp;#34;
+       
+       <guid>http://example.org/docs/config-file/</guid>
+       <description>This is the Minimo&amp;rsquo;s configuration file ( config.toml ) file of this site:
+-baseURL = &amp;#34;http://example.org/&amp;#34; languageCode = &amp;#34;en-us&amp;#34; title = &amp;#34;My New Hugo Site&amp;#34; theme = &amp;#34;minimo&amp;#34;  </description>
++baseURL = &amp;#34;http://example.org/&amp;#34; languageCode = &amp;#34;en-us&amp;#34; title = &amp;#34;SUBDIRECTORY&amp;#34; theme = &amp;#34;minimo&amp;#34;  </description>
+     </item>
+     
+     <item>
+diff --git a/page/about/index.html b/page/about/index.html
+index b82f30d..9f7c52b 100644
+--- a/page/about/index.html
++++ b/page/about/index.html
+@@ -5,15 +5,15 @@
+ <meta name='description' content='What does Minimo even means?!'>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='About • My New Hugo Site'>
++<meta property='og:title' content='About • SUBDIRECTORY'>
+ <meta property='og:description' content='What does Minimo even means?!'>
+ <meta property='og:url' content='http://example.org/page/about/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='article'><meta property='article:section' content='page'><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>About • My New Hugo Site</title>
++  <title>About • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/page/about/'>
+   
+   
+@@ -46,7 +46,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/page/index.html b/page/index.html
+index b166f57..0a267cf 100644
+--- a/page/index.html
++++ b/page/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Pages • My New Hugo Site'>
++<meta property='og:title' content='Pages • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/page/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Pages • My New Hugo Site</title>
++  <title>Pages • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/page/'>
+   
+-    <link href="http://example.org/page/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/page/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/page/index.xml b/page/index.xml
+index 3cba198..2a8ce40 100644
+--- a/page/index.xml
++++ b/page/index.xml
+@@ -1,9 +1,9 @@
+ <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+   <channel>
+-    <title>Pages on My New Hugo Site</title>
++    <title>Pages on SUBDIRECTORY</title>
+     <link>http://example.org/page/</link>
+-    <description>Recent content in Pages on My New Hugo Site</description>
++    <description>Recent content in Pages on SUBDIRECTORY</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+     <lastBuildDate>Thu, 28 Sep 2017 08:00:00 +0600</lastBuildDate>
+diff --git a/page/search/index.html b/page/search/index.html
+index 1fc4684..167e673 100644
+--- a/page/search/index.html
++++ b/page/search/index.html
+@@ -5,15 +5,15 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Search • My New Hugo Site'>
++<meta property='og:title' content='Search • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/page/search/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='article'><meta property='article:section' content='page'><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Search • My New Hugo Site</title>
++  <title>Search • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/page/search/'>
+   
+   
+@@ -46,7 +46,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/page/search/index.json b/page/search/index.json
+index f74bcb2..0563842 100644
+--- a/page/search/index.json
++++ b/page/search/index.json
+@@ -1 +1 @@
+-[{"content":" Minimalism is not a lack of something. It’s simply the perfect amount of something. — Nicholas Burroughs\n ","href":"/","title":"Home"},{"content":"","href":"/docs/","title":"Documentation"},{"content":"Here is a paragraph. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nHeading 2 Another one. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\nHeading 4  First item Second item   Nested unordered item  Third item Nested ordered item 1 Nested ordered item 2  Heading 5 Where are the quotes!!!\n Simplify, then add lightness.\n— Colin Chapman\n Now, time for some links!\n GoHugo Hugo Themes  Heading 6 Inline code: echo \u0026quot;What is the meaning of life?\u0026quot;. Who knows?\n// Codeblock  var meaningOfLife = 42; console.log(\u0026#39;The meaning of life is: \u0026#39;, meaningOfLife);  Who wants some table?\n   Minimo Caption More Caption     Cool What? Now, wut?!    Ah, enough for today, eh?\n","href":"/page/typography/","title":"Typography"},{"content":"Mínimo is a Spanish word that roughly translate to Minimal.\nMinimo is a minimalist theme for Hugo.\nMinimo keeps the focus on your content and lets it shine!\n","href":"/page/about/","title":"About"},{"content":"","href":"/categories/","title":"Categories"},{"content":"","href":"/tags/config/","title":"Configuration"},{"content":"","href":"/categories/features/","title":"features"},{"content":"","href":"/tags/katex/","title":"katex"},{"content":"KaTeX Syntax for Markdown In your Markdown content, use the katex shortcode for inserting KaTeX. Check documentation for Shortcode: katex.\nHere\u0026rsquo;s an example Markdown content:\nWhen {{\u0026lt; katex inline \u0026gt;}} a \\ne 0 {{\u0026lt; /katex \u0026gt;}}, there are two solutions to {{\u0026lt; katex \u0026gt;}} ax^2 + bx + c = 0 {{\u0026lt; /katex \u0026gt;}} and they are: {{\u0026lt; katex \u0026gt;}} x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a} {{\u0026lt; /katex \u0026gt;}} Output:\nWhen \\( a \\ne 0 \\) , there are two solutions to\n\\[ ax^2 + bx + c = 0 \\] and they are:\n\\[ x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a} \\] Customize KaTeX Configuration You can customize the default behavior of KaTeX if you want.\nMinimo picks up configuration for KaTeX from the /data/config/katex.json file.\nThe default configuration options look like this:\n{ \u0026#34;library\u0026#34;: { \u0026#34;js\u0026#34;: { \u0026#34;main\u0026#34;: \u0026#34;//unpkg.com/katex/dist/katex.min.js\u0026#34;, \u0026#34;autoRender\u0026#34;: \u0026#34;//unpkg.com/katex/dist/contrib/auto-render.min.js\u0026#34; }, \u0026#34;css\u0026#34;: { \u0026#34;main\u0026#34;: \u0026#34;//unpkg.com/katex/dist/katex.min.css\u0026#34; } }, \u0026#34;options\u0026#34;: {} }  library [Object]:  js [Object]:  main [String]: URL for the main KaTeX library autoRender [String]: URL for the auto-render extension   css [Object]:  main [String]: URL for the main KaTeX stylesheet     options [Object]:  KaTeX configuration options    So, if you want to tinker with it\u0026rsquo;s configuration options:\n Create a /data/config/katex.json file in your site\u0026rsquo;s repository Copy the default configuration options Start hacking  Related Guides  Configuration Options Auto-render Extension  ","href":"/docs/katex-support/","title":"KaTeX Support"},{"content":"","href":"/tags/","title":"Tags"},{"content":"","href":"/tags/fuse.js/","title":"fuse.js"},{"content":"","href":"/tags/search/","title":"search"},{"content":"Configure Fuse.js Search Client Select Fuse.js as the search client in your config.toml file:\n[params.search] client = \u0026#34;fuse\u0026#34; ","href":"/docs/search-fuse-js/","title":"Search: Fuse.js"},{"content":"","href":"/tags/algolia/","title":"algolia"},{"content":"Configure Algolia Search Client Select Algolia as the search client in your config.toml file:\n[params.search] client = \u0026#34;algolia\u0026#34; Also, add configuration options for Algolia:\n[params.search.algolia] appId = \u0026#34;\u0026#34; indexName = \u0026#34;\u0026#34; searchApiKey = \u0026#34;\u0026#34;  params.search.algolia [Map]:  appId [String]: Algolia Application ID indexName [String]: Name for Algolia Indices\ndefault: minimo_site searchApiKey [String]: Algolia Search-Only API Key    You\u0026rsquo;ll find various information related to your Algolia account in the Algolia Dashboard.\nGenerate Search Index for Algolia Algolia will need a search index for searching across your site. So, you\u0026rsquo;ll need to generate that search index for Algolia before you deploy your site.\nMinimo comes with a script for generating the search index for Algolia: /scripts/generate-search-index-algolia.js.\nInstall Dependencies Node.js must be installed on your system for using the generator script.\nIt also needs the following npm packages:\n algoliasearch glob  For installing algoliasearch and glob globally use the following command:\nnpm install -g algoliasearch glob Set Environment Variables The generator script uses the following environment variables:\n ALGOLIA_APP_ID (required): Algolia Application ID ALGOLIA_ADMIN_API_KEY (required): Algolia Admin API Key ALGOLIA_INDEX_NAME (optional): Name for Algolia Indices\ndefault: minimo_site  Run the Script After you\u0026rsquo;ve generated your site with Hugo, run generate-search-index-algolia.js with node.\nIf Minimo is installed under /themes/minimo directory, you\u0026rsquo;ll run it as:\nnode ./themes/minimo/scripts/generate-search-index-algolia.js The generate-search-index-algolia.js script accepts an optional argument for Hugo\u0026rsquo;s publishDir (relative to your site\u0026rsquo;s root directory).\nSo, if you\u0026rsquo;ve got a different publishDir (say site), pass it as the first argument:\nnode ./themes/minimo/scripts/generate-search-index-algolia.js site If the generation was successful, you\u0026rsquo;ll see output like this:\nAlgolia Index Generated for: /search/index.json That\u0026rsquo;s all. Now you can deploy your site.\n","href":"/docs/search-algolia/","title":"Search: Algolia"},{"content":"","href":"/tags/lunr.js/","title":"lunr.js"},{"content":"Configure Lunr.js Search Client Select Lunr.js as the search client in your config.toml file:\n[params.search] client = \u0026#34;lunr\u0026#34; Generate Search Index for Lunr.js Lunr.js will need a search index for searching across your site. So, you\u0026rsquo;ll need to generate that search index for Lunr.js before you deploy your site.\nMinimo comes with a script for generating the search index for Lunr.js: /scripts/generate-search-index-lunr.js.\nInstall Dependencies Node.js must be installed on your system for using the generator script.\nIt also need the following npm packages:\n glob lunr  For installing lunr and glob globally use the following command:\nnpm install -g lunr glob Run the Script After you\u0026rsquo;ve generated your site with Hugo, run generate-search-index-lunr.js with node.\nIf Minimo is installed under /themes/minimo directory, you\u0026rsquo;ll run it as:\nnode ./themes/minimo/scripts/generate-search-index-lunr.js The generate-search-index-lunr.js script accepts an optional argument for Hugo\u0026rsquo;s publishDir (relative to your site\u0026rsquo;s root directory).\nSo, if you\u0026rsquo;ve got a different publishDir (say site), pass it as the first argument:\nnode ./themes/minimo/scripts/generate-search-index-lunr.js site If the generation was successful, you\u0026rsquo;ll see output like this:\nLunr.js Index Generated for: /search/index.json That\u0026rsquo;s all. Now you can deploy your site.\n","href":"/docs/search-lunr-js/","title":"Search: Lunr.js"},{"content":"Minimo supports the following clients for the search feature:\n Algolia Fuse.js Lunr.js  Follow the following steps for enabling search in your site.\nCreate Search Page First of all, you\u0026rsquo;ll need to create a search page.\nCreate a markdown file under /content/page/ directory with the filename search. If your site is multilingual, you can include language code in the filename. For example:\n /content/page/search.md /content/page/search.en.md  Add the following options in the frontmatter:\ntype: page layout: search outputs: - html - json Select Search Client For selecting the client for search feature, use the following options in your config.toml file:\n[params.search] client = \u0026#34;\u0026#34;  params.search [Map]:  client [String]: Name of the Search Client (supported values: algolia,fuse,lunr)    Client Specific Steps The next steps are different for each search client:\n Algolia Fuse.js Lunr.js  After you complete those steps, you are good to go!\nAdd Search Widget You might also want to add the search widget.\n","href":"/docs/search-support/","title":"Search Support"},{"content":"Minimo has support for comments baked into it.\nEnable/Disable Comments Globally For enabling or disabling comments globally, check the following setting in your config.toml file:\n[params.comments] enable = false  params.comments [Map]:  enable [Boolean]: Enable/Disable comments globally    For Specific Posts The global .Site.Params.comments.enable setting can be overridden for specific posts in their content\u0026rsquo;s frontmatter with this option:\n--- comments: true ---  comments [Boolean]: Enable/Disable comments for specific posts  Of course, you\u0026rsquo;ll also need to setup a comment system ( Disqus or Staticman ).\nSetting Up Comment System Minimo currently supports Disqus, Isso, Staticman and Utterances to be used as your site\u0026rsquo;s comment system.\nDisqus Disqus comments require you set a single value to the following option in your config.toml file:\ndisqusShortname = \u0026#34;\u0026#34;  disqusShortname [String]: Shortname for you site\u0026rsquo;s Disqus account  And that\u0026rsquo;s all!\nIsso Isso is a lightweight alternative to Disqus. You need to have a Isso server running somewhere, then set up the following options in your config.toml file:\n[params.comments.isso] enable = true scriptSrc = \u0026#34;https://isso.example.com/js/embed.min.js\u0026#34; dataAttrs = \u0026#34;data-isso=\u0026#39;https://isso.example.com data-isso-require-author=\u0026#39;true\u0026#39;\u0026#34;  params.comments.isso [Map]:  enable [Boolean]: Enable Isso scriptSrc [String]: URL of the Isso integration script. dataAttrs [String]: Data attributes to add to the Isso \u0026lt;script\u0026gt; tag. Optional, but the Isso documentation recommends to at least include the data-isso attribute.    Staticman For up-to-date information, check out the Documentation Site and the Public Repository of Staticman.\nConfigure Minimo for Staticman First of all, set up the following options (with your preferred values) in your config.toml file:\n[params.comments.staticman] enable = true apiEndpoint = \u0026#34;https://api.staticman.net/v2/entry\u0026#34; maxDepth = 2 username = \u0026#34;MunifTanjim\u0026#34; repository = \u0026#34;minimo\u0026#34;  params.comments.staticman [Map]:  enable [Boolean]: Enable Staticman apiEndpoint [String]: API endpoint for Staticman instance maxDepth [Integer]: Maximum allowed comments depth username [String]: Your Git Username repository [String]: Name of your Site\u0026rsquo;s Git Repository    Staticman Configuration File Next, you\u0026rsquo;ll need a Staticman Configuration File (staticman.yml) in the root of your site\u0026rsquo;s repository. Here\u0026rsquo;s a sample of it:\nstaticman.yml\ncomments: allowedFields: [\u0026#39;author\u0026#39;, \u0026#39;content\u0026#39;, \u0026#39;email\u0026#39;, \u0026#39;parent_id\u0026#39;, \u0026#39;permalink\u0026#39;, \u0026#39;site\u0026#39;] branch: \u0026#39;master\u0026#39; commitMessage: \u0026#34;add [comment]: by {fields.author} \u0026lt;Staticman\u0026gt;\\n\\n{fields.permalink}#comment-{@id}\u0026#34; filename: \u0026#39;{@id}\u0026#39; format: \u0026#39;yaml\u0026#39; generatedFields: date: type: date options: format: \u0026#39;timestamp\u0026#39; moderation: false name: \u0026#39;Minimo\u0026#39; path: \u0026#39;data/comments/{options.postId}\u0026#39; requiredFields: [\u0026#39;author\u0026#39;, \u0026#39;content\u0026#39;, \u0026#39;email\u0026#39;, \u0026#39;permalink\u0026#39;] reCaptcha: enabled: false # siteKey: \u0026#39;\u0026#39; # secret: \u0026#39;\u0026#39; transforms: email: md5  Notes  In most cases, you\u0026rsquo;ll only need to change the name option (Site\u0026rsquo;s name) If you set moderation: true, Staticman will send a Pull Request whenever a new comment is submitted. You\u0026rsquo;ll need to Merge the Pull Request to approve it, or Close to discard.  Add Staticman to Your Site\u0026rsquo;s Repository You\u0026rsquo;ll need to go through some additional steps based on the API endpoint (params.comments.staticman.apiEndpoint) that you are gonna use. You\u0026rsquo;ll find the relevant information on the following places:\n Staticman Site Staticman Repository  [ Contributors are welcomed to update this part of the documentation to include additional useful information. ]\nUtterances Utterances only supports GitHub. So, if your site\u0026rsquo;s repository is not hosted in GitHub, it won\u0026rsquo;t work.\nFor using Utterances, set up the following options in your config.toml file:\n[params.comments.utterances] enable = true issueTerm = \u0026#34;pathname\u0026#34; # pathname / url / title [params.comments.utterances.github] username = \u0026#34;MunifTanjim\u0026#34; repository = \u0026#34;minimo\u0026#34;  params.comments.utterances [Map]:  enable [Boolean]: Enable Utterances issueTerm [String]: Entry to Issue mapping option (pathname / url / title)   params.comments.utterances.github [Map]:  username [String]: Your GitHub Username repository [String]: Name of your Site\u0026rsquo;s GitHub Repository    Check utteranc.es for more information.\nThat should do it!\n","href":"/docs/comments-support/","title":"Comments Support"},{"content":"First of all, if you really want emojis, set the enableEmoji setting to true in your config.toml file:\nenableEmoji = true This will enable Hugo to find Emoji Shorthands in your content files and render them as Unicode Emoji Characters.\nFor example:\nNo, it\u0026rsquo;ll probably not be that colorful! Unless your device\u0026rsquo;s operating system natively supports colorful emojis, you will see a black \u0026amp; white one instead. :fire:\n:pencil2: For getting that colorful look, you will have to add this to your content\u0026rsquo;s frontmatter:\n--- emoji: true --- And where can you find these Emoji Shorthands :question:\n:tada: Go take a look at: Emoji Cheat Sheet\n","href":"/docs/emoji-support/","title":"Emoji Support"},{"content":"For enabling MathJax, add this to your content\u0026rsquo;s frontmatter:\n--- mathjax: true --- MathJax Syntax for Markdown In your Markdown content, use \\\\(\u0026hellip;\\\\) delimiters for in-line mathematics.\nFor mathematics blocks you can use either $$\u0026hellip;$$ or \\\\[\u0026hellip;\\\\] as delimiters.\nHere\u0026rsquo;s an example Markdown content:\nWhen \\\\( a \\ne 0 \\\\), there are two solutions to $$ ax^2 + bx + c = 0 $$ and they are: \\\\[ x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a} \\\\] Output:\nWhen \\( a \\ne 0 \\), there are two solutions to\n$$ ax^2 + bx + c = 0 $$\nand they are:\n\\[x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}\\]\nCustomize MathJax Configuration You can customize the default behavior of MathJax if you want.\nMinimo picks up configuration for MathJax from the /data/config/mathjax.json file.\nThe default configuration options look like this:\n{ \u0026#34;library\u0026#34;: { \u0026#34;path\u0026#34;: \u0026#34;//unpkg.com/mathjax@2.7.5/MathJax.js\u0026#34;, \u0026#34;config\u0026#34;: \u0026#34;TeX-MML-AM_CHTML\u0026#34; }, \u0026#34;config\u0026#34;: {} }  library [Object]:  path [String]: URL for the main MathJax.js file. config [String]: Configuration file\u0026rsquo;s name/path   config [Object]:  In-line configuration options    So, if you want to tinker with it\u0026rsquo;s configuration options:\n Create a /data/config/mathjax.json file in your site\u0026rsquo;s repository Copy the default configuration options Start hacking  For exmaple, if you want to enable $\u0026hellip;$ delimiters for in-line mathematics, you probably want something like this:\n{ \u0026#34;library\u0026#34;: { \u0026#34;path\u0026#34;: \u0026#34;//unpkg.com/mathjax@2.7.5/MathJax.js\u0026#34;, \u0026#34;config\u0026#34;: \u0026#34;TeX-MML-AM_CHTML\u0026#34; }, \u0026#34;config\u0026#34;: { \u0026#34;tex2jax\u0026#34;: { \u0026#34;inlineMath\u0026#34;: [[\u0026#34;$\u0026#34;, \u0026#34;$\u0026#34;], [\u0026#34;\\\\(\u0026#34;, \u0026#34;\\\\)\u0026#34;]], \u0026#34;processEscapes\u0026#34;: true } } } Notice MathJax version above 2.7.5 is not guaranted to work.\nRelated Guides  Using a configuration file Combined Configurations Using in-line configuration options Configuration Options  ","href":"/docs/mathjax-support/","title":"MathJax Support"},{"content":"Enabling Sidebar For enabling Sidebar, use the following configuration options in your config.toml file:\n[params.sidebar] enable = true  params.sidebar [Map]:  enable [Boolean]: Switch for enabling sidebar    Adding Widgets to Sidebar For adding Widgets to the Sidebar, check the Widgets documentation.\n","href":"/docs/sidebar/","title":"Sidebar"},{"content":"Minimo supports Widgets that you can place on specific Widget Areas.\nAvailable Widgets Minimo has the following built-in Widgets:\n   Name Slug     About | about Breadcrumbs | breadcrumbs Recent Posts | recent_posts Search | search Sidebar Menu | sidebar_menu Social Menu | social_menu Taxonomy Cloud | taxonomy_cloud  Widget Configuration Options Here are the configuration options available for the Widgets:\nWidget: About  about [Map]:  title [String]: Title\ndefault: .Site.Title description [String]: Description\ndefault: .Site.Params.info.description logo [String]: path/url of Logo\ndefault: \u0026quot;/images/logo.png\u0026quot;    Widget: Breadcrumbs  breadcrumbs [Map]:  separator [String]: Breadcrumb separator\ndefault: \u0026quot;/\u0026quot; excludeParents [Array of Strings]: Types of parents to exclude\ndefault: [\u0026quot;page\u0026quot;]    Widget: Recent Posts  recent_posts [Map]:  title [String]: Title\ndefault: \u0026quot;Recent Posts\u0026quot; length [Integer]: Number of posts to show\ndefault: 5 excludeTypes [Array of Strings]: Types of posts to exclude\ndefault: [\u0026quot;page\u0026quot;]    Widget: Search  search [Map]:  title [String]: Title\ndefault: \u0026quot;Search\u0026quot;    Widget: Sidebar Menu  sidebar_menu [Map]:  title [String]: Title\ndefault: \u0026quot;\u0026quot; mirror [String]: Name of menu to mirror (e.g. \u0026quot;main\u0026quot;)\ndefault: \u0026quot;\u0026quot;    Widget: Social Menu  social_menu [Map]:  title [String]: Title\ndefault: \u0026quot;\u0026quot; platforms [Array of Strings]: Social platform to show    Widget: Taxonomy Cloud  taxonomy_cloud [Map]:  title [String]: Title\ndefault: Plural Name for taxonomyCloud.taxonomy taxonomy [String]: Taxonomy to show\ndefault: .Site.Params.info.description shuffle [Boolean]: Shuffle Taxonomy Terms\ndefault: true    Available Widget Areas    Name Slug     Header header   Homepage homepage   Sidebar sidebar   Footer footer    You can add Widgets to Widget Areas from your config.toml file:\n[params.widgets] header = [\u0026#34;breadcrumbs\u0026#34;] homepage = [\u0026#34;recent_posts\u0026#34;] sidebar = [\u0026#34;about\u0026#34;,\u0026#34;taxonomy_cloud\u0026#34;] footer = [\u0026#34;social_menu\u0026#34;] The syntax for adding Widgets to Widget Areas is:\nwidget_area_slug = [ widget_slug_1, widget_slug_2, ...] Widgets Configuration File Minimo picks up Widgets\u0026rsquo; configuration from the /data/config/widgets.toml file.\nHere\u0026rsquo;s the Widgets Config file for this site:\n/data/config/widgets.toml\n# About Widget config [about] title = \u0026#34;\u0026#34; # default: .Site.Title description = \u0026#34;\u0026#34; # default: .Site.Params.info.description logo = \u0026#34;/images/logo.png\u0026#34; # default: \u0026#34;/images/logo.png\u0026#34; # Breadcrumbs Widget config [breadcrumbs] separator = \u0026#34;/\u0026#34; # default: \u0026#34;/\u0026#34; excludeParents = [\u0026#34;page\u0026#34;] # default: [\u0026#34;page\u0026#34;] # Recent Posts Widget config [recent_posts] title = \u0026#34;\u0026#34; # default: \u0026#34;Recent Posts\u0026#34; length = 4 # default: 5 excludeTypes = [\u0026#34;page\u0026#34;] # default: [\u0026#34;page\u0026#34;] # Search Widget config [search] title = \u0026#34;Search\u0026#34; # default: \u0026#34;Search\u0026#34; # Sidebar Menu Widget config [sidebar_menu] title = \u0026#34;\u0026#34; # default: \u0026#34;\u0026#34; mirror = \u0026#34;\u0026#34; # default: \u0026#34;\u0026#34; # Social Menu Widget config [social_menu] title = \u0026#34;\u0026#34; # default: \u0026#34;\u0026#34; platforms = [\u0026#34;github\u0026#34;,\u0026#34;facebook\u0026#34;,\u0026#34;twitter\u0026#34;,\u0026#34;instagram\u0026#34;,\u0026#34;email\u0026#34;,\u0026#34;codepen\u0026#34;,\u0026#34;gitlab\u0026#34;,\u0026#34;linkedin\u0026#34;,\u0026#34;telegram\u0026#34;,\u0026#34;google_scholar\u0026#34;,\u0026#34;youtube\u0026#34;] # Taxonomy Cloud Widget config [taxonomy_cloud] title = \u0026#34;\u0026#34; # default: Plural Name for `taxonomyCloud.taxonomy` taxonomy = \u0026#34;tags\u0026#34; # default: \u0026#34;tags\u0026#34; shuffle = true # default: true  If configuration for any Widgets are missing in this file, Minimo will fallback to the default configuration for those Widgets.\nGo wild!\n","href":"/docs/widgets/","title":"Widgets"},{"content":"","href":"/tags/widgets/","title":"widgets"},{"content":"","href":"/tags/shortcode/","title":"shortcode"},{"content":"Minimo comes with several shortcodes built-in.\n Shortcode: center Center align you content.\ncenter: Parameters  Markdown content between opening and closing tags.  center: Usage Example {{\u0026lt; center \u0026gt;}} _Center Aligned Text_ {{\u0026lt; /center \u0026gt;}} Output:\nCenter Aligned Text   Shortcode: convo Renders conversation blocks.\nconvo: Parameters  sep [String] (optional): seperator between person and text (default: \u0026ldquo;:\u0026rdquo;)  convo: Inner Syntax person :: text You can remove the person part, if you want.\nconvo: Usage Example {{\u0026lt; convo sep=\u0026#34;:\u0026#34; \u0026gt;}} Jerry :: You don\u0026#39;t look so tough. Finch :: It\u0026#39;s because I have only two modes, Jerry. Calm, and furious. It\u0026#39;s a rare person that sees the latter and lives to talk about it. {{\u0026lt; /convo \u0026gt;}} Output:\n  Jerry :  You don\u0026rsquo;t look so tough.   Finch :  It\u0026rsquo;s because I have only two modes, Jerry. Calm, and furious. It\u0026rsquo;s a rare person that sees the latter and lives to talk about it.     Shortcode: file Include content from seperate file with syntax highlighting.\nfile: Parameters 0 =\u0026gt; filename [String] (required)\n1 =\u0026gt; filetype [String] (optional)\nfile: Usage Example {{\u0026lt; file \u0026#34;content/_index.md\u0026#34; \u0026gt;}} Output:\n--- title: Home menu: - main - sidebar weight: -270 --- \u0026gt; Minimalism is not a lack of something. It’s simply the perfect amount of something. \u0026gt; — Nicholas Burroughs    Shortcode: katex Renders KaTeX.\nkatex: Parameters 0 =\u0026gt; mode [String] (optional): inline / block\nkatex: Usage Example Inline: {{\u0026lt; katex inline \u0026gt;}} ax^2 + bx + c = 0 {{\u0026lt; /katex \u0026gt;}} Block: {{\u0026lt; katex \u0026gt;}} x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a} {{\u0026lt; /katex \u0026gt;}} Output:\nInline: \\( ax^2 + bx + c = 0 \\) Block: \\[ x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a} \\]  Shortcode: text Text with custom size and color\ntext: Parameters You can use either Named or Unnamed Parameters\nNamed Parameters:\n s or size [String] (optional): multiplier relative to the normal size c or color [String] (optional): name / hex / rgb / rgba  Unnamed Parameters:\n0 =\u0026gt; textsize [String] (required): multiplier relative to the normal size\n1 =\u0026gt; textcolor [String] (optional): name / hex / rgb / rgba\ntext: Usage Example {{\u0026lt; text s=\u0026#34;1.4\u0026#34; color=\u0026#34;purple\u0026#34; \u0026gt;}} font-size: 1.4em; color: purple; {{\u0026lt; /text \u0026gt;}} Output:\nfont-size: 1.5em;\ncolor: purple; ","href":"/docs/shortcodes/","title":"Shortcodes"},{"content":"You can add cover image to your contents with the cover paramameter in the content\u0026rsquo;s front-matter.\nYou can directly provide the image url:\n--- cover: /images/eden-farm-children-s-village.jpg ---  cover [String]: path/url of the cover image  Or you can provide additional information:\n--- cover: image: /images/eden-farm-children-s-village.jpg alternate: Picture of a yellow wall with a blue window in the upper-left corner caption: Eden Farm Children\u0026#39;s Village by Gareth Harper on Unsplash style: full ---  cover [Map]:  image [String]: path/url of the cover image alternate [String]: alternate text for the image caption [String]: caption for the cover image style [String]: full / wide / normal    ","href":"/docs/cover-image/","title":"Cover Image"},{"content":"","href":"/page/","title":"Pages"},{"content":"","href":"/tags/i18n/","title":"i18n"},{"content":"","href":"/tags/translation/","title":"translation"},{"content":"You can translate Minimo in your own language!\nFor example, if you want to translate Minimo in Spanish, you will have to add this to your site\u0026rsquo;s config file:\n[languages.es] lang = \u0026#34;es\u0026#34; languageName = \u0026#34;Spanish\u0026#34; weight = 1 Then create a folder named /i18n/ in your site\u0026rsquo;s root. And create a file /i18n/es.toml with the translated strings.\nFor reference template you can see the en.toml file.\nIf you want your translation file to be included in Minimo repository, feel free to create a pull request.\n","href":"/docs/translation/","title":"Translation Support"},{"content":"","href":"/tags/chroma/","title":"chroma"},{"content":"","href":"/tags/pygments/","title":"pygments"},{"content":"Hugo uses Chroma as it\u0026rsquo;s built-in syntax-highlighter.\nFor detailed information about Syntax Highlighting in Hugo, check the Hugo\u0026rsquo;s Syntax Highlighting Documentation.\n","href":"/docs/syntax-highlighting/","title":"Syntax Highlighting"},{"content":"","href":"/tags/menus/","title":"menus"},{"content":"Minimo has three menus.\n Main Menu Sidebar Menu Social Menu  Main Menu name: main\nMain menu is located at the top of the site.\nCheck Hugo\u0026rsquo;s Menus Documentation for information about managing this menu.\nYou can hide the Main Menu using the following option in your config.toml file:\n[params.settings] hideMainMenu = true Sidebar Menu name: sidebar\nSocial Menu is available as Widget: sidebar_menu. Add it to the sidebar Widget Area to use it.\nYou can use Sidebar Menu as normal Hugo Menus.\nOr you can use it to mirror another menu by using the sidebar_menu.mirror option in your Widgets Configuration File. For example, this will mirror the Main Menu:\n[sidebar_menu] ... mirror = \u0026#34;main\u0026#34; The sidebar menu can display nested menus. The sub-pages need to have a page as parent defined in the page\u0026rsquo;s front matter:\nmenu: main: parent: myParentPage Social Menu Social Menu is available as Widget: social_menu. You can add it to Widget Areas to use it.\nUse the variables under [params.social] in your config.toml file for adding your social profiles:\n[params.social] codepen = \u0026#34;...\u0026#34; email = \u0026#34;...\u0026#34; facebook = \u0026#34;...\u0026#34; ... You only have to add your usernames. Minimo will take care of the rest.\nChanging Social Menu Icons Order If you want to change the order of the social menu icons, use the social_menu.platforms option in your Widgets Configuration File.\nThe social menu icons will appear in the order you specify in the platforms array.\n","href":"/docs/menus/","title":"Menus Setup Guide"},{"content":"","href":"/tags/og/","title":"Opengraph"},{"content":"Minimo has built-in support for Opengraph tags. It will pick up most of the things from your contents\u0026rsquo; front-matters \u0026amp; Hugo configuration.\nYou can use these options in you content\u0026rsquo;s front-matter:\n--- audios: [] # for og:audio tags images: [] # for og:image tags videos: [] # for og:video tags ---  audios [Array of Strings]: path/url of audio files images [Array of Strings]: path/url of image files videos [Array of Strings]: path/url of video files  N.B.: the front-matter syntax shown here is yaml. If you use a different format (e.g. toml), the syntax will change accordingly.\nIf you add Cover Image to you content, it will also be picked up.\nFacebook Opengraph You can set these options in your config.toml files for better integration with Facebook:\n[params.opengraph.facebook] admins = [] # for fb:admins tags appID = \u0026#34;\u0026#34; # for fb:app_id tag pageID = \u0026#34;\u0026#34; # for article:publisher tag  admins [Array of Strings]: Facebook Profile IDs appID [String]: Facebook Application ID pageid [String]: Facebook Page ID  Also, the [social.facebook] field from the Author\u0026rsquo;s Profile data is used for article:author tag.\nTwitter Cards Minimo has built-in support for Twitter Cards.\nYou can set these options in your config.toml files to provide additional information for Twitter Cards:\n[params.opengraph.twitter] page = \u0026#34;\u0026#34; # for twitter:site tag  page [String]: Twitter Page\u0026rsquo;s Username  Also, the [social.twitter] field from the Author\u0026rsquo;s Profile data is used for twitter:creator tag.\n","href":"/docs/opengraph/","title":"Opengraph Support"},{"content":"","href":"/tags/authors/","title":"authors"},{"content":"Minimo supports multiple authors for your site. Just make sure you have the following configuration in your site\u0026rsquo;s config.toml:\n[taxonomies] author = \u0026#34;authors\u0026#34; Minimo treats Authors as a Hugo Taxonomy.\nAuthor\u0026rsquo;s Profile For adding an author to your site:\n Create data/authors folder in your site\u0026rsquo;s root directory Create a file with the filename format: \u0026lt;username\u0026gt;.toml  Now, add information about the author using the structure below:\n/data/authors/muniftanjim.toml\nid = \u0026#34;muniftanjim\u0026#34; [email] username = \u0026#34;YELLING\u0026#34; host = \u0026#34;example.com\u0026#34; [name] display = \u0026#34;A test\u0026#34; [social] email = \u0026#34;\u0026#34; facebook = \u0026#34;nah\u0026#34; twitter = \u0026#34;yes\u0026#34;  You can use either the [email] fields or the [social.email] field. You don\u0026rsquo;t need to fill them both. However, it is encouraged to use [email] instead of [social.email].\nAdding Authors to Contents For adding authors to your content include the following option in your content\u0026rsquo;s front-matter:\n--- authors: [\u0026#34;muniftanjim\u0026#34;] ---  authors [Array of Strings]: username of authors  That\u0026rsquo;s all.\n","href":"/docs/authors/","title":"Authors Setup Guide"},{"content":"This is the Minimo\u0026rsquo;s configuration file ( config.toml ) file of this site:\nbaseURL = \u0026#34;http://example.org/\u0026#34; languageCode = \u0026#34;en-us\u0026#34; title = \u0026#34;My New Hugo Site\u0026#34; theme = \u0026#34;minimo\u0026#34;  ","href":"/docs/config-file/","title":"Configuration File: config.toml"},{"content":"","href":"/categories/others/","title":"others"},{"content":"","href":"/categories/tutorial/","title":"Tutorial"},{"content":"Updating Minimo Update Minimo clone Just replace the themes/minimo folder with the latest version of Minimo clone, i.e. delete the old folder and clone again:\nrm -rf themes/minimo git clone --depth 1 https://github.com/MunifTanjim/minimo themes/minimo Then, commit the changes:\ngit add themes/minimo git commit -m \u0026#34;update [theme]: minimo\u0026#34; Update Minimo submodule cd themes/minimo git checkout master git fetch \u0026amp;\u0026amp; git pull cd ../.. git add themes/minimo git commit -m \u0026#34;update [theme]: minimo\u0026#34; To Do After Updating Minimo After updating Minimo, always check that your site\u0026rsquo;s config.toml file matches the latest config.toml file format.\nA good idea is to double check all the Configuration settings of Minimo.\n","href":"/docs/updating/","title":"Updating Guide"},{"content":"First of all you will need to setup a Hugo site. You can follow the Hugo\u0026rsquo;s Quick Start Guide for that.\nAfter you\u0026rsquo;re done with that, it\u0026rsquo;s time for installing Minimo!\nInstalling Minimo There are two different ways you can install Minimo:\n As clone As submodule  The second method is recommended.\nInstall Minimo as clone With this method, you will simply clone it. And a copy of Minimo\u0026rsquo;s repository will be stored with the rest of you site. Enter the following command for cloning Minimo:\ngit clone --depth 1 https://github.com/MunifTanjim/minimo themes/minimo Install Minimo as submodule This method doesn\u0026rsquo;t store a copy of Minimo\u0026rsquo;s repository inside your site\u0026rsquo;s repository. Rather it adds Minimo as a dependency. Start by this command:\ngit submodule add https://github.com/MunifTanjim/minimo themes/minimo This will add Minimo\u0026rsquo;s repository as a submodule to your site\u0026rsquo;s repository. Now, you will have to pull the theme:\ngit submodule init git submodule update That\u0026rsquo;s all, Minimo is ready to be used.\nConfiguration for Minimo For getting started with Minimo, copy the config.toml file from the exampleSite directory inside Minimo\u0026rsquo;s repository to your site repository:\ncp themes/minimo/exampleSite/config.toml . You can take a look at the config.toml file of this site.\nNow, you can start editing this file and change the configuration!\nSetting up Authors Follow the Authors Setup Guide for setting up authors for you site.\nSetting up Widgets If you want to use Widgets on your site, take a look at the Widgets documentation\n Et voilà! Minimo is ready!\n","href":"/docs/installation/","title":"Installation Guide"},{"content":"","href":"/authors/","title":"Authors"},{"content":"","href":"/page/search/","title":"Search"}]
++[{"content":" Minimalism is not a lack of something. It’s simply the perfect amount of something. — Nicholas Burroughs\n ","href":"/","title":"Home"},{"content":"","href":"/docs/","title":"Documentation"},{"content":"Here is a paragraph. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nHeading 2 Another one. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\nHeading 4  First item Second item   Nested unordered item  Third item Nested ordered item 1 Nested ordered item 2  Heading 5 Where are the quotes!!!\n Simplify, then add lightness.\n— Colin Chapman\n Now, time for some links!\n GoHugo Hugo Themes  Heading 6 Inline code: echo \u0026quot;What is the meaning of life?\u0026quot;. Who knows?\n// Codeblock  var meaningOfLife = 42; console.log(\u0026#39;The meaning of life is: \u0026#39;, meaningOfLife);  Who wants some table?\n   Minimo Caption More Caption     Cool What? Now, wut?!    Ah, enough for today, eh?\n","href":"/page/typography/","title":"Typography"},{"content":"Mínimo is a Spanish word that roughly translate to Minimal.\nMinimo is a minimalist theme for Hugo.\nMinimo keeps the focus on your content and lets it shine!\n","href":"/page/about/","title":"About"},{"content":"","href":"/categories/","title":"Categories"},{"content":"","href":"/tags/config/","title":"Configuration"},{"content":"","href":"/categories/features/","title":"features"},{"content":"","href":"/tags/katex/","title":"katex"},{"content":"KaTeX Syntax for Markdown In your Markdown content, use the katex shortcode for inserting KaTeX. Check documentation for Shortcode: katex.\nHere\u0026rsquo;s an example Markdown content:\nWhen {{\u0026lt; katex inline \u0026gt;}} a \\ne 0 {{\u0026lt; /katex \u0026gt;}}, there are two solutions to {{\u0026lt; katex \u0026gt;}} ax^2 + bx + c = 0 {{\u0026lt; /katex \u0026gt;}} and they are: {{\u0026lt; katex \u0026gt;}} x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a} {{\u0026lt; /katex \u0026gt;}} Output:\nWhen \\( a \\ne 0 \\) , there are two solutions to\n\\[ ax^2 + bx + c = 0 \\] and they are:\n\\[ x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a} \\] Customize KaTeX Configuration You can customize the default behavior of KaTeX if you want.\nMinimo picks up configuration for KaTeX from the /data/config/katex.json file.\nThe default configuration options look like this:\n{ \u0026#34;library\u0026#34;: { \u0026#34;js\u0026#34;: { \u0026#34;main\u0026#34;: \u0026#34;//unpkg.com/katex/dist/katex.min.js\u0026#34;, \u0026#34;autoRender\u0026#34;: \u0026#34;//unpkg.com/katex/dist/contrib/auto-render.min.js\u0026#34; }, \u0026#34;css\u0026#34;: { \u0026#34;main\u0026#34;: \u0026#34;//unpkg.com/katex/dist/katex.min.css\u0026#34; } }, \u0026#34;options\u0026#34;: {} }  library [Object]:  js [Object]:  main [String]: URL for the main KaTeX library autoRender [String]: URL for the auto-render extension   css [Object]:  main [String]: URL for the main KaTeX stylesheet     options [Object]:  KaTeX configuration options    So, if you want to tinker with it\u0026rsquo;s configuration options:\n Create a /data/config/katex.json file in your site\u0026rsquo;s repository Copy the default configuration options Start hacking  Related Guides  Configuration Options Auto-render Extension  ","href":"/docs/katex-support/","title":"KaTeX Support"},{"content":"","href":"/tags/","title":"Tags"},{"content":"","href":"/tags/fuse.js/","title":"fuse.js"},{"content":"","href":"/tags/search/","title":"search"},{"content":"Configure Fuse.js Search Client Select Fuse.js as the search client in your config.toml file:\n[params.search] client = \u0026#34;fuse\u0026#34; ","href":"/docs/search-fuse-js/","title":"Search: Fuse.js"},{"content":"","href":"/tags/algolia/","title":"algolia"},{"content":"Configure Algolia Search Client Select Algolia as the search client in your config.toml file:\n[params.search] client = \u0026#34;algolia\u0026#34; Also, add configuration options for Algolia:\n[params.search.algolia] appId = \u0026#34;\u0026#34; indexName = \u0026#34;\u0026#34; searchApiKey = \u0026#34;\u0026#34;  params.search.algolia [Map]:  appId [String]: Algolia Application ID indexName [String]: Name for Algolia Indices\ndefault: minimo_site searchApiKey [String]: Algolia Search-Only API Key    You\u0026rsquo;ll find various information related to your Algolia account in the Algolia Dashboard.\nGenerate Search Index for Algolia Algolia will need a search index for searching across your site. So, you\u0026rsquo;ll need to generate that search index for Algolia before you deploy your site.\nMinimo comes with a script for generating the search index for Algolia: /scripts/generate-search-index-algolia.js.\nInstall Dependencies Node.js must be installed on your system for using the generator script.\nIt also needs the following npm packages:\n algoliasearch glob  For installing algoliasearch and glob globally use the following command:\nnpm install -g algoliasearch glob Set Environment Variables The generator script uses the following environment variables:\n ALGOLIA_APP_ID (required): Algolia Application ID ALGOLIA_ADMIN_API_KEY (required): Algolia Admin API Key ALGOLIA_INDEX_NAME (optional): Name for Algolia Indices\ndefault: minimo_site  Run the Script After you\u0026rsquo;ve generated your site with Hugo, run generate-search-index-algolia.js with node.\nIf Minimo is installed under /themes/minimo directory, you\u0026rsquo;ll run it as:\nnode ./themes/minimo/scripts/generate-search-index-algolia.js The generate-search-index-algolia.js script accepts an optional argument for Hugo\u0026rsquo;s publishDir (relative to your site\u0026rsquo;s root directory).\nSo, if you\u0026rsquo;ve got a different publishDir (say site), pass it as the first argument:\nnode ./themes/minimo/scripts/generate-search-index-algolia.js site If the generation was successful, you\u0026rsquo;ll see output like this:\nAlgolia Index Generated for: /search/index.json That\u0026rsquo;s all. Now you can deploy your site.\n","href":"/docs/search-algolia/","title":"Search: Algolia"},{"content":"","href":"/tags/lunr.js/","title":"lunr.js"},{"content":"Configure Lunr.js Search Client Select Lunr.js as the search client in your config.toml file:\n[params.search] client = \u0026#34;lunr\u0026#34; Generate Search Index for Lunr.js Lunr.js will need a search index for searching across your site. So, you\u0026rsquo;ll need to generate that search index for Lunr.js before you deploy your site.\nMinimo comes with a script for generating the search index for Lunr.js: /scripts/generate-search-index-lunr.js.\nInstall Dependencies Node.js must be installed on your system for using the generator script.\nIt also need the following npm packages:\n glob lunr  For installing lunr and glob globally use the following command:\nnpm install -g lunr glob Run the Script After you\u0026rsquo;ve generated your site with Hugo, run generate-search-index-lunr.js with node.\nIf Minimo is installed under /themes/minimo directory, you\u0026rsquo;ll run it as:\nnode ./themes/minimo/scripts/generate-search-index-lunr.js The generate-search-index-lunr.js script accepts an optional argument for Hugo\u0026rsquo;s publishDir (relative to your site\u0026rsquo;s root directory).\nSo, if you\u0026rsquo;ve got a different publishDir (say site), pass it as the first argument:\nnode ./themes/minimo/scripts/generate-search-index-lunr.js site If the generation was successful, you\u0026rsquo;ll see output like this:\nLunr.js Index Generated for: /search/index.json That\u0026rsquo;s all. Now you can deploy your site.\n","href":"/docs/search-lunr-js/","title":"Search: Lunr.js"},{"content":"Minimo supports the following clients for the search feature:\n Algolia Fuse.js Lunr.js  Follow the following steps for enabling search in your site.\nCreate Search Page First of all, you\u0026rsquo;ll need to create a search page.\nCreate a markdown file under /content/page/ directory with the filename search. If your site is multilingual, you can include language code in the filename. For example:\n /content/page/search.md /content/page/search.en.md  Add the following options in the frontmatter:\ntype: page layout: search outputs: - html - json Select Search Client For selecting the client for search feature, use the following options in your config.toml file:\n[params.search] client = \u0026#34;\u0026#34;  params.search [Map]:  client [String]: Name of the Search Client (supported values: algolia,fuse,lunr)    Client Specific Steps The next steps are different for each search client:\n Algolia Fuse.js Lunr.js  After you complete those steps, you are good to go!\nAdd Search Widget You might also want to add the search widget.\n","href":"/docs/search-support/","title":"Search Support"},{"content":"Minimo has support for comments baked into it.\nEnable/Disable Comments Globally For enabling or disabling comments globally, check the following setting in your config.toml file:\n[params.comments] enable = false  params.comments [Map]:  enable [Boolean]: Enable/Disable comments globally    For Specific Posts The global .Site.Params.comments.enable setting can be overridden for specific posts in their content\u0026rsquo;s frontmatter with this option:\n--- comments: true ---  comments [Boolean]: Enable/Disable comments for specific posts  Of course, you\u0026rsquo;ll also need to setup a comment system ( Disqus or Staticman ).\nSetting Up Comment System Minimo currently supports Disqus, Isso, Staticman and Utterances to be used as your site\u0026rsquo;s comment system.\nDisqus Disqus comments require you set a single value to the following option in your config.toml file:\ndisqusShortname = \u0026#34;\u0026#34;  disqusShortname [String]: Shortname for you site\u0026rsquo;s Disqus account  And that\u0026rsquo;s all!\nIsso Isso is a lightweight alternative to Disqus. You need to have a Isso server running somewhere, then set up the following options in your config.toml file:\n[params.comments.isso] enable = true scriptSrc = \u0026#34;https://isso.example.com/js/embed.min.js\u0026#34; dataAttrs = \u0026#34;data-isso=\u0026#39;https://isso.example.com data-isso-require-author=\u0026#39;true\u0026#39;\u0026#34;  params.comments.isso [Map]:  enable [Boolean]: Enable Isso scriptSrc [String]: URL of the Isso integration script. dataAttrs [String]: Data attributes to add to the Isso \u0026lt;script\u0026gt; tag. Optional, but the Isso documentation recommends to at least include the data-isso attribute.    Staticman For up-to-date information, check out the Documentation Site and the Public Repository of Staticman.\nConfigure Minimo for Staticman First of all, set up the following options (with your preferred values) in your config.toml file:\n[params.comments.staticman] enable = true apiEndpoint = \u0026#34;https://api.staticman.net/v2/entry\u0026#34; maxDepth = 2 username = \u0026#34;MunifTanjim\u0026#34; repository = \u0026#34;minimo\u0026#34;  params.comments.staticman [Map]:  enable [Boolean]: Enable Staticman apiEndpoint [String]: API endpoint for Staticman instance maxDepth [Integer]: Maximum allowed comments depth username [String]: Your Git Username repository [String]: Name of your Site\u0026rsquo;s Git Repository    Staticman Configuration File Next, you\u0026rsquo;ll need a Staticman Configuration File (staticman.yml) in the root of your site\u0026rsquo;s repository. Here\u0026rsquo;s a sample of it:\nstaticman.yml\ncomments: allowedFields: [\u0026#39;author\u0026#39;, \u0026#39;content\u0026#39;, \u0026#39;email\u0026#39;, \u0026#39;parent_id\u0026#39;, \u0026#39;permalink\u0026#39;, \u0026#39;site\u0026#39;] branch: \u0026#39;master\u0026#39; commitMessage: \u0026#34;add [comment]: by {fields.author} \u0026lt;Staticman\u0026gt;\\n\\n{fields.permalink}#comment-{@id}\u0026#34; filename: \u0026#39;{@id}\u0026#39; format: \u0026#39;yaml\u0026#39; generatedFields: date: type: date options: format: \u0026#39;timestamp\u0026#39; moderation: false name: \u0026#39;Minimo\u0026#39; path: \u0026#39;data/comments/{options.postId}\u0026#39; requiredFields: [\u0026#39;author\u0026#39;, \u0026#39;content\u0026#39;, \u0026#39;email\u0026#39;, \u0026#39;permalink\u0026#39;] reCaptcha: enabled: false # siteKey: \u0026#39;\u0026#39; # secret: \u0026#39;\u0026#39; transforms: email: md5  Notes  In most cases, you\u0026rsquo;ll only need to change the name option (Site\u0026rsquo;s name) If you set moderation: true, Staticman will send a Pull Request whenever a new comment is submitted. You\u0026rsquo;ll need to Merge the Pull Request to approve it, or Close to discard.  Add Staticman to Your Site\u0026rsquo;s Repository You\u0026rsquo;ll need to go through some additional steps based on the API endpoint (params.comments.staticman.apiEndpoint) that you are gonna use. You\u0026rsquo;ll find the relevant information on the following places:\n Staticman Site Staticman Repository  [ Contributors are welcomed to update this part of the documentation to include additional useful information. ]\nUtterances Utterances only supports GitHub. So, if your site\u0026rsquo;s repository is not hosted in GitHub, it won\u0026rsquo;t work.\nFor using Utterances, set up the following options in your config.toml file:\n[params.comments.utterances] enable = true issueTerm = \u0026#34;pathname\u0026#34; # pathname / url / title [params.comments.utterances.github] username = \u0026#34;MunifTanjim\u0026#34; repository = \u0026#34;minimo\u0026#34;  params.comments.utterances [Map]:  enable [Boolean]: Enable Utterances issueTerm [String]: Entry to Issue mapping option (pathname / url / title)   params.comments.utterances.github [Map]:  username [String]: Your GitHub Username repository [String]: Name of your Site\u0026rsquo;s GitHub Repository    Check utteranc.es for more information.\nThat should do it!\n","href":"/docs/comments-support/","title":"Comments Support"},{"content":"First of all, if you really want emojis, set the enableEmoji setting to true in your config.toml file:\nenableEmoji = true This will enable Hugo to find Emoji Shorthands in your content files and render them as Unicode Emoji Characters.\nFor example:\nNo, it\u0026rsquo;ll probably not be that colorful! Unless your device\u0026rsquo;s operating system natively supports colorful emojis, you will see a black \u0026amp; white one instead. :fire:\n:pencil2: For getting that colorful look, you will have to add this to your content\u0026rsquo;s frontmatter:\n--- emoji: true --- And where can you find these Emoji Shorthands :question:\n:tada: Go take a look at: Emoji Cheat Sheet\n","href":"/docs/emoji-support/","title":"Emoji Support"},{"content":"For enabling MathJax, add this to your content\u0026rsquo;s frontmatter:\n--- mathjax: true --- MathJax Syntax for Markdown In your Markdown content, use \\\\(\u0026hellip;\\\\) delimiters for in-line mathematics.\nFor mathematics blocks you can use either $$\u0026hellip;$$ or \\\\[\u0026hellip;\\\\] as delimiters.\nHere\u0026rsquo;s an example Markdown content:\nWhen \\\\( a \\ne 0 \\\\), there are two solutions to $$ ax^2 + bx + c = 0 $$ and they are: \\\\[ x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a} \\\\] Output:\nWhen \\( a \\ne 0 \\), there are two solutions to\n$$ ax^2 + bx + c = 0 $$\nand they are:\n\\[x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}\\]\nCustomize MathJax Configuration You can customize the default behavior of MathJax if you want.\nMinimo picks up configuration for MathJax from the /data/config/mathjax.json file.\nThe default configuration options look like this:\n{ \u0026#34;library\u0026#34;: { \u0026#34;path\u0026#34;: \u0026#34;//unpkg.com/mathjax@2.7.5/MathJax.js\u0026#34;, \u0026#34;config\u0026#34;: \u0026#34;TeX-MML-AM_CHTML\u0026#34; }, \u0026#34;config\u0026#34;: {} }  library [Object]:  path [String]: URL for the main MathJax.js file. config [String]: Configuration file\u0026rsquo;s name/path   config [Object]:  In-line configuration options    So, if you want to tinker with it\u0026rsquo;s configuration options:\n Create a /data/config/mathjax.json file in your site\u0026rsquo;s repository Copy the default configuration options Start hacking  For exmaple, if you want to enable $\u0026hellip;$ delimiters for in-line mathematics, you probably want something like this:\n{ \u0026#34;library\u0026#34;: { \u0026#34;path\u0026#34;: \u0026#34;//unpkg.com/mathjax@2.7.5/MathJax.js\u0026#34;, \u0026#34;config\u0026#34;: \u0026#34;TeX-MML-AM_CHTML\u0026#34; }, \u0026#34;config\u0026#34;: { \u0026#34;tex2jax\u0026#34;: { \u0026#34;inlineMath\u0026#34;: [[\u0026#34;$\u0026#34;, \u0026#34;$\u0026#34;], [\u0026#34;\\\\(\u0026#34;, \u0026#34;\\\\)\u0026#34;]], \u0026#34;processEscapes\u0026#34;: true } } } Notice MathJax version above 2.7.5 is not guaranted to work.\nRelated Guides  Using a configuration file Combined Configurations Using in-line configuration options Configuration Options  ","href":"/docs/mathjax-support/","title":"MathJax Support"},{"content":"Enabling Sidebar For enabling Sidebar, use the following configuration options in your config.toml file:\n[params.sidebar] enable = true  params.sidebar [Map]:  enable [Boolean]: Switch for enabling sidebar    Adding Widgets to Sidebar For adding Widgets to the Sidebar, check the Widgets documentation.\n","href":"/docs/sidebar/","title":"Sidebar"},{"content":"Minimo supports Widgets that you can place on specific Widget Areas.\nAvailable Widgets Minimo has the following built-in Widgets:\n   Name Slug     About | about Breadcrumbs | breadcrumbs Recent Posts | recent_posts Search | search Sidebar Menu | sidebar_menu Social Menu | social_menu Taxonomy Cloud | taxonomy_cloud  Widget Configuration Options Here are the configuration options available for the Widgets:\nWidget: About  about [Map]:  title [String]: Title\ndefault: .Site.Title description [String]: Description\ndefault: .Site.Params.info.description logo [String]: path/url of Logo\ndefault: \u0026quot;/images/logo.png\u0026quot;    Widget: Breadcrumbs  breadcrumbs [Map]:  separator [String]: Breadcrumb separator\ndefault: \u0026quot;/\u0026quot; excludeParents [Array of Strings]: Types of parents to exclude\ndefault: [\u0026quot;page\u0026quot;]    Widget: Recent Posts  recent_posts [Map]:  title [String]: Title\ndefault: \u0026quot;Recent Posts\u0026quot; length [Integer]: Number of posts to show\ndefault: 5 excludeTypes [Array of Strings]: Types of posts to exclude\ndefault: [\u0026quot;page\u0026quot;]    Widget: Search  search [Map]:  title [String]: Title\ndefault: \u0026quot;Search\u0026quot;    Widget: Sidebar Menu  sidebar_menu [Map]:  title [String]: Title\ndefault: \u0026quot;\u0026quot; mirror [String]: Name of menu to mirror (e.g. \u0026quot;main\u0026quot;)\ndefault: \u0026quot;\u0026quot;    Widget: Social Menu  social_menu [Map]:  title [String]: Title\ndefault: \u0026quot;\u0026quot; platforms [Array of Strings]: Social platform to show    Widget: Taxonomy Cloud  taxonomy_cloud [Map]:  title [String]: Title\ndefault: Plural Name for taxonomyCloud.taxonomy taxonomy [String]: Taxonomy to show\ndefault: .Site.Params.info.description shuffle [Boolean]: Shuffle Taxonomy Terms\ndefault: true    Available Widget Areas    Name Slug     Header header   Homepage homepage   Sidebar sidebar   Footer footer    You can add Widgets to Widget Areas from your config.toml file:\n[params.widgets] header = [\u0026#34;breadcrumbs\u0026#34;] homepage = [\u0026#34;recent_posts\u0026#34;] sidebar = [\u0026#34;about\u0026#34;,\u0026#34;taxonomy_cloud\u0026#34;] footer = [\u0026#34;social_menu\u0026#34;] The syntax for adding Widgets to Widget Areas is:\nwidget_area_slug = [ widget_slug_1, widget_slug_2, ...] Widgets Configuration File Minimo picks up Widgets\u0026rsquo; configuration from the /data/config/widgets.toml file.\nHere\u0026rsquo;s the Widgets Config file for this site:\n/data/config/widgets.toml\n# About Widget config [about] title = \u0026#34;\u0026#34; # default: .Site.Title description = \u0026#34;\u0026#34; # default: .Site.Params.info.description logo = \u0026#34;/images/logo.png\u0026#34; # default: \u0026#34;/images/logo.png\u0026#34; # Breadcrumbs Widget config [breadcrumbs] separator = \u0026#34;/\u0026#34; # default: \u0026#34;/\u0026#34; excludeParents = [\u0026#34;page\u0026#34;] # default: [\u0026#34;page\u0026#34;] # Recent Posts Widget config [recent_posts] title = \u0026#34;\u0026#34; # default: \u0026#34;Recent Posts\u0026#34; length = 4 # default: 5 excludeTypes = [\u0026#34;page\u0026#34;] # default: [\u0026#34;page\u0026#34;] # Search Widget config [search] title = \u0026#34;Search\u0026#34; # default: \u0026#34;Search\u0026#34; # Sidebar Menu Widget config [sidebar_menu] title = \u0026#34;\u0026#34; # default: \u0026#34;\u0026#34; mirror = \u0026#34;\u0026#34; # default: \u0026#34;\u0026#34; # Social Menu Widget config [social_menu] title = \u0026#34;\u0026#34; # default: \u0026#34;\u0026#34; platforms = [\u0026#34;github\u0026#34;,\u0026#34;facebook\u0026#34;,\u0026#34;twitter\u0026#34;,\u0026#34;instagram\u0026#34;,\u0026#34;email\u0026#34;,\u0026#34;codepen\u0026#34;,\u0026#34;gitlab\u0026#34;,\u0026#34;linkedin\u0026#34;,\u0026#34;telegram\u0026#34;,\u0026#34;google_scholar\u0026#34;,\u0026#34;youtube\u0026#34;] # Taxonomy Cloud Widget config [taxonomy_cloud] title = \u0026#34;\u0026#34; # default: Plural Name for `taxonomyCloud.taxonomy` taxonomy = \u0026#34;tags\u0026#34; # default: \u0026#34;tags\u0026#34; shuffle = true # default: true  If configuration for any Widgets are missing in this file, Minimo will fallback to the default configuration for those Widgets.\nGo wild!\n","href":"/docs/widgets/","title":"Widgets"},{"content":"","href":"/tags/widgets/","title":"widgets"},{"content":"","href":"/tags/shortcode/","title":"shortcode"},{"content":"Minimo comes with several shortcodes built-in.\n Shortcode: center Center align you content.\ncenter: Parameters  Markdown content between opening and closing tags.  center: Usage Example {{\u0026lt; center \u0026gt;}} _Center Aligned Text_ {{\u0026lt; /center \u0026gt;}} Output:\nCenter Aligned Text   Shortcode: convo Renders conversation blocks.\nconvo: Parameters  sep [String] (optional): seperator between person and text (default: \u0026ldquo;:\u0026rdquo;)  convo: Inner Syntax person :: text You can remove the person part, if you want.\nconvo: Usage Example {{\u0026lt; convo sep=\u0026#34;:\u0026#34; \u0026gt;}} Jerry :: You don\u0026#39;t look so tough. Finch :: It\u0026#39;s because I have only two modes, Jerry. Calm, and furious. It\u0026#39;s a rare person that sees the latter and lives to talk about it. {{\u0026lt; /convo \u0026gt;}} Output:\n  Jerry :  You don\u0026rsquo;t look so tough.   Finch :  It\u0026rsquo;s because I have only two modes, Jerry. Calm, and furious. It\u0026rsquo;s a rare person that sees the latter and lives to talk about it.     Shortcode: file Include content from seperate file with syntax highlighting.\nfile: Parameters 0 =\u0026gt; filename [String] (required)\n1 =\u0026gt; filetype [String] (optional)\nfile: Usage Example {{\u0026lt; file \u0026#34;content/_index.md\u0026#34; \u0026gt;}} Output:\n--- title: Home menu: - main - sidebar weight: -270 --- \u0026gt; Minimalism is not a lack of something. It’s simply the perfect amount of something. \u0026gt; — Nicholas Burroughs    Shortcode: katex Renders KaTeX.\nkatex: Parameters 0 =\u0026gt; mode [String] (optional): inline / block\nkatex: Usage Example Inline: {{\u0026lt; katex inline \u0026gt;}} ax^2 + bx + c = 0 {{\u0026lt; /katex \u0026gt;}} Block: {{\u0026lt; katex \u0026gt;}} x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a} {{\u0026lt; /katex \u0026gt;}} Output:\nInline: \\( ax^2 + bx + c = 0 \\) Block: \\[ x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a} \\]  Shortcode: text Text with custom size and color\ntext: Parameters You can use either Named or Unnamed Parameters\nNamed Parameters:\n s or size [String] (optional): multiplier relative to the normal size c or color [String] (optional): name / hex / rgb / rgba  Unnamed Parameters:\n0 =\u0026gt; textsize [String] (required): multiplier relative to the normal size\n1 =\u0026gt; textcolor [String] (optional): name / hex / rgb / rgba\ntext: Usage Example {{\u0026lt; text s=\u0026#34;1.4\u0026#34; color=\u0026#34;purple\u0026#34; \u0026gt;}} font-size: 1.4em; color: purple; {{\u0026lt; /text \u0026gt;}} Output:\nfont-size: 1.5em;\ncolor: purple; ","href":"/docs/shortcodes/","title":"Shortcodes"},{"content":"You can add cover image to your contents with the cover paramameter in the content\u0026rsquo;s front-matter.\nYou can directly provide the image url:\n--- cover: /images/eden-farm-children-s-village.jpg ---  cover [String]: path/url of the cover image  Or you can provide additional information:\n--- cover: image: /images/eden-farm-children-s-village.jpg alternate: Picture of a yellow wall with a blue window in the upper-left corner caption: Eden Farm Children\u0026#39;s Village by Gareth Harper on Unsplash style: full ---  cover [Map]:  image [String]: path/url of the cover image alternate [String]: alternate text for the image caption [String]: caption for the cover image style [String]: full / wide / normal    ","href":"/docs/cover-image/","title":"Cover Image"},{"content":"","href":"/page/","title":"Pages"},{"content":"","href":"/tags/i18n/","title":"i18n"},{"content":"","href":"/tags/translation/","title":"translation"},{"content":"You can translate Minimo in your own language!\nFor example, if you want to translate Minimo in Spanish, you will have to add this to your site\u0026rsquo;s config file:\n[languages.es] lang = \u0026#34;es\u0026#34; languageName = \u0026#34;Spanish\u0026#34; weight = 1 Then create a folder named /i18n/ in your site\u0026rsquo;s root. And create a file /i18n/es.toml with the translated strings.\nFor reference template you can see the en.toml file.\nIf you want your translation file to be included in Minimo repository, feel free to create a pull request.\n","href":"/docs/translation/","title":"Translation Support"},{"content":"","href":"/tags/chroma/","title":"chroma"},{"content":"","href":"/tags/pygments/","title":"pygments"},{"content":"Hugo uses Chroma as it\u0026rsquo;s built-in syntax-highlighter.\nFor detailed information about Syntax Highlighting in Hugo, check the Hugo\u0026rsquo;s Syntax Highlighting Documentation.\n","href":"/docs/syntax-highlighting/","title":"Syntax Highlighting"},{"content":"","href":"/tags/menus/","title":"menus"},{"content":"Minimo has three menus.\n Main Menu Sidebar Menu Social Menu  Main Menu name: main\nMain menu is located at the top of the site.\nCheck Hugo\u0026rsquo;s Menus Documentation for information about managing this menu.\nYou can hide the Main Menu using the following option in your config.toml file:\n[params.settings] hideMainMenu = true Sidebar Menu name: sidebar\nSocial Menu is available as Widget: sidebar_menu. Add it to the sidebar Widget Area to use it.\nYou can use Sidebar Menu as normal Hugo Menus.\nOr you can use it to mirror another menu by using the sidebar_menu.mirror option in your Widgets Configuration File. For example, this will mirror the Main Menu:\n[sidebar_menu] ... mirror = \u0026#34;main\u0026#34; The sidebar menu can display nested menus. The sub-pages need to have a page as parent defined in the page\u0026rsquo;s front matter:\nmenu: main: parent: myParentPage Social Menu Social Menu is available as Widget: social_menu. You can add it to Widget Areas to use it.\nUse the variables under [params.social] in your config.toml file for adding your social profiles:\n[params.social] codepen = \u0026#34;...\u0026#34; email = \u0026#34;...\u0026#34; facebook = \u0026#34;...\u0026#34; ... You only have to add your usernames. Minimo will take care of the rest.\nChanging Social Menu Icons Order If you want to change the order of the social menu icons, use the social_menu.platforms option in your Widgets Configuration File.\nThe social menu icons will appear in the order you specify in the platforms array.\n","href":"/docs/menus/","title":"Menus Setup Guide"},{"content":"","href":"/tags/og/","title":"Opengraph"},{"content":"Minimo has built-in support for Opengraph tags. It will pick up most of the things from your contents\u0026rsquo; front-matters \u0026amp; Hugo configuration.\nYou can use these options in you content\u0026rsquo;s front-matter:\n--- audios: [] # for og:audio tags images: [] # for og:image tags videos: [] # for og:video tags ---  audios [Array of Strings]: path/url of audio files images [Array of Strings]: path/url of image files videos [Array of Strings]: path/url of video files  N.B.: the front-matter syntax shown here is yaml. If you use a different format (e.g. toml), the syntax will change accordingly.\nIf you add Cover Image to you content, it will also be picked up.\nFacebook Opengraph You can set these options in your config.toml files for better integration with Facebook:\n[params.opengraph.facebook] admins = [] # for fb:admins tags appID = \u0026#34;\u0026#34; # for fb:app_id tag pageID = \u0026#34;\u0026#34; # for article:publisher tag  admins [Array of Strings]: Facebook Profile IDs appID [String]: Facebook Application ID pageid [String]: Facebook Page ID  Also, the [social.facebook] field from the Author\u0026rsquo;s Profile data is used for article:author tag.\nTwitter Cards Minimo has built-in support for Twitter Cards.\nYou can set these options in your config.toml files to provide additional information for Twitter Cards:\n[params.opengraph.twitter] page = \u0026#34;\u0026#34; # for twitter:site tag  page [String]: Twitter Page\u0026rsquo;s Username  Also, the [social.twitter] field from the Author\u0026rsquo;s Profile data is used for twitter:creator tag.\n","href":"/docs/opengraph/","title":"Opengraph Support"},{"content":"","href":"/tags/authors/","title":"authors"},{"content":"Minimo supports multiple authors for your site. Just make sure you have the following configuration in your site\u0026rsquo;s config.toml:\n[taxonomies] author = \u0026#34;authors\u0026#34; Minimo treats Authors as a Hugo Taxonomy.\nAuthor\u0026rsquo;s Profile For adding an author to your site:\n Create data/authors folder in your site\u0026rsquo;s root directory Create a file with the filename format: \u0026lt;username\u0026gt;.toml  Now, add information about the author using the structure below:\n/data/authors/muniftanjim.toml\nid = \u0026#34;muniftanjim\u0026#34; [email] username = \u0026#34;YELLING\u0026#34; host = \u0026#34;example.com\u0026#34; [name] display = \u0026#34;A test\u0026#34; [social] email = \u0026#34;\u0026#34; facebook = \u0026#34;nah\u0026#34; twitter = \u0026#34;yes\u0026#34;  You can use either the [email] fields or the [social.email] field. You don\u0026rsquo;t need to fill them both. However, it is encouraged to use [email] instead of [social.email].\nAdding Authors to Contents For adding authors to your content include the following option in your content\u0026rsquo;s front-matter:\n--- authors: [\u0026#34;muniftanjim\u0026#34;] ---  authors [Array of Strings]: username of authors  That\u0026rsquo;s all.\n","href":"/docs/authors/","title":"Authors Setup Guide"},{"content":"This is the Minimo\u0026rsquo;s configuration file ( config.toml ) file of this site:\nbaseURL = \u0026#34;http://example.org/\u0026#34; languageCode = \u0026#34;en-us\u0026#34; title = \u0026#34;SUBDIRECTORY\u0026#34; theme = \u0026#34;minimo\u0026#34;  ","href":"/docs/config-file/","title":"Configuration File: config.toml"},{"content":"","href":"/categories/others/","title":"others"},{"content":"","href":"/categories/tutorial/","title":"Tutorial"},{"content":"Updating Minimo Update Minimo clone Just replace the themes/minimo folder with the latest version of Minimo clone, i.e. delete the old folder and clone again:\nrm -rf themes/minimo git clone --depth 1 https://github.com/MunifTanjim/minimo themes/minimo Then, commit the changes:\ngit add themes/minimo git commit -m \u0026#34;update [theme]: minimo\u0026#34; Update Minimo submodule cd themes/minimo git checkout master git fetch \u0026amp;\u0026amp; git pull cd ../.. git add themes/minimo git commit -m \u0026#34;update [theme]: minimo\u0026#34; To Do After Updating Minimo After updating Minimo, always check that your site\u0026rsquo;s config.toml file matches the latest config.toml file format.\nA good idea is to double check all the Configuration settings of Minimo.\n","href":"/docs/updating/","title":"Updating Guide"},{"content":"First of all you will need to setup a Hugo site. You can follow the Hugo\u0026rsquo;s Quick Start Guide for that.\nAfter you\u0026rsquo;re done with that, it\u0026rsquo;s time for installing Minimo!\nInstalling Minimo There are two different ways you can install Minimo:\n As clone As submodule  The second method is recommended.\nInstall Minimo as clone With this method, you will simply clone it. And a copy of Minimo\u0026rsquo;s repository will be stored with the rest of you site. Enter the following command for cloning Minimo:\ngit clone --depth 1 https://github.com/MunifTanjim/minimo themes/minimo Install Minimo as submodule This method doesn\u0026rsquo;t store a copy of Minimo\u0026rsquo;s repository inside your site\u0026rsquo;s repository. Rather it adds Minimo as a dependency. Start by this command:\ngit submodule add https://github.com/MunifTanjim/minimo themes/minimo This will add Minimo\u0026rsquo;s repository as a submodule to your site\u0026rsquo;s repository. Now, you will have to pull the theme:\ngit submodule init git submodule update That\u0026rsquo;s all, Minimo is ready to be used.\nConfiguration for Minimo For getting started with Minimo, copy the config.toml file from the exampleSite directory inside Minimo\u0026rsquo;s repository to your site repository:\ncp themes/minimo/exampleSite/config.toml . You can take a look at the config.toml file of this site.\nNow, you can start editing this file and change the configuration!\nSetting up Authors Follow the Authors Setup Guide for setting up authors for you site.\nSetting up Widgets If you want to use Widgets on your site, take a look at the Widgets documentation\n Et voilà! Minimo is ready!\n","href":"/docs/installation/","title":"Installation Guide"},{"content":"","href":"/authors/","title":"Authors"},{"content":"","href":"/page/search/","title":"Search"}]
+diff --git a/page/typography/index.html b/page/typography/index.html
+index 66bdabc..ba34159 100644
+--- a/page/typography/index.html
++++ b/page/typography/index.html
+@@ -7,17 +7,17 @@ Heading 2 Another one. Ut enim ad minim veniam, quis nostrud exercitation ullamc
+ Heading 4  First item Second item   Nested unordered item  Third item Nested ordered item 1 Nested ordered item 2  Heading 5 Where are the quotes!'>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Typography • My New Hugo Site'>
++<meta property='og:title' content='Typography • SUBDIRECTORY'>
+ <meta property='og:description' content='Here is a paragraph. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+ Heading 2 Another one. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+ Heading 4  First item Second item   Nested unordered item  Third item Nested ordered item 1 Nested ordered item 2  Heading 5 Where are the quotes!'>
+ <meta property='og:url' content='http://example.org/page/typography/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='article'><meta property='og:image' content='https://www.gravatar.com/avatar/12dd0f181193d01d6478c957cf6fddfb?s=256'><meta property='article:author' content='https://facebook.com/nah'><meta property='article:section' content='page'><meta property='article:published_time' content='2017-09-28T08:00:00&#43;06:00'/><meta property='article:modified_time' content='2017-09-28T08:00:00&#43;06:00'/><meta name='twitter:card' content='summary'><meta name='twitter:creator' content='@yes'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Typography • My New Hugo Site</title>
++  <title>Typography • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/page/typography/'>
+   
+   
+@@ -50,7 +50,7 @@ Heading 4  First item Second item   Nested unordered item  Third item Nested ord
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/tags/algolia/index.html b/tags/algolia/index.html
+index dd8a3fa..7ac789d 100644
+--- a/tags/algolia/index.html
++++ b/tags/algolia/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Tag: algolia • My New Hugo Site'>
++<meta property='og:title' content='Tag: algolia • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/tags/algolia/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Tag: algolia • My New Hugo Site</title>
++  <title>Tag: algolia • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/tags/algolia/'>
+   
+-    <link href="http://example.org/tags/algolia/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/tags/algolia/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/tags/algolia/index.xml b/tags/algolia/index.xml
+index 695627f..34a6a44 100644
+--- a/tags/algolia/index.xml
++++ b/tags/algolia/index.xml
+@@ -1,9 +1,9 @@
+ <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+   <channel>
+-    <title>algolia on My New Hugo Site</title>
++    <title>algolia on SUBDIRECTORY</title>
+     <link>http://example.org/tags/algolia/</link>
+-    <description>Recent content in algolia on My New Hugo Site</description>
++    <description>Recent content in algolia on SUBDIRECTORY</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+     <lastBuildDate>Thu, 05 Jul 2018 23:30:00 +0600</lastBuildDate>
+diff --git a/tags/authors/index.html b/tags/authors/index.html
+index feba66b..ad7021c 100644
+--- a/tags/authors/index.html
++++ b/tags/authors/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Tag: authors • My New Hugo Site'>
++<meta property='og:title' content='Tag: authors • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/tags/authors/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Tag: authors • My New Hugo Site</title>
++  <title>Tag: authors • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/tags/authors/'>
+   
+-    <link href="http://example.org/tags/authors/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/tags/authors/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/tags/authors/index.xml b/tags/authors/index.xml
+index 6954c72..e39c592 100644
+--- a/tags/authors/index.xml
++++ b/tags/authors/index.xml
+@@ -1,9 +1,9 @@
+ <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+   <channel>
+-    <title>authors on My New Hugo Site</title>
++    <title>authors on SUBDIRECTORY</title>
+     <link>http://example.org/tags/authors/</link>
+-    <description>Recent content in authors on My New Hugo Site</description>
++    <description>Recent content in authors on SUBDIRECTORY</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+     <lastBuildDate>Tue, 26 Sep 2017 06:00:00 +0600</lastBuildDate>
+diff --git a/tags/chroma/index.html b/tags/chroma/index.html
+index a4a189b..5c66857 100644
+--- a/tags/chroma/index.html
++++ b/tags/chroma/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Tag: chroma • My New Hugo Site'>
++<meta property='og:title' content='Tag: chroma • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/tags/chroma/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Tag: chroma • My New Hugo Site</title>
++  <title>Tag: chroma • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/tags/chroma/'>
+   
+-    <link href="http://example.org/tags/chroma/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/tags/chroma/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/tags/chroma/index.xml b/tags/chroma/index.xml
+index 52ccd53..a4068d7 100644
+--- a/tags/chroma/index.xml
++++ b/tags/chroma/index.xml
+@@ -1,9 +1,9 @@
+ <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+   <channel>
+-    <title>chroma on My New Hugo Site</title>
++    <title>chroma on SUBDIRECTORY</title>
+     <link>http://example.org/tags/chroma/</link>
+-    <description>Recent content in chroma on My New Hugo Site</description>
++    <description>Recent content in chroma on SUBDIRECTORY</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+     <lastBuildDate>Wed, 27 Sep 2017 12:00:00 +0600</lastBuildDate>
+diff --git a/tags/config/index.html b/tags/config/index.html
+index a99dfd6..8f3a0c6 100644
+--- a/tags/config/index.html
++++ b/tags/config/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Tag: Configuration • My New Hugo Site'>
++<meta property='og:title' content='Tag: Configuration • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/tags/config/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Tag: Configuration • My New Hugo Site</title>
++  <title>Tag: Configuration • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/tags/config/'>
+   
+-    <link href="http://example.org/tags/config/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/tags/config/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/tags/config/index.xml b/tags/config/index.xml
+index 5c2ea78..562191d 100644
+--- a/tags/config/index.xml
++++ b/tags/config/index.xml
+@@ -1,9 +1,9 @@
+ <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+   <channel>
+-    <title>Configuration on My New Hugo Site</title>
++    <title>Configuration on SUBDIRECTORY</title>
+     <link>http://example.org/tags/config/</link>
+-    <description>Recent content in Configuration on My New Hugo Site</description>
++    <description>Recent content in Configuration on SUBDIRECTORY</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+     <lastBuildDate>Sun, 12 Aug 2018 12:30:00 +0600</lastBuildDate>
+@@ -89,7 +89,7 @@ Widget: About  about [Map]:  title [String]: Title</description>
+       
+       <guid>http://example.org/docs/config-file/</guid>
+       <description>This is the Minimo&amp;rsquo;s configuration file ( config.toml ) file of this site:
+-baseURL = &amp;#34;http://example.org/&amp;#34; languageCode = &amp;#34;en-us&amp;#34; title = &amp;#34;My New Hugo Site&amp;#34; theme = &amp;#34;minimo&amp;#34;  </description>
++baseURL = &amp;#34;http://example.org/&amp;#34; languageCode = &amp;#34;en-us&amp;#34; title = &amp;#34;SUBDIRECTORY&amp;#34; theme = &amp;#34;minimo&amp;#34;  </description>
+     </item>
+     
+   </channel>
+diff --git a/tags/fuse.js/index.html b/tags/fuse.js/index.html
+index 3606612..54d1539 100644
+--- a/tags/fuse.js/index.html
++++ b/tags/fuse.js/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Tag: fuse.js • My New Hugo Site'>
++<meta property='og:title' content='Tag: fuse.js • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/tags/fuse.js/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Tag: fuse.js • My New Hugo Site</title>
++  <title>Tag: fuse.js • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/tags/fuse.js/'>
+   
+-    <link href="http://example.org/tags/fuse.js/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/tags/fuse.js/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/tags/fuse.js/index.xml b/tags/fuse.js/index.xml
+index 141740b..6b00775 100644
+--- a/tags/fuse.js/index.xml
++++ b/tags/fuse.js/index.xml
+@@ -1,9 +1,9 @@
+ <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+   <channel>
+-    <title>fuse.js on My New Hugo Site</title>
++    <title>fuse.js on SUBDIRECTORY</title>
+     <link>http://example.org/tags/fuse.js/</link>
+-    <description>Recent content in fuse.js on My New Hugo Site</description>
++    <description>Recent content in fuse.js on SUBDIRECTORY</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+     <lastBuildDate>Fri, 06 Jul 2018 01:00:00 +0600</lastBuildDate>
+diff --git a/tags/i18n/index.html b/tags/i18n/index.html
+index a0498f5..4606a64 100644
+--- a/tags/i18n/index.html
++++ b/tags/i18n/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Tag: i18n • My New Hugo Site'>
++<meta property='og:title' content='Tag: i18n • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/tags/i18n/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Tag: i18n • My New Hugo Site</title>
++  <title>Tag: i18n • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/tags/i18n/'>
+   
+-    <link href="http://example.org/tags/i18n/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/tags/i18n/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/tags/i18n/index.xml b/tags/i18n/index.xml
+index 210d590..dee109c 100644
+--- a/tags/i18n/index.xml
++++ b/tags/i18n/index.xml
+@@ -1,9 +1,9 @@
+ <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+   <channel>
+-    <title>i18n on My New Hugo Site</title>
++    <title>i18n on SUBDIRECTORY</title>
+     <link>http://example.org/tags/i18n/</link>
+-    <description>Recent content in i18n on My New Hugo Site</description>
++    <description>Recent content in i18n on SUBDIRECTORY</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+     <lastBuildDate>Wed, 27 Sep 2017 14:00:00 +0600</lastBuildDate>
+diff --git a/tags/index.html b/tags/index.html
+index 0a9d6b8..8c42285 100644
+--- a/tags/index.html
++++ b/tags/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Tags • My New Hugo Site'>
++<meta property='og:title' content='Tags • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/tags/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Tags • My New Hugo Site</title>
++  <title>Tags • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/tags/'>
+   
+-    <link href="http://example.org/tags/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/tags/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/tags/index.xml b/tags/index.xml
+index 0670a55..de285af 100644
+--- a/tags/index.xml
++++ b/tags/index.xml
+@@ -1,9 +1,9 @@
+ <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+   <channel>
+-    <title>Tags on My New Hugo Site</title>
++    <title>Tags on SUBDIRECTORY</title>
+     <link>http://example.org/tags/</link>
+-    <description>Recent content in Tags on My New Hugo Site</description>
++    <description>Recent content in Tags on SUBDIRECTORY</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+     <lastBuildDate>Sun, 12 Aug 2018 12:30:00 +0600</lastBuildDate>
+diff --git a/tags/katex/index.html b/tags/katex/index.html
+index 0febfe6..bb42e9d 100644
+--- a/tags/katex/index.html
++++ b/tags/katex/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Tag: katex • My New Hugo Site'>
++<meta property='og:title' content='Tag: katex • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/tags/katex/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Tag: katex • My New Hugo Site</title>
++  <title>Tag: katex • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/tags/katex/'>
+   
+-    <link href="http://example.org/tags/katex/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/tags/katex/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/tags/katex/index.xml b/tags/katex/index.xml
+index df0e1f6..b822bc2 100644
+--- a/tags/katex/index.xml
++++ b/tags/katex/index.xml
+@@ -1,9 +1,9 @@
+ <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+   <channel>
+-    <title>katex on My New Hugo Site</title>
++    <title>katex on SUBDIRECTORY</title>
+     <link>http://example.org/tags/katex/</link>
+-    <description>Recent content in katex on My New Hugo Site</description>
++    <description>Recent content in katex on SUBDIRECTORY</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+     <lastBuildDate>Sun, 12 Aug 2018 12:30:00 +0600</lastBuildDate>
+diff --git a/tags/lunr.js/index.html b/tags/lunr.js/index.html
+index 9d05143..1c5be89 100644
+--- a/tags/lunr.js/index.html
++++ b/tags/lunr.js/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Tag: lunr.js • My New Hugo Site'>
++<meta property='og:title' content='Tag: lunr.js • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/tags/lunr.js/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Tag: lunr.js • My New Hugo Site</title>
++  <title>Tag: lunr.js • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/tags/lunr.js/'>
+   
+-    <link href="http://example.org/tags/lunr.js/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/tags/lunr.js/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/tags/lunr.js/index.xml b/tags/lunr.js/index.xml
+index 1fae69e..47666f1 100644
+--- a/tags/lunr.js/index.xml
++++ b/tags/lunr.js/index.xml
+@@ -1,9 +1,9 @@
+ <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+   <channel>
+-    <title>lunr.js on My New Hugo Site</title>
++    <title>lunr.js on SUBDIRECTORY</title>
+     <link>http://example.org/tags/lunr.js/</link>
+-    <description>Recent content in lunr.js on My New Hugo Site</description>
++    <description>Recent content in lunr.js on SUBDIRECTORY</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+     <lastBuildDate>Thu, 05 Jul 2018 20:30:00 +0600</lastBuildDate>
+diff --git a/tags/menus/index.html b/tags/menus/index.html
+index b15c65f..50aa9f2 100644
+--- a/tags/menus/index.html
++++ b/tags/menus/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Tag: menus • My New Hugo Site'>
++<meta property='og:title' content='Tag: menus • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/tags/menus/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Tag: menus • My New Hugo Site</title>
++  <title>Tag: menus • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/tags/menus/'>
+   
+-    <link href="http://example.org/tags/menus/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/tags/menus/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/tags/menus/index.xml b/tags/menus/index.xml
+index b200355..d66821a 100644
+--- a/tags/menus/index.xml
++++ b/tags/menus/index.xml
+@@ -1,9 +1,9 @@
+ <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+   <channel>
+-    <title>menus on My New Hugo Site</title>
++    <title>menus on SUBDIRECTORY</title>
+     <link>http://example.org/tags/menus/</link>
+-    <description>Recent content in menus on My New Hugo Site</description>
++    <description>Recent content in menus on SUBDIRECTORY</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+     <lastBuildDate>Wed, 27 Sep 2017 10:00:00 +0600</lastBuildDate>
+diff --git a/tags/og/index.html b/tags/og/index.html
+index b368d0f..130586c 100644
+--- a/tags/og/index.html
++++ b/tags/og/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Tag: Opengraph • My New Hugo Site'>
++<meta property='og:title' content='Tag: Opengraph • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/tags/og/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Tag: Opengraph • My New Hugo Site</title>
++  <title>Tag: Opengraph • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/tags/og/'>
+   
+-    <link href="http://example.org/tags/og/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/tags/og/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/tags/og/index.xml b/tags/og/index.xml
+index 32fb8b6..b9c2c0a 100644
+--- a/tags/og/index.xml
++++ b/tags/og/index.xml
+@@ -1,9 +1,9 @@
+ <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+   <channel>
+-    <title>Opengraph on My New Hugo Site</title>
++    <title>Opengraph on SUBDIRECTORY</title>
+     <link>http://example.org/tags/og/</link>
+-    <description>Recent content in Opengraph on My New Hugo Site</description>
++    <description>Recent content in Opengraph on SUBDIRECTORY</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+     <lastBuildDate>Tue, 26 Sep 2017 08:00:00 +0600</lastBuildDate>
+diff --git a/tags/pygments/index.html b/tags/pygments/index.html
+index 960130c..7795423 100644
+--- a/tags/pygments/index.html
++++ b/tags/pygments/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Tag: pygments • My New Hugo Site'>
++<meta property='og:title' content='Tag: pygments • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/tags/pygments/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Tag: pygments • My New Hugo Site</title>
++  <title>Tag: pygments • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/tags/pygments/'>
+   
+-    <link href="http://example.org/tags/pygments/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/tags/pygments/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/tags/pygments/index.xml b/tags/pygments/index.xml
+index 7682fa1..8fadbba 100644
+--- a/tags/pygments/index.xml
++++ b/tags/pygments/index.xml
+@@ -1,9 +1,9 @@
+ <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+   <channel>
+-    <title>pygments on My New Hugo Site</title>
++    <title>pygments on SUBDIRECTORY</title>
+     <link>http://example.org/tags/pygments/</link>
+-    <description>Recent content in pygments on My New Hugo Site</description>
++    <description>Recent content in pygments on SUBDIRECTORY</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+     <lastBuildDate>Wed, 27 Sep 2017 12:00:00 +0600</lastBuildDate>
+diff --git a/tags/search/index.html b/tags/search/index.html
+index ee8f756..e1234a6 100644
+--- a/tags/search/index.html
++++ b/tags/search/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Tag: search • My New Hugo Site'>
++<meta property='og:title' content='Tag: search • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/tags/search/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Tag: search • My New Hugo Site</title>
++  <title>Tag: search • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/tags/search/'>
+   
+-    <link href="http://example.org/tags/search/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/tags/search/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/tags/search/index.xml b/tags/search/index.xml
+index fd78ef6..0e1df53 100644
+--- a/tags/search/index.xml
++++ b/tags/search/index.xml
+@@ -1,9 +1,9 @@
+ <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+   <channel>
+-    <title>search on My New Hugo Site</title>
++    <title>search on SUBDIRECTORY</title>
+     <link>http://example.org/tags/search/</link>
+-    <description>Recent content in search on My New Hugo Site</description>
++    <description>Recent content in search on SUBDIRECTORY</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+     <lastBuildDate>Fri, 06 Jul 2018 01:00:00 +0600</lastBuildDate>
+diff --git a/tags/shortcode/index.html b/tags/shortcode/index.html
+index 81d2fed..fa3cc31 100644
+--- a/tags/shortcode/index.html
++++ b/tags/shortcode/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Tag: shortcode • My New Hugo Site'>
++<meta property='og:title' content='Tag: shortcode • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/tags/shortcode/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Tag: shortcode • My New Hugo Site</title>
++  <title>Tag: shortcode • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/tags/shortcode/'>
+   
+-    <link href="http://example.org/tags/shortcode/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/tags/shortcode/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/tags/shortcode/index.xml b/tags/shortcode/index.xml
+index d32748d..af1a40c 100644
+--- a/tags/shortcode/index.xml
++++ b/tags/shortcode/index.xml
+@@ -1,9 +1,9 @@
+ <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+   <channel>
+-    <title>shortcode on My New Hugo Site</title>
++    <title>shortcode on SUBDIRECTORY</title>
+     <link>http://example.org/tags/shortcode/</link>
+-    <description>Recent content in shortcode on My New Hugo Site</description>
++    <description>Recent content in shortcode on SUBDIRECTORY</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+     <lastBuildDate>Thu, 05 Oct 2017 20:00:00 +0600</lastBuildDate>
+diff --git a/tags/translation/index.html b/tags/translation/index.html
+index b6236c2..1254cd7 100644
+--- a/tags/translation/index.html
++++ b/tags/translation/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Tag: translation • My New Hugo Site'>
++<meta property='og:title' content='Tag: translation • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/tags/translation/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Tag: translation • My New Hugo Site</title>
++  <title>Tag: translation • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/tags/translation/'>
+   
+-    <link href="http://example.org/tags/translation/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/tags/translation/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/tags/translation/index.xml b/tags/translation/index.xml
+index 3c27282..62445cc 100644
+--- a/tags/translation/index.xml
++++ b/tags/translation/index.xml
+@@ -1,9 +1,9 @@
+ <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+   <channel>
+-    <title>translation on My New Hugo Site</title>
++    <title>translation on SUBDIRECTORY</title>
+     <link>http://example.org/tags/translation/</link>
+-    <description>Recent content in translation on My New Hugo Site</description>
++    <description>Recent content in translation on SUBDIRECTORY</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+     <lastBuildDate>Wed, 27 Sep 2017 14:00:00 +0600</lastBuildDate>
+diff --git a/tags/widgets/index.html b/tags/widgets/index.html
+index 0ddb5da..e765207 100644
+--- a/tags/widgets/index.html
++++ b/tags/widgets/index.html
+@@ -5,18 +5,18 @@
+ <meta name='description' content=''>
+ <meta name='theme-color' content='#ffcd00'>
+ 
+-<meta property='og:title' content='Tag: widgets • My New Hugo Site'>
++<meta property='og:title' content='Tag: widgets • SUBDIRECTORY'>
+ <meta property='og:description' content=''>
+ <meta property='og:url' content='http://example.org/tags/widgets/'>
+-<meta property='og:site_name' content='My New Hugo Site'>
++<meta property='og:site_name' content='SUBDIRECTORY'>
+ <meta property='og:type' content='website'><meta property='og:updated_time' content='2019-09-28T21:00:00&#43;06:00'/><meta name='twitter:card' content='summary'>
+ 
+ <meta name="generator" content="Hugo 0.72.0" />
+ 
+-  <title>Tag: widgets • My New Hugo Site</title>
++  <title>Tag: widgets • SUBDIRECTORY</title>
+   <link rel='canonical' href='http://example.org/tags/widgets/'>
+   
+-    <link href="http://example.org/tags/widgets/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
++    <link href="http://example.org/tags/widgets/index.xml" rel="alternate" type="application/rss+xml" title="SUBDIRECTORY" />
+   
+   
+   <link rel='icon' href='/favicon.ico'>
+@@ -48,7 +48,7 @@
+ 
+       <header id='header' class='header site-header'>
+         <div class='container sep-after'>
+-          <div class='header-info'><p class='site-title title'>My New Hugo Site</p><p class='desc site-desc'></p>
++          <div class='header-info'><p class='site-title title'>SUBDIRECTORY</p><p class='desc site-desc'></p>
+           </div>
+         </div>
+       </header>
+diff --git a/tags/widgets/index.xml b/tags/widgets/index.xml
+index 1ea757c..8dbc8d7 100644
+--- a/tags/widgets/index.xml
++++ b/tags/widgets/index.xml
+@@ -1,9 +1,9 @@
+ <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+   <channel>
+-    <title>widgets on My New Hugo Site</title>
++    <title>widgets on SUBDIRECTORY</title>
+     <link>http://example.org/tags/widgets/</link>
+-    <description>Recent content in widgets on My New Hugo Site</description>
++    <description>Recent content in widgets on SUBDIRECTORY</description>
+     <generator>Hugo -- gohugo.io</generator>
+     <language>en-us</language>
+     <lastBuildDate>Wed, 07 Feb 2018 18:30:00 +0600</lastBuildDate>

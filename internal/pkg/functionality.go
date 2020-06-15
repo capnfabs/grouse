@@ -28,7 +28,7 @@ func RunRootCommand(cmd *cobra.Command) {
 		cmd.Usage()
 		os.Exit(1)
 	}
-	out.Debug = context.debug
+	out.Reinit(context.debug)
 
 	err = runMain(git.NewGit(), *context)
 	if err != nil {
@@ -67,10 +67,11 @@ func runMain(git_ git.Git, userArgs cmdArgs) error {
 	// panic.
 	check(err)
 
-	srcWorktree, err := repo.AddWorktree(path.Join(scratchDir, "src"))
+	srcWorktree, err := repo.RecursiveSharedCloneTo(path.Join(scratchDir, "src"))
 	check(err)
 	if !userArgs.keepWorktree {
-		// Debug doesn't remove the worktree, so you can inspect it later.
+		// If keepWorktree is set, keep the worktree so you can inspect it
+		// later.
 		defer srcWorktree.Remove()
 	}
 
@@ -123,7 +124,7 @@ func runMain(git_ git.Git, userArgs cmdArgs) error {
 }
 
 func processSourceAtCommit(
-	srcWorktree git.Worktree, ref git.ResolvedCommit, hugoRelativeRoot string, buildArgs []string, outputRepo git.Repository) (git.Hash, error) {
+	srcWorktree git.WorktreeRepository, ref git.ResolvedCommit, hugoRelativeRoot string, buildArgs []string, outputRepo git.WriteableRepository) (git.Hash, error) {
 	out.Debugf("Checking out %s…\n", ref)
 	err := srcWorktree.Checkout(ref)
 	if err != nil {
@@ -131,7 +132,7 @@ func processSourceAtCommit(
 	}
 	out.Debugln("…done checking out.")
 
-	if err = runHugo(path.Join(srcWorktree.Location(), hugoRelativeRoot), outputRepo.RootDir(), buildArgs); err != nil {
+	if err = runHugo(path.Join(srcWorktree.RootDir(), hugoRelativeRoot), outputRepo.RootDir(), buildArgs); err != nil {
 		return git.NilHash, err
 	}
 
@@ -150,9 +151,11 @@ func runHugo(hugoRootDir string, outputDir string, userArgs []string) error {
 	cmd.Dir = hugoRootDir
 
 	// TODO: if --debug is NOT specified, should hang on to these and then only
-	// print them if an error occurs.
+	// print them if an error occurs?
+	// NOTE that this intentionally uses Stderr for both; see
+	// https://github.com/capnfabs/grouse/pull/12#issuecomment-643446418
 	cmd.Stderr = os.Stderr
-	cmd.Stdout = os.Stdout
+	cmd.Stdout = os.Stderr
 	return exec.Run(cmd)
 }
 

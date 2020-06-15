@@ -23,13 +23,13 @@ func (f flags) Args() []string {
 
 func defaultFlags() flags {
 	return flags{
-		"gitargs":       "--potato 'excellent'",
-		"diffargs":      "--potato 'excellent'",
-		"buildargs":     "--carrot",
-		"tool":          true,
-		"_args":         []string{"b1234553", "HEAD^"},
-		"keep-worktree": false,
-		"debug":         false,
+		"gitargs":    "--potato 'excellent'",
+		"diffargs":   "--potato 'excellent'",
+		"buildargs":  "--carrot",
+		"tool":       true,
+		"_args":      []string{"b1234553", "HEAD^"},
+		"keep-cache": false,
+		"debug":      false,
 	}
 }
 
@@ -93,7 +93,7 @@ func TestHandlesOneCommit(t *testing.T) {
 
 func TestHandlesWrongNumberOfCommits(t *testing.T) {
 	c := qt.New(t)
-	for _, testcase := range [][]string{[]string{}, []string{"b1234553", "HEAD^^", "HEAD"}} {
+	for _, testcase := range [][]string{{}, {"b1234553", "HEAD^^", "HEAD"}} {
 		subtest := fmt.Sprintf("With%dArgs", len(testcase))
 		c.Run(subtest, func(c *qt.C) {
 			f := defaultFlags()

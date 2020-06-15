@@ -6,3 +6,4 @@
 # the working tree being dirty.
 /test-fixtures/*/
 /bin/
+.DS_Store

@@ -32,15 +32,15 @@ func (_m *Git) GetRelativeLocation(currentDir string) (string, error) {
 }
 
 // NewRepository provides a mock function with given fields: dst
-func (_m *Git) NewRepository(dst string) (git.Repository, error) {
+func (_m *Git) NewRepository(dst string) (git.WriteableRepository, error) {
 	ret := _m.Called(dst)
 
-	var r0 git.Repository
-	if rf, ok := ret.Get(0).(func(string) git.Repository); ok {
+	var r0 git.WriteableRepository
+	if rf, ok := ret.Get(0).(func(string) git.WriteableRepository); ok {
 		r0 = rf(dst)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(git.Repository)
+			r0 = ret.Get(0).(git.WriteableRepository)
 		}
 	}
 

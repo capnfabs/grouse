@@ -11,6 +11,7 @@ import (
 	"testing"
 
 	"github.com/capnfabs/grouse/internal/git"
+	"github.com/capnfabs/grouse/internal/out"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -25,76 +26,68 @@ import (
 */
 
 type TestCase struct {
-	label string
-	src   string
-	ref1  string
-	ref2  string
-	args  string
+	label  string
+	src    string
+	ref1   string
+	ref2   string
+	args   string
+	subdir string
+}
+
+func (tc TestCase) subdirectory(dir string) TestCase {
+	tc.subdir = dir
+	return tc
+}
+
+func (tc TestCase) commits(sha1, sha2 string) TestCase {
+	tc.ref1 = sha1
+	tc.ref2 = sha2
+	return tc
+}
+
+func (tc TestCase) outfile(label string) TestCase {
+	tc.label = label
+	return tc
+}
+
+func tc(zipFile string) TestCase {
+	label := strings.TrimSuffix(zipFile, ".zip")
+	return TestCase{
+		label: label,
+		src:   zipFile,
+		ref1:  "HEAD^",
+		ref2:  "HEAD",
+		args:  "",
+	}
 }
 
 var TestCases []TestCase = []TestCase{
-	TestCase{
-		label: "tiny-simple-branch-diff",
-		src:   "tiny.zip",
-		ref1:  "HEAD^",
-		ref2:  "tawny-shouldered-podargus",
-		args:  "",
-	},
-	TestCase{
-		label: "nomodules-two-commit-diff",
-		src:   "nomodules.zip",
-		ref1:  "b789d11b2eaa2e3e4c1f942b2580492274fd32a4",
-		ref2:  "10730e4c7f320144af7055b37daecd240b4b0b72",
-		args:  "",
-	},
-	TestCase{
-		label: "nomodules-empty-diff",
-		src:   "nomodules.zip",
-		ref1:  "10730e4c7f320144af7055b37daecd240b4b0b72",
-		ref2:  "HEAD",
-		args:  "",
-	},
-	TestCase{
-		// Change theme from 'ananke' to 'piercer'
-		label: "themechange-change-theme",
-		src:   "themechange.zip",
-		ref1:  "4367feb0439721ec67cf4175e59454326643d951",
-		ref2:  "3035eafa7b793b66a76b783846b67b92e0565f56",
-		args:  "",
-	},
-	TestCase{
-		// Delete 'ananke' submodule; should be a noop in terms of diff
-		// but involves automatically cloning a submodule so it's probably slow.
-		label: "themechange-old-theme-missing-from-tree",
-		src:   "themechange.zip",
-		ref1:  "3035eafa7b793b66a76b783846b67b92e0565f56",
-		ref2:  "1da5eec49d7fa3529b553055d86fe801714846f1",
-		args:  "",
-	},
-	TestCase{
-		label: "nested-submodules-everything-present",
-		src:   "nested-submodules-everything-present.zip",
-		ref1:  "HEAD^",
-		ref2:  "HEAD",
-		args:  "",
-	},
-	TestCase{
-		// This simulates the case where some nested submodules are missing
-		// from the tree.
-		label: "nested-submodules-missing-submodules",
-		src:   "nested-submodules-missing-submodules.zip",
-		ref1:  "HEAD^",
-		ref2:  "HEAD",
-		args:  "",
-	},
+	tc("nested-submods.zip"),
+	tc("nested-submod-deinit.zip"),
+	tc("submod-deinit.zip"),
+	tc("everything-in-subdir.zip").subdirectory("hugodir"),
+	tc("unirepo-gitinfo.zip").commits("742de0a", "353bfcb").outfile("remove-submods"),
+	tc("unirepo-gitinfo.zip"),
 }
 
 // findSubDir returns the path to the single directory within `dir`.
 func findSubDir(t *testing.T, dir string) string {
 	files, err := ioutil.ReadDir(dir)
 	assert.Nil(t, err)
-	assert.Len(t, files, 1)
-	subdir := files[0]
+
+	filtered := []os.FileInfo{}
+	names := []string{}
+	for _, f := range files {
+		if f.Name() != "__MACOSX" {
+			filtered = append(filtered, f)
+			names = append(names, f.Name())
+		}
+	}
+	if len(filtered) != 1 {
+		panic(fmt.Sprintf("Got more than 1 directory in zipfile: [%s]", strings.Join(names, ", ")))
+	}
+	assert.Len(t, filtered, 1)
+	subdir := filtered[0]
 	assert.True(t, subdir.IsDir())
 	return path.Join(dir, subdir.Name())
 }
@@ -112,15 +105,21 @@ func buildContext(tc *TestCase, repoDir string) cmdArgs {
 	}
 }
 
-func captureOutput(f func() error) ([]byte, error) {
+func captureOutput(f func() error) ([]byte, []byte, error) {
 	oldStdout := os.Stdout
+	oldStderr := os.Stderr
 
 	rout, wout, _ := os.Pipe()
-	// TODO check error
+	rerr, werr, _ := os.Pipe()
+	// TODO check errors
 
 	os.Stdout = wout
+	os.Stderr = werr
+
+	out.Reinit(false)
 
 	outC := make(chan []byte)
+	errC := make(chan []byte)
 
 	go func() {
 		data, err := ioutil.ReadAll(rout)
@@ -131,8 +130,19 @@ func captureOutput(f func() error) ([]byte, error) {
 		outC <- data
 	}()
 
+	go func() {
+		data, err := ioutil.ReadAll(rerr)
+		if err != nil {
+			panic(err)
+		}
+		rerr.Close()
+		errC <- data
+	}()
+
 	restore := func() {
 		os.Stdout = oldStdout
+		os.Stderr = oldStderr
+		out.Reinit(false)
 	}
 
 	call := func() error {
@@ -143,9 +153,11 @@ func captureOutput(f func() error) ([]byte, error) {
 	retVal := call()
 
 	wout.Close()
+	werr.Close()
 
 	stdout := <-outC
-	return stdout, retVal
+	stderr := <-errC
+	return stdout, stderr, retVal
 }
 
 var SKIPS []*regexp.Regexp = skipRegexes()
@@ -155,13 +167,9 @@ func skipRegexes() []*regexp.Regexp {
 		regexp.MustCompile(`Total in \d+ ms`),
 		// It's a log line for the current date :-/
 		regexp.MustCompile(`WARN \d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}`),
-		// These two are only issues in the nested-submodules tests. Maybe
-		// we should modify those tests?
 		// Under limited (and unknown) circumstances, commit SHAs can change,
 		// so ignore them in diffs.
 		regexp.MustCompile(`^index [a-f0-9]{7}\.\.[a-f0-9]{7} 100644$`),
-		// This has a hash in it too :-/
-		regexp.MustCompile(`https://example\.com/css/site\.min`),
 	}
 }
 
@@ -197,11 +205,15 @@ func runTest(t *testing.T, tc TestCase) {
 	require.Nil(t, cmd.Run())
 
 	outputPath := path.Join(wd, "../../test-fixtures", tc.label+"-out.txt")
+	errPath := path.Join(wd, "../../test-fixtures", tc.label+"-err.txt")
 
 	inputDir := findSubDir(t, tempDir)
+	if tc.subdir != "" {
+		inputDir = path.Join(inputDir, tc.subdir)
+	}
 	fmt.Println("Test input directory is", inputDir)
 
-	stdout, err := captureOutput(func() error {
+	stdout, stderr, err := captureOutput(func() error {
 		return runMain(git.NewGit(), buildContext(&tc, inputDir))
 	})
 	if err != nil {
@@ -212,17 +224,29 @@ func runTest(t *testing.T, tc TestCase) {
 
 	if out, ok := os.LookupEnv("WRITE_TEST_OUTPUT"); ok && out == "1" {
 		fmt.Println("Writing stdout to", outputPath)
-		file, err := os.Create(outputPath)
+		fmt.Println("Writing stderr to", errPath)
+		outFile, err := os.Create(outputPath)
 		require.Nil(t, err)
-		file.Write(stdout)
+		errFile, err := os.Create(errPath)
+		require.Nil(t, err)
+		outFile.Write(stdout)
+		errFile.Write(stderr)
 	} else {
-		fmt.Println("Comparing stdout to historical value", outputPath)
-		file, err := os.Open(outputPath)
-		require.Nil(t, err)
-		content, err := ioutil.ReadAll(file)
-		require.Nil(t, err)
-		require.Equal(t, filterLines(string(content)), filterLines(string(stdout)))
+		fmt.Println("Comparing stdout/stderr to historical values:")
+		fmt.Println("- stdout:", outputPath)
+		fmt.Println("- stderr:", errPath)
+
+		checkFiltered(t, outputPath, string(stdout))
+		checkFiltered(t, errPath, string(stderr))
 	}
+}
+
+func checkFiltered(t *testing.T, referenceFilePath string, actualValue string) {
+	referenceFile, err := os.Open(referenceFilePath)
+	require.Nil(t, err)
+	content, err := ioutil.ReadAll(referenceFile)
+	require.Nil(t, err)
+	require.Equal(t, filterLines(string(content)), filterLines(actualValue))
 }
 
 func TestEnd2End(t *testing.T) {
