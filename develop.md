@@ -55,13 +55,29 @@ bin/mockery -dir internal/git -all
 - See also https://github.com/vektra/mockery/issues/210
 - See this for installing tools: https://stackoverflow.com/a/57317864/996592
 
+
+### Testing on Debian Stable
+
+I develop grouse on a Mac, but I want to support Linux users, and it's not super hard to test. I test releases on Debian Stable because they're probably the oldest possible version of `git` still in use.
+
+Here's how:
+
+```sh
+docker run -it --mount type=bind,source=$(pwd),target=/app,readonly golang:1.14-buster
+apt update && apt install unzip git curl
+export HUGO_RELEASE=https://github.com/gohugoio/hugo/releases/download/v0.72.0/hugo_0.72.0_Linux-64bit.deb
+curl -L $HUGO_RELEASE -o hugo.deb && dpkg -i hugo.deb && rm hugo.deb
+go test ./...
+```
+
+This is basically (maybe completely?) identical to what runs on CircleCI.
+
 ## Releasing
 
-- Test build artifacts with: `goreleaser --snapshot --skip-publish --rm-dist`
+- Build artefacts for test with: `goreleaser --snapshot --skip-publish --rm-dist`
 - Tag with git: `git tag v[whatever]`
 - Push tags: `git push --tags`
 - Actually do the release: `goreleaser --rm-dist`
-
 
 ## Things that would be nice for the future (roughly ordered, see also [#enhancements](https://github.com/capnfabs/grouse/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement))
 - Try to autodetect a few common static site generators (hugo, jekyll, gatsby)
