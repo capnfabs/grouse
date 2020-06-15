@@ -1,6 +1,7 @@
 package pkg
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/capnfabs/grouse/internal/exec"
@@ -122,9 +123,9 @@ func TestPassthroughBuildArgs(t *testing.T) {
 		diffCommand:  "diff",
 		commits:      []string{"HEAD^", "HEAD"},
 		diffArgs:     []string{},
-		gitArgs:      []string{},
 		buildArgs:    []string{"--here-is-a-build-arg", "message text with 'apostrophes'"},
 		debug:        false,
+		noPager:      false,
 		keepWorktree: false,
 	}
 	runMain(mockGit, args)
@@ -171,8 +172,8 @@ func TestChecksOutCorrectSrcShas(t *testing.T) {
 		diffCommand:  "diff",
 		commits:      []string{"origin/YOLO", "HEAD"},
 		diffArgs:     []string{},
-		gitArgs:      []string{},
 		buildArgs:    []string{""},
+		noPager:      false,
 		debug:        false,
 		keepWorktree: false,
 	}
@@ -198,11 +199,11 @@ func TestDiffArgs(t *testing.T) {
 				repoDir:      "",
 				diffCommand:  "diff",
 				commits:      []string{"HEAD^", "HEAD"},
-				gitArgs:      []string{},
 				diffArgs:     []string{"hello", "--from-the-other-siiiiiiiiiiide"},
 				buildArgs:    []string{""},
 				debug:        false,
 				keepWorktree: false,
+				noPager:      false,
 			}
 			runMain(mockGit, args)
 			diffCmds := findCmdsMatchingArgs(runnerMocks.Run.Calls, "git", "diff")
@@ -212,32 +213,40 @@ func TestDiffArgs(t *testing.T) {
 	}
 }
 
-func TestGitArgs(t *testing.T) {
+func TestNoPager(t *testing.T) {
+	testCases := []struct {
+		input            bool
+		expectedArgSlice []string
+	}{
+		{false, []string{"git", "diff"}},
+		{true, []string{"git", "--no-pager", "diff"}},
+	}
+	for _, tc := range testCases {
+		t.Run(fmt.Sprintf("nopager_%v", tc.input), func(t *testing.T) {
+			runnerMocks, cleanup := installFixtures()
+			defer cleanup()
 
-	t.Run("command_", func(t *testing.T) {
-		runnerMocks, cleanup := installFixtures()
-		defer cleanup()
+			mockGit := new(mocks.Git)
+			mockGit.On("OpenRepository", mock.Anything).Return(mockReadRepo(), nil)
+			mockGit.On("GetRelativeLocation", mock.Anything).Return("potato/tomato", nil)
+			mockGit.On("NewRepository", mock.Anything).Return(mockWriteRepo(), nil)
 
-		mockGit := new(mocks.Git)
-		mockGit.On("OpenRepository", mock.Anything).Return(mockReadRepo(), nil)
-		mockGit.On("GetRelativeLocation", mock.Anything).Return("potato/tomato", nil)
-		mockGit.On("NewRepository", mock.Anything).Return(mockWriteRepo(), nil)
-
-		args := cmdArgs{
-			repoDir:      "",
-			diffCommand:  "diff",
-			commits:      []string{"HEAD^", "HEAD"},
-			gitArgs:      []string{"hello", "--from-the-other-siiiiiiiiiiide"},
-			buildArgs:    []string{""},
-			debug:        false,
-			keepWorktree: false,
-		}
-		runMain(mockGit, args)
-		gitCmds := findCmdsMatchingArgs(runnerMocks.Run.Calls, "git")
-		assert.Equal(t, 1, len(gitCmds))
-		assert.Equal(t, []string{"git", "hello", "--from-the-other-siiiiiiiiiiide", "diff", string(WrittenCommitRefs[0]), string(WrittenCommitRefs[1])}, gitCmds[0].Args)
-	})
-
+			args := cmdArgs{
+				repoDir:      "",
+				diffCommand:  "diff",
+				commits:      []string{"HEAD^", "HEAD"},
+				buildArgs:    []string{""},
+				noPager:      tc.input,
+				debug:        false,
+				keepWorktree: false,
+			}
+			runMain(mockGit, args)
+			gitCmds := findCmdsMatchingArgs(runnerMocks.Run.Calls, "git")
+			assert.Equal(t, 1, len(gitCmds))
+			actualArgSlice := gitCmds[0].Args[0:len(tc.expectedArgSlice)]
+			assert.Equal(t, tc.expectedArgSlice, actualArgSlice)
+		})
+	}
 }
 
 func findCmdsMatchingArgs(calls []mock.Call, args ...string) []*exec.Cmd {
