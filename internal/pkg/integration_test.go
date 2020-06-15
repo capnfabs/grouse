@@ -98,7 +98,7 @@ func buildContext(tc *TestCase, repoDir string) cmdArgs {
 		diffCommand:  "diff",
 		commits:      []string{tc.ref1, tc.ref2},
 		diffArgs:     []string{},
-		gitArgs:      []string{},
+		noPager:      false,
 		buildArgs:    []string{},
 		debug:        false,
 		keepWorktree: false,

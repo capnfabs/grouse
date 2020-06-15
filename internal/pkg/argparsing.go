@@ -32,7 +32,7 @@ func parseArgs(flags flagSet) (*cmdArgs, error) {
 	debug, err := flags.GetBool("debug")
 	check(err)
 
-	gitArgsStr, err := flags.GetString("gitargs")
+	noPager, err := flags.GetBool("no-pager")
 	check(err)
 
 	diffArgsStr, err := flags.GetString("diffargs")
@@ -40,11 +40,6 @@ func parseArgs(flags flagSet) (*cmdArgs, error) {
 
 	keepWorktree, err := flags.GetBool("keep-cache")
 	check(err)
-
-	gitArgs, err := shellquote.Split(gitArgsStr)
-	if err != nil {
-		return nil, errors.WithMessage(err, "Couldn't parse the value provided to --gitargs")
-	}
 
 	diffArgs, err := shellquote.Split(diffArgsStr)
 	if err != nil {
@@ -77,7 +72,7 @@ func parseArgs(flags flagSet) (*cmdArgs, error) {
 		repoDir:      repoDir,
 		diffCommand:  diffCommand,
 		commits:      commits,
-		gitArgs:      gitArgs,
+		noPager:      noPager,
 		diffArgs:     diffArgs,
 		buildArgs:    buildArgs,
 		debug:        debug,
@@ -89,7 +84,7 @@ type cmdArgs struct {
 	repoDir     string
 	diffCommand string
 	commits     []string
-	gitArgs     []string
+	noPager     bool
 	diffArgs    []string
 	buildArgs   []string
 	debug       bool
