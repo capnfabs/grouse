@@ -26,7 +26,7 @@ changelog:
     - '^test:'
 brews:
   -
-    github:
+    tap:
       owner: capnfabs
       name: homebrew-tap
     # Template for the url which is determined by the given Token (github or gitlab)
